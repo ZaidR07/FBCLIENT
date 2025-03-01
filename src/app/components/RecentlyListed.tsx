@@ -31,7 +31,7 @@ const RecentlyListed = () => {
             .map((property, index) => (
               <div
                 key={index}
-                className="bg-transparent min-w-[40%] px-2 py-2 relative rounded-lg border border-[#f8c4a6]"
+                className="bg-transparent w-[40%] px-2 py-2 relative rounded-lg border border-[#f8c4a6]"
               >
                 <div className="relative">
                   <img
