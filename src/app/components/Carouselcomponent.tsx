@@ -2,6 +2,7 @@
 import { useState, useEffect } from "react";
 import { Carousel } from "react-responsive-carousel";
 import "react-responsive-carousel/lib/styles/carousel.min.css";
+import { uri } from "@/constant";
 
 const CarouselComponent = ({ companyInfo }) => {
   const [carouselImages, setCarouselImages] = useState([]);
@@ -32,7 +33,7 @@ const CarouselComponent = ({ companyInfo }) => {
           className="rounded-md"
         >
           <img
-            src={`http://localhost:4000${item}`}
+            src={`${uri}${item}`}
             alt={`Slide ${index + 1}`}
           
            
