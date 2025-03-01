@@ -40,6 +40,8 @@ const Page = () => {
     furnishingstatuslist: [],
     amenitieslist: [],
     constructionstatuslist: [],
+    linelist : [],
+    locationlist : []
   });
 
   const handleload = async () => {
