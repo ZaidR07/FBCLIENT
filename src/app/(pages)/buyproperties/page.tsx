@@ -159,7 +159,16 @@ const Page = () => {
 
   const [filteropen, setFilterOpen] = useState(false);
 
-  const [variables, setVariables] = useState({});
+  const [variables, setVariables] = useState({
+    bhklist : [],
+    propertytypelist : [],
+    constructionstatuslist : [],
+    postedbylist : [],
+    amenitieslist : []
+
+
+
+  });
 
   const getData = useCallback(async () => {
     try {

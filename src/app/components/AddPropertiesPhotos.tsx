@@ -9,6 +9,7 @@ const AddPropertiesPhotos = (props) => {
     const files = Array.from(event.target.files);
 
     // Create preview URLs
+    // @ts-ignore
     const newPreviews = files.map((file) => URL.createObjectURL(file));
 
     // Update the images in the parent component
@@ -48,6 +49,8 @@ const AddPropertiesPhotos = (props) => {
         {/* "Add More" Button */}
         <button
           className="mt-6 bg-green-600 text-white px-4 py-2 rounded-md"
+          // @ts-ignore
+
           onClick={() => document.querySelector("input[type='file']").click()}
         >
           Add More Images

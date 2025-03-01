@@ -15,6 +15,7 @@ const Page = () => {
     const files = Array.from(event.target.files);
 
     // Create preview URLs
+    // @ts-ignore
     const newPreviews = files.map((file) => URL.createObjectURL(file));
 
     setImages((prevImages) => [...prevImages, ...files]);
