@@ -2,7 +2,6 @@
 import { useState, useEffect } from "react";
 import { Carousel } from "react-responsive-carousel";
 import "react-responsive-carousel/lib/styles/carousel.min.css";
-import { uri } from "@/constant";
 
 const CarouselComponent = ({ companyInfo }) => {
   const [carouselImages, setCarouselImages] = useState([]);
@@ -27,20 +26,37 @@ const CarouselComponent = ({ companyInfo }) => {
       showIndicators={false}
       className=""
     >
-      {carouselImages.map((item, index) => (
+      
         <div
-          key={index}
+         
           className="rounded-md"
         >
           <img
-            src={`${uri}${item}`}
-            alt={`Slide ${index + 1}`}
-          
-           
+            src="/1740719627292.png"
             className="object-cover rounded-md"
           />
         </div>
-      ))}
+
+        <div
+         
+          className="rounded-md"
+        >
+          <img
+            src="/1740719627309.png"
+            className="object-cover rounded-md"
+          />
+        </div>
+
+        <div
+         
+          className="rounded-md"
+        >
+          <img
+            src="/1740719627319.jpeg"
+            className="object-cover rounded-md"
+          />
+        </div>
+      
     </Carousel>
   );
 };

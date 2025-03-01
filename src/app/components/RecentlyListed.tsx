@@ -8,6 +8,9 @@ const RecentlyListed = () => {
 
   const handleload = async () => {
     const response = await axios.get(`${uri}getproperties`);
+
+    console.log(response.data.payload);
+
     setPropertiesList(response.data.payload);
   };
 
@@ -32,10 +35,15 @@ const RecentlyListed = () => {
               >
                 <div className="relative">
                   <img
-                    src="/rent.png"
+                    src={
+                      property.images && property.images.length > 0
+                        ? property.images[0]
+                        : "/rent.png"
+                    }
                     alt="Property Image"
                     className="rounded-lg w-full h-[110px] object-cover"
                   />
+
                   <div className="absolute bottom-2 left-3 rounded-lg p-1 text-sm bg-orange-100 text-[#FF5D00]">
                     {priceconverter(property.price)}
                   </div>
@@ -96,8 +104,6 @@ const RecentlyListed = () => {
               </div>
             ))}
       </div>
-
-      
     </div>
   );
 };

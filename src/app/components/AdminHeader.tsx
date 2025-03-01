@@ -33,8 +33,8 @@ const AdminHeader = () => {
       icon: "settings.svg",
       name: "Settings",
       width: 50,
-      route: "companysettings",
-      subnav: ["Company Settings", "variables" ],
+      route: "company",
+      subnav: ["Company", "variables" ],
     },
   ];
 
