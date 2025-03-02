@@ -1,12 +1,12 @@
 "use client";
 
-import { useState, useEffect, useMemo } from "react";
+import { Suspense , useState, useEffect, useMemo } from "react";
 import Header from "@/app/components/Header";
 import { motion, AnimatePresence } from "framer-motion";
 import axios from "axios";
 import { uri } from "@/constant";
 import { useCallback } from "react";
-import { useSearchParams } from "next/navigation";
+import QueryParamsHandler from "@/app/components/SearchParameters";
 
 const RupeeIcon = () => {
   return (
@@ -143,9 +143,10 @@ const Page = () => {
     []
   );
 
-  const searchParams = useSearchParams();
-  const type = searchParams.get("type") || ""; // Extract "type"
-  const view = searchParams.get("view") || "";
+  const [type, setType] = useState("");
+  const [view, setView] = useState("");
+
+  
 
   const [placeholderIndex, setPlaceholderIndex] = useState(0);
   const [buyRentValue, setBuyRentValue] = useState("Buy");
@@ -226,6 +227,12 @@ const Page = () => {
   return (
     <div className="bg-gray-100 mt-[8vh] min-h-screen">
       <Header />
+      <Suspense fallback={<div>Loading...</div>}>
+        <QueryParamsHandler onParams={({ type, view }) => {
+          setType(type);
+          setView(view);
+        }} />
+      </Suspense>
       <nav className="lg:hidden w-full h-[8vh] bg-[#f3701f] shadow-2xl flex items-center justify-between px-4">
         <div className="relative w-[60%]">
           <SearchIcon />
