@@ -43,7 +43,7 @@ const MobileNav = () => {
 
   return (
     <>
-      <nav className="w-full h-full px-4 lg:hidden flex items-center justify-between">
+      <nav className="w-full h-full px-4 lg:hidden flex items-center justify-between z-[999999999999999999]">
         <Image src="/Fb_logo.jpg" width={60} height={60} alt="logo" />
         {isOpen ? (
           <CloseIcon closenav={() => setIsOpen(false)} />
