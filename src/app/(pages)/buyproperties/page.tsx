@@ -6,7 +6,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import axios from "axios";
 import { uri } from "@/constant";
 import { useCallback } from "react";
-
+import { useSearchParams } from "next/navigation";
 
 const RupeeIcon = () => {
   return (
@@ -58,7 +58,6 @@ const SearchIcon = () => (
     <path d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352a144 144 0 1 0 0-288 144 144 0 1 0 0 288z" />
   </svg>
 );
-
 
 const AngleDownIcon = () => {
   return (
@@ -144,6 +143,10 @@ const Page = () => {
     []
   );
 
+  const searchParams = useSearchParams();
+  const type = searchParams.get("type") || ""; // Extract "type"
+  const view = searchParams.get("view") || "";
+
   const [placeholderIndex, setPlaceholderIndex] = useState(0);
   const [buyRentValue, setBuyRentValue] = useState("Buy");
   const [bhkValue, setBhkValue] = useState("Bedrooms");
@@ -160,14 +163,11 @@ const Page = () => {
   const [filteropen, setFilterOpen] = useState(false);
 
   const [variables, setVariables] = useState({
-    bhklist : [],
-    propertytypelist : [],
-    constructionstatuslist : [],
-    postedbylist : [],
-    amenitieslist : []
-
-
-
+    bhklist: [],
+    propertytypelist: [],
+    constructionstatuslist: [],
+    postedbylist: [],
+    amenitieslist: [],
   });
 
   const getData = useCallback(async () => {
@@ -177,7 +177,9 @@ const Page = () => {
         axios.get(`${uri}getvariables`),
       ]);
 
-      setPropertiesList(propertyRes.data.payload || []);
+      setPropertiesList(
+        propertyRes.data.payload.filter((item) => item.type == type) || []
+      );
       setOriginalPropertiesList(propertyRes.data.payload || []);
 
       setVariables(variableRes.data.payload);
@@ -195,10 +197,6 @@ const Page = () => {
       setPlaceholderIndex((prevIndex) => (prevIndex + 1) % placeholders.length);
     }, 1000);
     return () => clearInterval(interval);
-  }, []);
-
-  useEffect(() => {
-    getData();
   }, []);
 
   const filterpropertylist = () => {
@@ -226,7 +224,7 @@ const Page = () => {
   }, [bhkValue, propertyValue, constructionstatusvalues]);
 
   return (
-    <div className="bg-gray-100 min-h-screen">
+    <div className="bg-gray-100 mt-[8vh] min-h-screen">
       <Header />
       <nav className="lg:hidden w-full h-[8vh] bg-[#f3701f] shadow-2xl flex items-center justify-between px-4">
         <div className="relative w-[60%]">
@@ -248,13 +246,14 @@ const Page = () => {
           selected={bhkValue}
           onSelect={setBhkValue}
         />
-        <Dropdown
-          label="Type"
-          options={variables.propertytypelist || []}
-          selected={propertyValue}
-          onSelect={setPropertyValue}
-        />
-        
+        {type == "" && (
+          <Dropdown
+            label="Type"
+            options={variables.propertytypelist || []}
+            selected={propertyValue}
+            onSelect={setPropertyValue}
+          />
+        )}
       </section>
 
       {/* Filter & Sort Buttons */}
@@ -407,16 +406,14 @@ const Page = () => {
               className="w-full border-2  border-gray-300 shadow-md rounded-xl flex items-center gap-[4%] justify-between px-[2.5%] pb-4 pt-3 bg-white"
               key={key}
             >
-              <div className="w-[30%] h-[80%] bg-yellow-300 rounded-xl"></div>
-              <div className="w-[66%] relative">
-                <span className="text-xl">{item.Societyname}</span>
-                <br />
+              <div className="w-[35%] h-full bg-yellow-300 rounded-xl">
+                <img src={item.images[0]} className="h-[15vh]" alt="" />
+              </div>
+              <div className="w-[57%] relative">
+                <span className="text-lg block">{item.Societyname}</span>
+
                 <span className="text-gray-500">{item.address}</span>
-                <div className="mt-2 flex gap-3 flex-wrap">
-                  <div className="flex gap-1">
-                    <RupeeIcon />
-                    <span className="text-sm">{item.price}</span>
-                  </div>
+                <div className="mt-1 flex gap-3">
                   <div className="flex gap-1">
                     <RulerIcon />
                     <span className="text-sm">{item.area}</span>
@@ -427,10 +424,15 @@ const Page = () => {
                     <span className="text-sm">{item.bedrooms}</span>
                   </div>
                 </div>
+                <div className="flex gap-2 mt-2">
+                  <RupeeIcon />
+                  <span className="text-sm">{item.price}</span>
+                </div>
                 {/* Highlights Section  */}
-                <div className="mt-2">
+                <div className="mt-1">
                   <span>Highlights:</span>
-                  {item.highlights?.length ? (
+                  {Array.isArray(item.highlights) &&
+                  item.highlights.length > 0 ? (
                     item.highlights.map((highlight, index) => (
                       <div key={index}>
                         <span>{highlight}</span>
@@ -440,6 +442,7 @@ const Page = () => {
                     <span>NA</span>
                   )}
                 </div>
+
                 <button className="mt-2 px-3 py-1 bg-[#FF5D00] text-white rounded text-sm">
                   View Details
                 </button>

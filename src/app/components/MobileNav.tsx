@@ -3,6 +3,8 @@ import React, { useState } from "react";
 import Image from "next/image";
 import { motion } from "framer-motion";
 import Navigationbar from "./Navigationbar";
+import { useRouter } from "next/navigation";
+
 
 const HamIcon = ({ opennav }) => {
   return (
@@ -21,7 +23,7 @@ const HamIcon = ({ opennav }) => {
   );
 };
 
-const CloseIcon = ({closenav}) => {
+const CloseIcon = ({ closenav }) => {
   return (
     <motion.svg
       xmlns="http://www.w3.org/2000/svg"
@@ -40,17 +42,22 @@ const CloseIcon = ({closenav}) => {
 
 const MobileNav = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const router = useRouter(); // Initialize router
+
 
   return (
     <>
-      <nav className="w-full h-full px-4 lg:hidden flex items-center justify-between z-[999999999999999999]">
-        <Image src="/Fb_logo.jpg" width={60} height={60} alt="logo" />
+      {/* Navbar with higher z-index */}
+      <nav className="fixed top-0 left-0 w-full h-[8vh] px-4 lg:hidden flex items-center justify-between bg-white shadow-md z-50">
+        <Image src="/Fb_logo.jpg" width={60} height={60} alt="logo" onClick={() => router.push("/") }/>
         {isOpen ? (
           <CloseIcon closenav={() => setIsOpen(false)} />
         ) : (
           <HamIcon opennav={() => setIsOpen(true)} />
         )}
       </nav>
+
+      {/* Navigationbar with lower z-index */}
       <Navigationbar isOpen={isOpen} />
     </>
   );
