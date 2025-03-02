@@ -10,6 +10,8 @@ import RecentlyListed from "./components/RecentlyListed";
 import NumberBar from "./components/NumberBar";
 import Footer from "./components/Footer";
 
+import PropertyTypes from "./components/PropertyTypes";
+
 const HomeIcon = () => {
   return (
     <svg
@@ -95,9 +97,13 @@ const Page = () => {
       <section className="mt-[4vh]">
         <RecentlyListed />
       </section>
+      <section>
+        <PropertyTypes/>
+      </section>
       <section className="mt-[4vh]">
         <NumberBar />
       </section>
+      
       <Footer/>
     </>
   );
