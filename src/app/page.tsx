@@ -8,6 +8,7 @@ import { toast } from "react-toastify";
 import Searchsection from "./components/SearchSection";
 import RecentlyListed from "./components/RecentlyListed";
 import NumberBar from "./components/NumberBar";
+import Footer from "./components/Footer";
 
 const HomeIcon = () => {
   return (
@@ -97,6 +98,7 @@ const Page = () => {
       <section className="mt-[4vh]">
         <NumberBar />
       </section>
+      <Footer/>
     </>
   );
 };
