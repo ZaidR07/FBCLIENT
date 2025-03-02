@@ -7,12 +7,20 @@ import { uri } from "@/constant";
 
 const Navigationbar = ({ isOpen }) => {
   const [expanded, setExpanded] = useState(null);
-  const [variables, setVariables] = useState({});
+  
   const router = useRouter(); // Initialize router
 
   const toggleExpand = (section) => {
     setExpanded(expanded === section ? null : section);
   };
+
+  const [variables, setVariables] = useState({
+    bhklist: [],
+    propertytypelist: [],
+    constructionstatuslist: [],
+    postedbylist: [],
+    amenitieslist: [],
+  });
 
   const handleNavigation = (path) => {
     router.push(path); // Navigate to the provided path
