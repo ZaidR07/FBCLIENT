@@ -169,47 +169,46 @@ const Page = () => {
     amenitieslist: [],
   });
 
- 
-const getData = useCallback(async () => {
-  try {
-    // Fetch properties and variables data in parallel
-    const [propertyRes, variableRes] = await Promise.all([
-      axios.get(`${uri}getproperties`),
-      axios.get(`${uri}getvariables`),
-    ]);
+  // Get query parameters on component mount and set state
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    setType(params.get("type") || "");
+    setView(params.get("view") || "");
+  }, []); // Runs once on mount
 
-    if (!propertyRes.data.payload || !variableRes.data.payload) {
-      console.error("Invalid response data");
-      return;
+  const getData = useCallback(async () => {
+    try {
+      const [propertyRes, variableRes] = await Promise.all([
+        axios.get(`${uri}getproperties`),
+        axios.get(`${uri}getvariables`),
+      ]);
+
+      if (!propertyRes.data.payload || !variableRes.data.payload) {
+        console.error("Invalid response data");
+        return;
+      }
+
+      let filteredList = propertyRes.data.payload;
+
+      console.log("Fetching with ->", { type, view });
+
+      if (type)
+        filteredList = filteredList.filter((item) => item.type === type);
+      if (view) filteredList = filteredList.filter((item) => item.for === view);
+
+      setPropertiesList(filteredList);
+      setOriginalPropertiesList(filteredList);
+      setVariables(variableRes.data.payload);
+    } catch (error) {
+      console.error("Error fetching data:", error);
     }
-
-    let filteredList = propertyRes.data.payload;
-
-    // Filter by 'type' if it's not empty
-    if (type != "") {
-      filteredList = filteredList.filter((item) => item.type == type);
-    }
-
-    // Filter by 'view' if it's not null or empty
-    if (view != "") {
-      
-      filteredList = filteredList.filter((item) => item.for == view);
-    }
-
-    // Update state
-    setPropertiesList(filteredList);
-    setOriginalPropertiesList(propertyRes.data.payload || []);
-    setVariables(variableRes.data.payload);
-
-  } catch (error) {
-    console.error("Error fetching data:", error);
-  }
-}, []);
-
+  }, [type, view]);
 
   useEffect(() => {
-    getData();
-  }, [getData]);
+    if (type !== "" || view !== "") {
+      getData();
+    }
+  }, [type, view]); // Runs when type/view change
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -434,7 +433,11 @@ const getData = useCallback(async () => {
               key={key}
             >
               <div className=" max-w-[35%] h-full bg-yellow-300 rounded-xl">
-                <img src={item.images[0]} className="h-[15vh] min-w-[30vw] object-cover" alt="" />
+                <img
+                  src={item.images[0]}
+                  className="h-[15vh] min-w-[30vw] object-cover"
+                  alt=""
+                />
               </div>
               <div className="w-[57%] relative">
                 <span className="text-lg block">{item.Societyname}</span>
