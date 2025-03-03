@@ -19,7 +19,7 @@ const RecentlyListed = () => {
   }, []);
 
   return (
-    <div className="mt-[10vh] mx-2 pt-6 text-xl px-[3%] gap-2 bg-[#fef6f0] shadow-inner rounded-2xl">
+    <div className="mt-[10vh] mx-2 py-6 text-xl px-[3%] gap-2 bg-[#fef6f0] shadow-inner rounded-2xl">
       <h1 className="text-[#FF5D00] text-center">Recently Listed</h1>
 
       {/* For Sale Section */}
@@ -31,7 +31,7 @@ const RecentlyListed = () => {
             .map((property, index) => (
               <div
                 key={index}
-                className="bg-transparent w-[40%] px-2 py-2 relative rounded-lg border-2 border-[#facfb6]"
+                className="bg-transparent w-[40%] px-2 py-2 relative rounded-lg border-t-[1px] border-[#fa9c66] shadow-md shadow-[#fa9c66]"
               >
                 <div className="relative">
                   <img
@@ -75,7 +75,7 @@ const RecentlyListed = () => {
             .map((property, index) => (
               <div
                 key={index}
-                className="bg-transparent min-w-[40%] px-2 py-2 relative rounded-lg border border-[#fbd1b9]"
+                className="bg-transparent min-w-[40%] px-2 py-2 relative rounded-lg border-t-[1px] border-[#fa9c66] shadow-md shadow-[#fa9c66]"
               >
                 <div className="relative">
                   <img
