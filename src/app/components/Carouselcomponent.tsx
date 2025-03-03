@@ -1,19 +1,9 @@
 "use client";
-import { useState, useEffect } from "react";
 import { Carousel } from "react-responsive-carousel";
 import "react-responsive-carousel/lib/styles/carousel.min.css";
+import Image from "next/image";
 
-const CarouselComponent = ({ companyInfo }) => {
-  const [carouselImages, setCarouselImages] = useState([]);
-
-  useEffect(() => {
-    if (companyInfo?.carousel?.length > 0) {
-      setCarouselImages(companyInfo.carousel);
-    }
-  }, [companyInfo]);
-
-  if (carouselImages.length === 0) return null; // Prevent rendering empty carousel
-
+const CarouselComponent = () => {
   return (
     <Carousel
       autoPlay
@@ -24,39 +14,44 @@ const CarouselComponent = ({ companyInfo }) => {
       showArrows={false}
       stopOnHover
       showIndicators={false}
-      className=""
+      className="w-full"
     >
-      
-        <div
-         
-          className="rounded-md"
-        >
-          <img
-            src="/1740719627292.png"
-            className="object-cover rounded-md"
-          />
-        </div>
+      {/* Image 1 */}
+      <div className="rounded-md">
+        <Image
+          src="/1740719627292.png"
+          alt="Carousel Image 1"
+          layout="responsive"
+          width={1920} // ✅ Ensures full width
+          height={600} // ✅ Adjust height as needed
+          className="object-cover rounded-md"
+          priority
+        />
+      </div>
 
-        <div
-         
-          className="rounded-md"
-        >
-          <img
-            src="/1740719627309.png"
-            className="object-cover rounded-md"
-          />
-        </div>
+      {/* Image 2 */}
+      <div className="rounded-md">
+        <Image
+          src="/1740719627309.png"
+          alt="Carousel Image 2"
+          layout="responsive"
+          width={1920}
+          height={600}
+          className="object-cover rounded-md"
+        />
+      </div>
 
-        <div
-         
-          className="rounded-md"
-        >
-          <img
-            src="/1740719627319.jpeg"
-            className="object-cover rounded-md"
-          />
-        </div>
-      
+      {/* Image 3 */}
+      <div className="rounded-md">
+        <Image
+          src="/1740719627319.jpeg"
+          alt="Carousel Image 3"
+          layout="responsive"
+          width={1920}
+          height={600}
+          className="object-cover rounded-md"
+        />
+      </div>
     </Carousel>
   );
 };

@@ -64,7 +64,7 @@ const Searchsection = () => {
       alert("Please enter a search term!");
       return;
     }
-    router.push(`/${propertyType}/properties?query=${encodeURIComponent(searchText)}`);
+    router.push(`/${propertyType}properties?query=${encodeURIComponent(searchText)}`);
   };
 
   return (

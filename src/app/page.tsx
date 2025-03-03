@@ -12,6 +12,9 @@ import Footer from "./components/Footer";
 
 import PropertyTypes from "./components/PropertyTypes";
 
+import { useRouter } from "next/navigation";
+
+
 const HomeIcon = () => {
   return (
     <svg
@@ -50,6 +53,9 @@ const KeyIcon = () => (
 const Page = () => {
   const [companyInfo, setCompanyInfo] = useState({ carousel: [] });
 
+  const router = useRouter(); // Initialize router
+
+
   const handleLoad = async () => {
     try {
       const response = await axios.get(`${uri}getcompanyinfo`);
@@ -75,15 +81,15 @@ const Page = () => {
       <Header />
       <nav className="lg:hidden w-full mt-[8vh] h-[6vh] bg-[#FF5D00] shadow-2xl flex items-center justify-between px-4">
         <div className="flex gap-4">
-          <button className="flex gap-1 items-center px-2 py-1 bg-white text-[#FF5D00] rounded-xl">
+          <button onClick={() => router.push("/buyproperties?view=Sale")} className="flex gap-1 items-center px-2 py-1 bg-white text-[#FF5D00] rounded-xl">
             <HomeIcon />
             <span className="text-sm">Buy</span>
           </button>
-          <button className="flex gap-1 items-center px-2 py-1 bg-white text-[#FF5D00] rounded-xl">
+          <button onClick={() => router.push("/buyproperties?view=Rent")} className="flex gap-1 items-center px-2 py-1 bg-white text-[#FF5D00] rounded-xl">
             <KeyIcon />
             <span className="text-sm">Rent</span>
           </button>
-          <button className="flex gap-1 items-center px-2 py-1 bg-white text-[#FF5D00] rounded-xl">
+          <button onClick={() => router.push("/buyproperties?view=Pg")} className="flex gap-1 items-center px-2 py-1 bg-white text-[#FF5D00] rounded-xl">
             <BedIcon />
             <span className="text-sm">PG</span>
           </button>

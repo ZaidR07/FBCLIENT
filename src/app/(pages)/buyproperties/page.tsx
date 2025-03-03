@@ -1,6 +1,6 @@
 "use client";
 
-import { Suspense , useState, useEffect, useMemo } from "react";
+import { Suspense, useState, useEffect, useMemo } from "react";
 import Header from "@/app/components/Header";
 import { motion, AnimatePresence } from "framer-motion";
 import axios from "axios";
@@ -146,8 +146,6 @@ const Page = () => {
   const [type, setType] = useState("");
   const [view, setView] = useState("");
 
-  
-
   const [placeholderIndex, setPlaceholderIndex] = useState(0);
   const [buyRentValue, setBuyRentValue] = useState("Buy");
   const [bhkValue, setBhkValue] = useState("Bedrooms");
@@ -171,23 +169,43 @@ const Page = () => {
     amenitieslist: [],
   });
 
-  const getData = useCallback(async () => {
-    try {
-      const [propertyRes, variableRes] = await Promise.all([
-        axios.get(`${uri}getproperties`),
-        axios.get(`${uri}getvariables`),
-      ]);
+ 
+const getData = useCallback(async () => {
+  try {
+    // Fetch properties and variables data in parallel
+    const [propertyRes, variableRes] = await Promise.all([
+      axios.get(`${uri}getproperties`),
+      axios.get(`${uri}getvariables`),
+    ]);
 
-      setPropertiesList(
-        propertyRes.data.payload.filter((item) => item.type == type) || []
-      );
-      setOriginalPropertiesList(propertyRes.data.payload || []);
-
-      setVariables(variableRes.data.payload);
-    } catch (error) {
-      console.error("Error fetching data:", error);
+    if (!propertyRes.data.payload || !variableRes.data.payload) {
+      console.error("Invalid response data");
+      return;
     }
-  }, []);
+
+    let filteredList = propertyRes.data.payload;
+
+    // Filter by 'type' if it's not empty
+    if (type != "") {
+      filteredList = filteredList.filter((item) => item.type == type);
+    }
+
+    // Filter by 'view' if it's not null or empty
+    if (view != "") {
+      
+      filteredList = filteredList.filter((item) => item.for == view);
+    }
+
+    // Update state
+    setPropertiesList(filteredList);
+    setOriginalPropertiesList(propertyRes.data.payload || []);
+    setVariables(variableRes.data.payload);
+
+  } catch (error) {
+    console.error("Error fetching data:", error);
+  }
+}, []);
+
 
   useEffect(() => {
     getData();
@@ -228,10 +246,12 @@ const Page = () => {
     <div className="bg-gray-100 mt-[8vh] min-h-screen">
       <Header />
       <Suspense fallback={<div>Loading...</div>}>
-        <QueryParamsHandler onParams={({ type, view }) => {
-          setType(type);
-          setView(view);
-        }} />
+        <QueryParamsHandler
+          onParams={({ type, view }) => {
+            setType(type);
+            setView(view);
+          }}
+        />
       </Suspense>
       <nav className="lg:hidden w-full h-[8vh] bg-[#f3701f] shadow-2xl flex items-center justify-between px-4">
         <div className="relative w-[60%]">
@@ -413,8 +433,8 @@ const Page = () => {
               className="w-full border-2  border-gray-300 shadow-md rounded-xl flex items-center gap-[4%] justify-between px-[2.5%] pb-4 pt-3 bg-white"
               key={key}
             >
-              <div className="w-[35%] h-full bg-yellow-300 rounded-xl">
-                <img src={item.images[0]} className="h-[15vh]" alt="" />
+              <div className=" max-w-[35%] h-full bg-yellow-300 rounded-xl">
+                <img src={item.images[0]} className="h-[15vh] min-w-[30vw] object-cover" alt="" />
               </div>
               <div className="w-[57%] relative">
                 <span className="text-lg block">{item.Societyname}</span>

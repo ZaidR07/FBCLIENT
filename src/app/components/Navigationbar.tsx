@@ -70,7 +70,7 @@ const Navigationbar = ({ isOpen }) => {
                   <li
                     key={index}
                     className="text-sm cursor-pointer hover:text-gray-300"
-                    onClick={() => handleNavigation(`/buyproperties?type=${item}&view=buy`)}
+                    onClick={() => handleNavigation(`/buyproperties?type=${item}&view=Sale`)}
                   >
                     {item}
                   </li>
@@ -101,7 +101,7 @@ const Navigationbar = ({ isOpen }) => {
                   <li
                     key={index}
                     className="text-sm cursor-pointer hover:text-gray-300"
-                    onClick={() => handleNavigation(`/buyproperties?type=${item}&view=rent`)}
+                    onClick={() => handleNavigation(`/buyproperties?type=${item}&view=Rent`)}
                   >
                     {item}
                   </li>
