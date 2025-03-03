@@ -97,7 +97,8 @@ const Page = () => {
         <button className="text-white text-xl font-bold">Sign Up</button>
       </nav>
       <section className="mt-1 px-[1%] rounded-md">
-        <CarouselComponent companyInfo={companyInfo} />
+        {/* <CarouselComponent companyInfo={companyInfo} /> */}
+        <CarouselComponent/>
         <Searchsection />
       </section>
       <section className="mt-[4vh]">
