@@ -7,7 +7,7 @@ const PropertyTypes = () => {
   useEffect(() => {}, []);
 
   return (
-    <div className="mt-[4vh] px-[4%] overflow-x-auto flex gap-3 pb-2 scrollbar-hide">
+    <div className="mt-[6vh] px-[4%] overflow-x-auto flex gap-3 pb-2 scrollbar-hide">
       <div className="flex gap-4 w-max">
         {/* Card 1 */}
         <div className="bg-[#CCEFEA] pt-28 relative rounded-lg min-w-[180px]">

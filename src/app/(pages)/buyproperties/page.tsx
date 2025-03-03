@@ -145,6 +145,7 @@ const Page = () => {
 
   const [type, setType] = useState("");
   const [view, setView] = useState("");
+  const [search, setSearch] = useState("");
 
   const [placeholderIndex, setPlaceholderIndex] = useState(0);
   const [buyRentValue, setBuyRentValue] = useState("Buy");
@@ -174,8 +175,35 @@ const Page = () => {
     const params = new URLSearchParams(window.location.search);
     setType(params.get("type") || "");
     setView(params.get("view") || "");
+    setSearch(params.get("search") || "");
   }, []); // Runs once on mount
 
+  // Jaro-Winkler Similarity function
+  const jaroWinkler = (s1, s2) => {
+    const m = [...s1].filter((c) => s2.includes(c)).length;
+    if (m === 0) return 0;
+
+    const transpositions =
+      [...s1].reduce((acc, c, i) => acc + (c !== s2[i] ? 1 : 0), 0) / 2;
+    const prefixLength = Math.min(
+      4,
+      [...s1].findIndex((c, i) => c !== s2[i]) + 1
+    );
+
+    const jaro = (m / s1.length + m / s2.length + (m - transpositions) / m) / 3;
+    return jaro + prefixLength * 0.1 * (1 - jaro);
+  };
+
+  // Check if similarity score is 70% or more
+  const isSimilar = (input, target) => {
+    if (!input || !target) return false;
+    input = input.toLowerCase();
+    target = target.toLowerCase();
+    const similarity = jaroWinkler(input, target) * 100; // Convert to percentage
+    return similarity >= 70;
+  };
+
+  // Main function to fetch data
   const getData = useCallback(async () => {
     try {
       const [propertyRes, variableRes] = await Promise.all([
@@ -190,11 +218,26 @@ const Page = () => {
 
       let filteredList = propertyRes.data.payload;
 
-      console.log("Fetching with ->", { type, view });
-
       if (type)
         filteredList = filteredList.filter((item) => item.type === type);
       if (view) filteredList = filteredList.filter((item) => item.for === view);
+
+      if (search) {
+        const searchLower = search.toLowerCase();
+
+        filteredList = filteredList.filter((item) => {
+          const location = item.location?.toLowerCase() || "";
+          const societyName = item.Societyname?.toLowerCase() || "";
+
+          // Matches if location OR society name has 70% similarity OR contains search query
+          return (
+            location.includes(searchLower) ||
+            societyName.includes(searchLower) ||
+            isSimilar(location, searchLower) ||
+            isSimilar(societyName, searchLower)
+          );
+        });
+      }
 
       setPropertiesList(filteredList);
       setOriginalPropertiesList(filteredList);
@@ -202,13 +245,13 @@ const Page = () => {
     } catch (error) {
       console.error("Error fetching data:", error);
     }
-  }, [type, view]);
+  }, [type, view, search]);
 
   useEffect(() => {
-    if (type !== "" || view !== "") {
+    if (type != "" || view != "" || search != "") {
       getData();
     }
-  }, [type, view]); // Runs when type/view change
+  }, [type, view, search]); // Runs when type/view change
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -246,9 +289,10 @@ const Page = () => {
       <Header />
       <Suspense fallback={<div>Loading...</div>}>
         <QueryParamsHandler
-          onParams={({ type, view }) => {
+          onParams={({ type, view, search }) => {
             setType(type);
             setView(view);
+            setSearch(search);
           }}
         />
       </Suspense>
