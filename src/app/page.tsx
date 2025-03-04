@@ -14,6 +14,10 @@ import PropertyTypes from "./components/PropertyTypes";
 
 import { useRouter } from "next/navigation";
 
+import Register from "./components/Register";
+
+import FeaturedBrokers from "./components/FeaturedBrokers";
+
 
 const HomeIcon = () => {
   return (
@@ -52,6 +56,8 @@ const KeyIcon = () => (
 
 const Page = () => {
   const [companyInfo, setCompanyInfo] = useState({ carousel: [] });
+
+  const [ registeropen , setRegisterOpen ] = useState(false);
 
   const router = useRouter(); // Initialize router
 
@@ -94,7 +100,7 @@ const Page = () => {
             <span className="text-sm">PG</span>
           </button>
         </div>
-        <button className="text-white text-xl font-bold">Sign Up</button>
+        <button onClick={() => setRegisterOpen(true)} className="text-white text-xl font-bold">Sign Up</button>
       </nav>
       <section className="mt-1 px-[1%] rounded-md">
         {/* <CarouselComponent companyInfo={companyInfo} /> */}
@@ -110,6 +116,9 @@ const Page = () => {
       <section className="mt-[4vh]">
         <NumberBar />
       </section>
+      <Register registeropen = {registeropen} setRegisterOpen = {setRegisterOpen}/>
+
+      <FeaturedBrokers/>
       
       <Footer/>
     </>

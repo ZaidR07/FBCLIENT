@@ -247,6 +247,7 @@ const Page = () => {
     }
   }, [type, view, search]);
 
+  
   useEffect(() => {
     if (type != "" || view != "" || search != "") {
       getData();
