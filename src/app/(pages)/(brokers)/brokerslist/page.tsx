@@ -6,6 +6,7 @@ import { uri } from "@/constant";
 import axios from "axios";
 import { useRouter } from "next/navigation";
 
+
 const Page = () => {
   const [location, setLocation] = useState("");
   const [brokerlist, setBrokerlist] = useState([]);
@@ -50,10 +51,7 @@ const Page = () => {
           </div>
         ) : brokerlist.length > 0 ? (
           brokerlist.map((item, index) => (
-            <div
-              key={index}
-              className="w-full py-4 bg-[#fff] shadow-md px-4 rounded-md "
-            >
+            <div key={index} className="w-full py-4 bg-[#fff] shadow-md px-4 rounded-md ">
               {/* Profile Section  */}
               <div className="gap-1 flex w-[100%]  flex-col items-center">
                 <img
@@ -65,13 +63,11 @@ const Page = () => {
                 <span className="text-sm text-gray-400">
                   {item.companyname}
                 </span>
-                <button
-                  onClick={() => router.push(`/singlebroker?id=${broker_id}`)}
-                  className="text-white bg-[#FF5D00] px-4 py-1 rounded-md"
-                >
-                  Contact
-                </button>
+                <button onClick = {() =>
+                //@ts-ignore
+                router.push(`/singlebroker?id=${brokerId}`)}className="text-white bg-[#FF5D00] px-4 py-1 rounded-md">Contact</button>
               </div>
+
             </div>
           ))
         ) : (
