@@ -120,7 +120,7 @@ const Navigationbar = ({ isOpen }) => {
         </li>
         <li
           className="text-lg border-b-[1px] cursor-pointer hover:text-gray-300"
-          onClick={() => handleNavigation("/find-agent")}
+          onClick={() => handleNavigation("/brokerslist")}
         >
           👨‍💼 Find an Agent
         </li>

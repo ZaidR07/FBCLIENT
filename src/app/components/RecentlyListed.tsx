@@ -9,7 +9,7 @@ const RecentlyListed = () => {
   const handleload = async () => {
     const response = await axios.get(`${uri}getproperties`);
 
-    console.log(response.data.payload);
+    
 
     setPropertiesList(response.data.payload);
   };
