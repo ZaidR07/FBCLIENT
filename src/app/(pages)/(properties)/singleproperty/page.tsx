@@ -1,10 +1,10 @@
 "use client";
 import { useSearchParams, useRouter } from "next/navigation";
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback, Suspense } from "react";
 import { uri } from "@/constant";
 import axios from "axios";
 
-const SingleProperty = () => {
+const PropertyDetails = () => {
   const searchParams = useSearchParams();
   const property_id = searchParams.get("id");
   const router = useRouter();
@@ -16,9 +16,7 @@ const SingleProperty = () => {
     try {
       setLoading(true);
       const response = await axios.get(`${uri}getspecificproperty`, {
-        params: {
-          property_id,
-        },
+        params: { property_id },
       });
 
       if (response.data.payload) {
@@ -39,10 +37,16 @@ const SingleProperty = () => {
 
   return (
     <div>
-      <nav className="w-full h-[8vh] shadow-lg flex items-center gap-2 px-3 cursor-pointer" onClick={() => router.back()}>
+      {/* Back Button */}
+      <nav
+        className="w-full h-[8vh] shadow-lg flex items-center gap-2 px-3 cursor-pointer"
+        onClick={() => router.back()}
+      >
         <span className="text-3xl font-extrabold text-[#f97316]">&larr;</span>
         <span className="text-[#f97316] text-2xl mt-2">Back</span>
       </nav>
+
+      {/* Loading Spinner */}
       {loading ? (
         <div className="flex justify-center items-center py-6">
           <span className="animate-spin inline-block w-8 h-8 border-4 border-t-transparent border-orange-500 rounded-full"></span>
@@ -56,6 +60,15 @@ const SingleProperty = () => {
         <p>No property details found.</p>
       )}
     </div>
+  );
+};
+
+// ✅ Wrap in Suspense
+const SingleProperty = () => {
+  return (
+    <Suspense fallback={<div className="text-center py-6">Loading...</div>}>
+      <PropertyDetails />
+    </Suspense>
   );
 };
 
