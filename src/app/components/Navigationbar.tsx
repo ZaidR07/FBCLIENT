@@ -132,7 +132,7 @@ const Navigationbar = ({ isOpen }) => {
         </li>
         <li
           className="text-lg border-b-[1px] cursor-pointer hover:text-gray-300"
-          onClick={() => handleNavigation("/help")}
+          onClick={() => handleNavigation("/contact")}
         >
           🆘 Help
         </li>

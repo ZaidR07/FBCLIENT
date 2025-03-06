@@ -68,10 +68,10 @@ const Searchsection = () => {
   };
 
   return (
-    <div className="w-[85%] bg-white shadow-xl px-3 py-2 rounded-xl -mt-6 z-[9999999] absolute ml-[6.5%] flex items-center gap-2">
+    <div className="w-[85%] lg:w-[60%] lg:ml-[20%] bg-white shadow-xl px-6 py-2 lg:py-4 rounded-xl -mt-[3vh] lg:-mt-[18vh] z-[9999999] absolute ml-[6.5%] flex items-center gap-2">
       {/* Dropdown for Property Type */}
       <select 
-        className="p-1 border rounded-md text-gray-600 bg-white text-xs" 
+        className="p-1 lg:p-2 border lg:border-2 rounded-md text-gray-600 bg-white text-xs lg:text-base" 
         value={propertyType} 
         onChange={(e) => setPropertyType(e.target.value)}
       >
@@ -83,7 +83,7 @@ const Searchsection = () => {
       {/* Animated Input Field */}
       <motion.input
         key={isFocused ? "fixed-placeholder" : placeholderIndex} // Prevent animation restart when typing
-        className="bg-transparent outline-none text-sm w-full text-gray-600"
+        className="bg-transparent outline-none text-sm lg:text-lg w-full lg:pl-6 text-gray-600"
         type="text"
         value={searchText}
         onChange={(e) => setSearchText(e.target.value)}
@@ -96,12 +96,12 @@ const Searchsection = () => {
       />
 
       {/* Voice Input Button */}
-      <button onClick={startListening} className="p-2 bg-orange-100 rounded-full">
+      <button onClick={startListening} className="p-2 lg:p-4 bg-orange-100 rounded-full lg:mr-3">
         <MicroPhone />
       </button>
 
       {/* Search Button */}
-      <button onClick={handleSearch} className="px-2 py-1 bg-[#FF5D00] rounded-md text-xs text-white ">
+      <button onClick={handleSearch} className="px-2 lg:px-6 lg:py-2 py-1 bg-[#FF5D00] rounded-md text-xs lg:text-base text-white ">
         Search
       </button>
     </div>

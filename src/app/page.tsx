@@ -85,7 +85,7 @@ const Page = () => {
   return (
     <>
       <Header />
-      <nav className="lg:hidden w-full mt-[8vh] h-[6vh] bg-[#FF5D00] shadow-2xl flex items-center justify-between px-4">
+      <nav className="lg:hidden w-full mt-[8vh]  h-[6vh] bg-[#FF5D00] shadow-2xl flex items-center justify-between px-4">
         <div className="flex gap-4">
           <button onClick={() => router.push("/buyproperties?view=Sale")} className="flex gap-1 items-center px-2 py-1 bg-white text-[#FF5D00] rounded-xl">
             <HomeIcon />
@@ -102,7 +102,7 @@ const Page = () => {
         </div>
         <button onClick={() => setRegisterOpen(true)} className="text-white text-xl font-bold">Sign Up</button>
       </nav>
-      <section className="mt-1 px-[1%] rounded-md">
+      <section className="mt-1 lg:mt-[16vh] px-[1%] rounded-md">
         {/* <CarouselComponent companyInfo={companyInfo} /> */}
         <CarouselComponent/>
         <Searchsection />
