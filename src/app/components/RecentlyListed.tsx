@@ -2,14 +2,15 @@ import { uri } from "@/constant";
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { priceconverter } from "@/utils/priceconverter";
+import { useRouter } from "next/navigation";
 
 const RecentlyListed = () => {
   const [propertieslist, setPropertiesList] = useState([]);
 
+  const router = useRouter();
+
   const handleload = async () => {
     const response = await axios.get(`${uri}getproperties`);
-
-    
 
     setPropertiesList(response.data.payload);
   };
@@ -30,6 +31,9 @@ const RecentlyListed = () => {
             .filter((property) => property.for === "Sale")
             .map((property, index) => (
               <div
+                onClick={() =>
+                  router.push(`singleproperty?id=${property.property_id}`)
+                }
                 key={index}
                 className="bg-transparent min-w-[40%] px-2 py-2 relative rounded-lg border-t-[1px] border-[#fa9c66] shadow-md shadow-[#fa9c66]"
               >
@@ -74,6 +78,47 @@ const RecentlyListed = () => {
             .filter((property) => property.for === "Sale")
             .map((property, index) => (
               <div
+                key={index}
+                className="bg-transparent min-w-[40%] px-2 py-2 relative rounded-lg border-t-[1px] border-[#fa9c66] shadow-md shadow-[#fa9c66]"
+              >
+                <div className="relative">
+                  <img
+                    src="/rent.png"
+                    alt="Property Image"
+                    className="rounded-lg w-full h-[110px] object-cover"
+                  />
+                  <div className="absolute bottom-2 left-3 rounded-lg p-1 text-sm bg-orange-100 text-[#FF5D00]">
+                    {priceconverter(property.price)}
+                  </div>
+                </div>
+                <span className="text-xs">{property.bedrooms}</span>{" "}
+                <span className="text-xs">{property.type}</span>{" "}
+                <span className="text-xs text-wrap">
+                  {property.floor} Floor
+                </span>
+                <br />
+                <span className="text-xs block">
+                  {property.Societyname
+                    ? property.Societyname.length > 18
+                      ? property.Societyname.substring(0, 18) + "..."
+                      : property.Societyname
+                    : "N/A"}
+                </span>
+                <span className="text-xs block">{property.location}</span>
+              </div>
+            ))}
+      </div>
+      {/* For Rent Section */}
+      <h2 className="text-lg mt-2 ml-2">PG</h2>
+      <div className="overflow-x-auto  whitespace-nowrap flex gap-3 pb-2 scrollbar-hide">
+        {propertieslist.length > 0 &&
+          propertieslist
+            .filter((property) => property.for === "Sale")
+            .map((property, index) => (
+              <div
+                onClick={() =>
+                  router.push(`singleproperty?id=${property.property_id}`)
+                }
                 key={index}
                 className="bg-transparent min-w-[40%] px-2 py-2 relative rounded-lg border-t-[1px] border-[#fa9c66] shadow-md shadow-[#fa9c66]"
               >

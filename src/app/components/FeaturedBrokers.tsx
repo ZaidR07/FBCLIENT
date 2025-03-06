@@ -37,7 +37,7 @@ const FeaturedBrokers = () => {
     <div className="w-full bg-[#fef6f0] pb-6">
       {/* Header */}
       <div className="mt-[2vh] py-6 mx-2 text-xl px-[3%] shadow-inner rounded-2xl flex items-center">
-        <MedalIcon className="text-[#f3701f]" size={50} strokeWidth={2} />
+        <MedalIcon className="text-[rgb(243,112,31)]" size={50} strokeWidth={2} />
         <div className="ml-4">
           <h1 className="font-semibold text-xl">Featured Brokers</h1>
           <span className="text-sm text-gray-600">
