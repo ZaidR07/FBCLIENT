@@ -1,3 +1,5 @@
+import { useRouter } from "next/navigation";
+
 const WhatsappIcon = () => {
   return (
     <svg
@@ -23,6 +25,7 @@ const InstagramIcon = () => {
     </svg>
   );
 };
+
 
 const FacebookIcon = () => {
   return (
@@ -51,29 +54,30 @@ const YoutubeIcon = () => {
 };
 
 const Footer = () => {
+  const router = useRouter();
   return (
     <div className="bg-[#FF5D00] text-white pb-4 pt-[4vh]">
-      <div className="flex justify-around w-full ">
+      <div className="flex justify-between w-full px-[5%]">
         <section>
-          <h1 className="text-lg text-[#fff]">Quick Links</h1>
-          <ul className="hover:cursor-pointer text-sm">
-            <li>Buy Properties</li>
-            <li>Rent Properties</li>
-            <li>Find an Agent</li>
-            <li>Find PG</li>
+          <h1 className="text-lg lg:text-2xl text-[#fff]">Quick Links</h1>
+          <ul className="hover:cursor-pointer text-sm lg:text-lg lg:mt-3">
+            <li onClick={() => router.push("/buyproperties?view=Sale")}>Buy Properties</li>
+            <li onClick={() => router.push("/buyproperties?view=Rent")}>Rent Properties</li>
+            <li onClick={() => router.push("/brokerslist")}>Find an Agent</li>
+            <li onClick={() => router.push("/buyproperties?view=PG")}>Find PG</li>
           </ul>
         </section>
         <section>
-          <h1 className="text-lg text-[#fff]">Company</h1>
-          <ul className="hover:cursor-pointer flex flex-col text-sm">
-            <li>About us</li>
-            <li>Contact us</li>
-            <li>Team Info</li>
+          <h1 className="text-lg lg:text-2xl text-[#fff]">Company</h1>
+          <ul className="hover:cursor-pointer flex flex-col text-sm lg:text-lg lg:mt-3">
+            <li onClick={() => router.push("/about")}>About us</li>
+            <li onClick={() => router.push("/contact")}>Contact us</li>
+            <li onClick={() => router.push("/about")}>Team Info</li>
           </ul>
         </section>
         <section>
-          <h1 className="text-lg text-[#fff]">Social Media</h1>
-          <ul className="hover:cursor-pointer text-sm">
+          <h1 className="text-lg lg:text-2xl text-[#fff]">Social Media</h1>
+          <ul className="hover:cursor-pointer text-sm lg:text-lg lg:mt-3">
             <li className="flex">
               <WhatsappIcon />
               &nbsp;&nbsp;Whatsapp
@@ -94,12 +98,12 @@ const Footer = () => {
         </section>
       </div>
       <section className="px-[5%] mt-6">
-        <h1 className="text-xl border-b-2  inline-block mb-2">Company Moto</h1><br />
+        <h1 className="text-xl lg:text-2xl border-b-2  inline-block mb-2">Company Moto</h1><br />
         
-        <span >Lorem ipsum dolor sit amet consectetur adipisicing elit. Rem odit quas dicta debitis perferendis nam, ex iure error fugit. Laborum, at? Adipisci nesciunt cupiditate, dolorem dolores qui porro repellat, incidunt veritatis impedit, voluptates soluta vitae labore explicabo deleniti. Sequi rerum labore totam, doloremque ducimus, quo eaque est nostrum dignissimos, asperiores maiores tempora qui itaque vero cupiditate beatae animi ullam eveniet.</span>
+        <span className="lg:text-lg ">Lorem ipsum dolor sit amet consectetur adipisicing elit. Rem odit quas dicta debitis perferendis nam, ex iure error fugit. Laborum, at? Adipisci nesciunt cupiditate, dolorem dolores qui porro repellat, incidunt veritatis impedit, voluptates soluta vitae labore explicabo deleniti. Sequi rerum labore totam, doloremque ducimus, quo eaque est nostrum dignissimos, asperiores maiores tempora qui itaque vero cupiditate beatae animi ullam eveniet.</span>
       </section>
       <section>
-        <p  className="text-center mt-6">@T-REX Infotech</p>
+        <p  className="text-center lg:text-xl mt-6 md:mt-8 lg:mt-10 ">@T-REX Infotech</p>
       </section>
     </div>
   );

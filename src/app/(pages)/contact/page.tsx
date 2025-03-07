@@ -2,8 +2,13 @@
 import { useState } from "react";
 import Image from "next/image";
 import { WhatsappIcon, PhoneIcon } from "@/app/Icons";
+import { useRouter } from "next/navigation";
+
 
 const ContactUs = () => {
+
+  const router = useRouter();
+
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -22,15 +27,24 @@ const ContactUs = () => {
   };
 
   return (
-    <div className="min-h-screen flex flex-col lg:flex-row gap-4 items-center lg:justify-center pt-[8vh] bg-gray-100 px-4 relative">
+    <>
+      <nav
+        className="w-full h-[8vh] lg:h-[10vh] shadow-lg lg:shadow-2xl flex items-center gap-2 px-3 cursor-pointer"
+        onClick={() => router.back()}
+      >
+        <span className="text-3xl lg:text-4xl font-extrabold text-[#f97316]">&larr;</span>
+        <span className="text-[#f97316] text-2xl lg:text-3xl mt-2">Back</span>
+      </nav>
+      <div className="min-h-screen flex flex-col lg:flex-row gap-4 items-center lg:justify-center  bg-gray-100 px-4 relative">
+      
       {/* Background Graphic */}
 
-      <div className="bg-white shadow-lg rounded-lg p-6 max-w-lg w-full relative z-10">
+      <div className="bg-white mt-4 lg:-mt-12 shadow-lg rounded-lg px-6 py-4 max-w-lg w-full relative z-10">
         <div className="flex justify-center ">
           <Image
             src="/envelope1.png"
             alt="Contact Graphic"
-            width={340}
+            width={300}
             height={100}
           />
         </div>
@@ -100,7 +114,7 @@ const ContactUs = () => {
         </div>
       </div>
       
-      <div  className="lg:hidden absolute bottom-16 right-10 bg-green-500 text-white p-4 lg:p-4 rounded-full shadow-lg cursor-pointer flex items-center gap-2 hover:bg-green-600 transition">
+      <div  className="lg:hidden absolute bottom-32 right-10 bg-green-500 text-white p-4 lg:p-4 rounded-full shadow-lg cursor-pointer flex items-center gap-2 hover:bg-green-600 transition">
           <a
             href="https://wa.me/1234567890"
             target="_blank"
@@ -109,7 +123,7 @@ const ContactUs = () => {
             <WhatsappIcon width={28} fill={"#fff"} />
           </a>
         </div>
-      <div className="lg:hidden absolute bottom-16 right-28 bg-blue-500 mt-4 text-white p-4 rounded-full shadow-lg cursor-pointer flex items-center gap-2 hover:bg-blue-600 transition">
+      <div className="lg:hidden absolute bottom-32 right-28 bg-blue-500 mt-4 text-white p-4 rounded-full shadow-lg cursor-pointer flex items-center gap-2 hover:bg-blue-600 transition">
         <a
           href="tel:+1234567890" // Dial the phone number when clicked
         >
@@ -117,6 +131,8 @@ const ContactUs = () => {
         </a>
       </div>
     </div>
+    </>
+    
   );
 };
 
