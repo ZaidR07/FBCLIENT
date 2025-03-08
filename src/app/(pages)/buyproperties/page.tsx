@@ -385,7 +385,7 @@ const Page = () => {
             Reset
           </button>
           <button
-            onClick={() => { handleFilter ; setFilterOpen(false)}}
+            onClick={() => { handleFilter() ; setFilterOpen(false)}}
             className="bg-[#f3701f] py-2 px-4 rounded-xl text-white"
           >
             Apply Filters
