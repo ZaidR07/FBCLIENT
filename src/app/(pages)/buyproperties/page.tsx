@@ -32,7 +32,7 @@ const Dropdown = ({ label, options, selected, onSelect }) => {
       <AnimatePresence>
         {isOpen && (
           <motion.ul
-            className="absolute min-w-[100%] bg-white border-2 border-gray-300 mt-1 rounded-lg shadow-lg z-10"
+            className="absolute min-w-[100%] bg-white border-2 border-gray-300 mt-1 rounded-lg shadow-lg z-40"
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -10 }}
@@ -56,6 +56,77 @@ const Dropdown = ({ label, options, selected, onSelect }) => {
   );
 };
 
+const PriceDropdown = ({ onApply }) => {
+  const [isOpen, setIsOpen] = useState(false);
+  const [minPrice, setMinPrice] = useState(0); // State for minimum price
+  const [maxPrice, setMaxPrice] = useState(1000000000); // State for maximum price
+
+  return (
+    <div className="relative">
+      <button
+        className="border-2 border-gray-300 bg-white rounded-lg px-2 py-2 min-w-[15%] text-left text-gray-700 focus:ring-2 focus:ring-[#f3701f] flex justify-between items-center"
+        onClick={() => setIsOpen(!isOpen)}
+      >
+        Price
+        <span className="ml-2">▼</span>
+      </button>
+      <AnimatePresence>
+        {isOpen && (
+          <motion.div
+            className="absolute min-w-[200px] bg-white border-2 border-gray-300 mt-1 rounded-lg shadow-lg z-30 p-4"
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -10 }}
+          >
+            <div className="flex flex-col gap-4">
+              {/* Min Price Input */}
+              <div className="flex flex-col gap-2">
+                <label htmlFor="minPrice" className="text-sm font-medium">
+                  Min Price
+                </label>
+                <input
+                  type="number"
+                  id="minPrice"
+                  value={minPrice}
+                  onChange={(e) => setMinPrice(Number(e.target.value))}
+                  className="border p-2 rounded-lg"
+                  placeholder="Min Price"
+                />
+              </div>
+
+              {/* Max Price Input */}
+              <div className="flex flex-col gap-2">
+                <label htmlFor="maxPrice" className="text-sm font-medium">
+                  Max Price
+                </label>
+                <input
+                  type="number"
+                  id="maxPrice"
+                  value={maxPrice}
+                  onChange={(e) => setMaxPrice(Number(e.target.value))}
+                  className="border p-2 rounded-lg"
+                  placeholder="Max Price"
+                />
+              </div>
+
+              {/* Apply Button */}
+              <button
+                onClick={() => {
+                  onApply([minPrice, maxPrice]);
+                  setIsOpen(false);
+                }}
+                className="bg-[#f3701f] text-white py-2 px-4 rounded-lg"
+              >
+                Apply
+              </button>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
+  );
+};
+
 const Page = () => {
   const placeholders = useMemo(
     () => ["Enter Location...", "Enter Pincode...", "Enter Project..."],
@@ -69,12 +140,13 @@ const Page = () => {
   const [placeholderIndex, setPlaceholderIndex] = useState(0);
   const [buyRentValue, setBuyRentValue] = useState("Buy");
   const [bhkValue, setBhkValue] = useState("Bedrooms");
-  const [propertyValue, setPropertyValue] = useState("Property Type");
+  const [propertyValue, setPropertyValue] = useState("Type");
   const [constructionstatusvalues, setConstructionStatusValues] = useState([]);
   const [postedbyValues, setPostedbyValues] = useState([]);
   const [amenitiesvalues, setAmenitiesValues] = useState([]);
 
-  const [range, setRange] = useState([100, 500]); // Default min-max values
+  const [range, setRange] = useState([100, 10000]); // Default min-max values
+  const [priceRange, setPriceRange] = useState([0, 1000000000]); // Price range state
 
   const [propertiesList, setPropertiesList] = useState([]);
   const [originalpropertiesList, setOriginalPropertiesList] = useState([]);
@@ -178,6 +250,7 @@ const Page = () => {
     return () => clearInterval(interval);
   }, []);
 
+
   const filterpropertylist = () => {
     let newlist = originalpropertiesList;
 
@@ -185,9 +258,10 @@ const Page = () => {
       newlist = newlist.filter((item) => item.bedrooms == bhkValue);
     }
 
-    if (propertyValue && propertyValue !== "Property Type") {
+    if (propertyValue && propertyValue !== "Type") {
       newlist = newlist.filter((item) => item.type == propertyValue);
     }
+
 
     if (constructionstatusvalues && constructionstatusvalues.length > 0) {
       newlist = newlist.filter((item) =>
@@ -201,19 +275,28 @@ const Page = () => {
         amenitiesvalues.every((amenity) => item.amenities.includes(amenity))
       );
     }
+
+    // Filter by Price Range
+    if (priceRange) {
+      newlist = newlist.filter(
+        (item) => item.price >= priceRange[0] && item.price <= priceRange[1]
+      );
+    }
+
     setPropertiesList(newlist);
   };
 
-  const handleFilter = () => {
-    filterpropertylist();
-  };
+  useEffect(() => {
+    filterpropertylist()
+  },[propertyValue , bhkValue , priceRange , constructionstatusvalues , amenitiesvalues])
 
   const handleReset = () => {
     setBhkValue("Bedrooms");
-    setPropertyValue("Property Type");
+    setPropertyValue("Type");
     setConstructionStatusValues([]);
     setAmenitiesValues([]);
-    setRange([100, 500]);
+    setRange([100, 10000]);
+    setPriceRange([0, 10000000000]);
     setPropertiesList(originalpropertiesList);
   };
 
@@ -242,7 +325,13 @@ const Page = () => {
         <button className="text-white text-xl font-bold">Sign Up</button>
       </nav>
 
-      <section className="flex mt-[2vh] px-[5%] w-full gap-2">
+      <section className="flex mt-[2vh] lg:mt-0 px-[5%] lg:px-[3%] w-full gap-1 lg:fixed">
+        <PriceDropdown
+          onApply={(range) => {
+            setPriceRange(range);
+            filterpropertylist();
+          }}
+        />
         <Dropdown
           label="BHK"
           options={variables.bhklist || []}
@@ -260,15 +349,15 @@ const Page = () => {
       </section>
 
       {/* Filter & Sort Buttons */}
-      <div className="mt-[2vh] flex justify-between px-5">
+      <div className="mt-[2vh] lg:mt-0  flex justify-between px-5">
         <button
           onClick={() => setFilterOpen(!filteropen)}
-          className="border-[#f3701f] border-2 py-2 px-4 flex gap-2 rounded-xl"
+          className="lg:hidden border-[#f3701f] border-2 py-2 px-4 flex gap-2 rounded-xl"
         >
           <span className="text-[#f3701f]">Filter</span>
           <FilterIcon width={18} fill="#f3701f" />
         </button>
-        <button className="py-2 px-4 flex items-center gap-2 rounded-xl">
+        <button className="py-2 lg:ml-auto px-4 flex items-center gap-2 rounded-xl">
           <span className="text-[#f3701f]">Sort</span>
           <SortIcon width={20} fill="#f3701f" />
         </button>
@@ -276,9 +365,10 @@ const Page = () => {
 
       {/* Filter Sidebar  */}
       <div
-        className={`w-[60%] min-h-[50vh] bg-[#fff] fixed rounded-2xl mt-[5vh] z-10 pl-[8%] py-5 border-2 border-[#f3701f] transition-transform duration-500 ease-in-out ${
-          filteropen ? "translate-x-[-10%]" : "-translate-x-full"
-        }`}
+        className={`w-[60%] lg:w-[32%] min-h-[50vh] bg-[#fff] fixed rounded-2xl mt-[5vh]  z-10 pl-[8%] lg:px-[2%] py-5 border-2 border-[#f3701f] lg:border-gray-300 transition-transform duration-500 ease-in-out 
+    lg:translate-x-[5%] ${
+      filteropen ? "translate-x-[-10%]" : "-translate-x-full"
+    }`}
       >
         <div>
           <div className="flex gap-3">
@@ -385,16 +475,19 @@ const Page = () => {
             Reset
           </button>
           <button
-            onClick={() => { handleFilter() ; setFilterOpen(false)}}
+            onClick={() => {
+
+              setFilterOpen(false);
+            }}
             className="bg-[#f3701f] py-2 px-4 rounded-xl text-white"
           >
-            Apply Filters
+            Apply
           </button>
         </div>
       </div>
 
       {/* Properties List */}
-      <section className=" px-[5%] py-5 flex flex-col gap-4">
+      <section className=" px-[5%] lg:ml-[32%] py-5 flex flex-col gap-4">
         {Array.isArray(propertiesList) && propertiesList.length > 0 ? (
           propertiesList.map((item, key) => (
             <div

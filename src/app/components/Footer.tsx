@@ -103,7 +103,7 @@ const Footer = () => {
         <span className="lg:text-lg ">Lorem ipsum dolor sit amet consectetur adipisicing elit. Rem odit quas dicta debitis perferendis nam, ex iure error fugit. Laborum, at? Adipisci nesciunt cupiditate, dolorem dolores qui porro repellat, incidunt veritatis impedit, voluptates soluta vitae labore explicabo deleniti. Sequi rerum labore totam, doloremque ducimus, quo eaque est nostrum dignissimos, asperiores maiores tempora qui itaque vero cupiditate beatae animi ullam eveniet.</span>
       </section>
       <section>
-        <p  className="text-center lg:text-xl mt-6 md:mt-8 lg:mt-10 ">@T-REX Infotech</p>
+        <p  className="text-center lg:text-xl mt-6 md:mt-8 lg:mt-10 "> Powered by @T-REX Infotech</p>
       </section>
     </div>
   );
