@@ -26,7 +26,6 @@ const InstagramIcon = () => {
   );
 };
 
-
 const FacebookIcon = () => {
   return (
     <svg
@@ -61,10 +60,16 @@ const Footer = () => {
         <section>
           <h1 className="text-lg lg:text-2xl text-[#fff]">Quick Links</h1>
           <ul className="hover:cursor-pointer text-sm lg:text-lg lg:mt-3">
-            <li onClick={() => router.push("/buyproperties?view=Sale")}>Buy Properties</li>
-            <li onClick={() => router.push("/buyproperties?view=Rent")}>Rent Properties</li>
+            <li onClick={() => router.push("/buyproperties?view=Sale")}>
+              Buy Properties
+            </li>
+            <li onClick={() => router.push("/buyproperties?view=Rent")}>
+              Rent Properties
+            </li>
             <li onClick={() => router.push("/brokerslist")}>Find an Agent</li>
-            <li onClick={() => router.push("/buyproperties?view=PG")}>Find PG</li>
+            <li onClick={() => router.push("/buyproperties?view=PG")}>
+              Find PG
+            </li>
           </ul>
         </section>
         <section>
@@ -98,12 +103,31 @@ const Footer = () => {
         </section>
       </div>
       <section className="px-[5%] mt-6">
-        <h1 className="text-xl lg:text-2xl border-b-2  inline-block mb-2">Company Moto</h1><br />
-        
-        <span className="lg:text-lg ">Lorem ipsum dolor sit amet consectetur adipisicing elit. Rem odit quas dicta debitis perferendis nam, ex iure error fugit. Laborum, at? Adipisci nesciunt cupiditate, dolorem dolores qui porro repellat, incidunt veritatis impedit, voluptates soluta vitae labore explicabo deleniti. Sequi rerum labore totam, doloremque ducimus, quo eaque est nostrum dignissimos, asperiores maiores tempora qui itaque vero cupiditate beatae animi ullam eveniet.</span>
+        <h1 className="text-xl lg:text-2xl border-b-2  inline-block mb-2">
+          Company Moto
+        </h1>
+        <br />
+
+        <span className="lg:text-lg ">
+          Lorem ipsum dolor sit amet consectetur adipisicing elit. Rem odit quas
+          dicta debitis perferendis nam, ex iure error fugit. Laborum, at?
+          Adipisci nesciunt cupiditate, dolorem dolores qui porro repellat,
+          incidunt veritatis impedit, voluptates soluta vitae labore explicabo
+          deleniti. Sequi rerum labore totam, doloremque ducimus, quo eaque est
+          nostrum dignissimos, asperiores maiores tempora qui itaque vero
+          cupiditate beatae animi ullam eveniet.
+        </span>
       </section>
-      <section>
-        <p  className="text-center cursor-pointer lg:text-xl mt-6 md:mt-8 lg:mt-10 "> Powered by @T-REX Infotech</p>
+      <div className="w-[90%] mx-[5%] h-[1px] bg-[#fff] mt-6 md:mt-8 lg:mt-10">
+
+      </div>
+      <section className="mt-6 md:mt-8 lg:mt-10">
+        <a
+          target="trexinfotech.in"
+          className="text-center cursor-pointer lg:text-xl  "
+        >
+          <p>Powered by @T-REX Infotech</p>{" "}
+        </a>
       </section>
     </div>
   );
