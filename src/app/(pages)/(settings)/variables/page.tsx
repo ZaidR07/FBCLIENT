@@ -36,9 +36,16 @@ const Page = () => {
     load();
   }, []);
 
-  const handleAddItem = (name, value) => {
+  const handleAddItem = (name, value, category = null) => {
     if (!value.trim()) return;
-    setFormdata((prev) => ({ ...prev, [name]: [...prev[name], value] }));
+    if (name === "propertytypelist") {
+      setFormdata((prev) => ({
+        ...prev,
+        [name]: [...prev[name], { name: value, category }],
+      }));
+    } else {
+      setFormdata((prev) => ({ ...prev, [name]: [...prev[name], value] }));
+    }
   };
 
   const handleRemoveItem = (name, index) => {
@@ -109,11 +116,13 @@ const Page = () => {
               key={index}
               className="flex justify-between items-center bg-gray-200 px-3 py-1 mb-2 rounded-md"
             >
-              {item}
+              {name === "propertytypelist" ? item.name : item}
               <button
                 type="button"
                 className="text-red-500 font-bold text-lg"
-                onClick={() => handleDeleteVariable(name, item)}
+                onClick={() =>
+                  handleDeleteVariable(name, name === "propertytypelist" ? item.name : item)
+                }
               >
                 🗑️
               </button>
@@ -128,12 +137,27 @@ const Page = () => {
           id={name}
           placeholder={placeholder}
         />
+        {name === "propertytypelist" && (
+          <select
+            className="ml-2 border-b-2 border-gray-400 px-2 py-1 outline-none"
+            id={`${name}-category`}
+          >
+            <option value="1">Residential</option>
+            <option value="2">Commercial</option>
+            <option value="3">Plots/Land</option>
+          </select>
+        )}
         <button
           type="button"
           className="ml-2 max-w-[18%] px-4 py-1 rounded-md text-white bg-[#f3701f] hover:bg-[#d95b17] transition"
           onClick={() =>
-            //@ts-ignore
-            handleAddItem(name, document.getElementById(name).value)
+            handleAddItem(
+              name,
+              document.getElementById(name).value,
+              name === "propertytypelist"
+                ? parseInt(document.getElementById(`${name}-category`).value)
+                : null
+            )
           }
         >
           Add
@@ -148,7 +172,7 @@ const Page = () => {
               key={index}
               className="flex items-center justify-between bg-gray-100 px-3 py-1 rounded-md"
             >
-              {item}
+              {name === "propertytypelist" ? `${item.name} (${item.category})` : item}
               <button
                 type="button"
                 className="text-red-500 font-bold text-lg"
@@ -209,7 +233,7 @@ const Page = () => {
             "Train Line",
             "linelist",
             "Enter Local train line"
-          )}.
+          )}
           {renderInputSection(
             "Location",
             "locationlist",

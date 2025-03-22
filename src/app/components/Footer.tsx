@@ -123,8 +123,9 @@ const Footer = () => {
       </div>
       <section className="mt-6 md:mt-8 lg:mt-10">
         <a
-          target="trexinfotech.in"
-          className="text-center cursor-pointer lg:text-xl  "
+          href="http://trexinfotech.in"
+          className="text-center cursor-pointer lg:text-xl"
+          target="_blank"
         >
           <p>Powered by @T-REX Infotech</p>{" "}
         </a>
