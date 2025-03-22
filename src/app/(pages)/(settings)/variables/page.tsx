@@ -121,7 +121,10 @@ const Page = () => {
                 type="button"
                 className="text-red-500 font-bold text-lg"
                 onClick={() =>
-                  handleDeleteVariable(name, name === "propertytypelist" ? item.name : item)
+                  handleDeleteVariable(
+                    name,
+                    name === "propertytypelist" ? item.name : item
+                  )
                 }
               >
                 🗑️
@@ -147,18 +150,28 @@ const Page = () => {
             <option value="3">Plots/Land</option>
           </select>
         )}
+
         <button
           type="button"
           className="ml-2 max-w-[18%] px-4 py-1 rounded-md text-white bg-[#f3701f] hover:bg-[#d95b17] transition"
-          onClick={() =>
-            handleAddItem(
-              name,
-              document.getElementById(name).value,
-              name === "propertytypelist"
-                ? parseInt(document.getElementById(`${name}-category`).value)
-                : null
-            )
-          }
+          onClick={() => {
+            const inputElement = document.getElementById(
+              name
+            ) as HTMLInputElement | null;
+            const categoryElement = document.getElementById(
+              `${name}-category`
+            ) as HTMLSelectElement | null;
+
+            if (inputElement && categoryElement) {
+              handleAddItem(
+                name,
+                inputElement.value,
+                name === "propertytypelist"
+                  ? parseInt(categoryElement.value)
+                  : null
+              );
+            }
+          }}
         >
           Add
         </button>
@@ -172,7 +185,9 @@ const Page = () => {
               key={index}
               className="flex items-center justify-between bg-gray-100 px-3 py-1 rounded-md"
             >
-              {name === "propertytypelist" ? `${item.name} (${item.category})` : item}
+              {name === "propertytypelist"
+                ? `${item.name} (${item.category})`
+                : item}
               <button
                 type="button"
                 className="text-red-500 font-bold text-lg"
@@ -234,11 +249,7 @@ const Page = () => {
             "linelist",
             "Enter Local train line"
           )}
-          {renderInputSection(
-            "Location",
-            "locationlist",
-            "Example: Goregaon"
-          )}
+          {renderInputSection("Location", "locationlist", "Example: Goregaon")}
           <div className="mt-6 text-center">
             <button
               type="submit"
