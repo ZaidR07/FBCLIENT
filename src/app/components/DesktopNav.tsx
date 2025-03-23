@@ -45,25 +45,29 @@ const DesktopNav = () => {
   }, [loaddata]);
 
   return (
-    <nav className="relative hidden w-full h-full lg:flex justify-between items-center pl-20 pr-16">
+    <nav className="relative hidden w-full h-full lg:flex  items-center justify-evenly px-6">
       <ul className="flex gap-16 text-xl">
         {/* Buy Dropdown */}
         <li
           className="flex gap-2 cursor-pointer"
-          onMouseEnter={() => { setBuydropopen(true) ; setRentdropopen(false)}}
+          onMouseEnter={() => {
+            setBuydropopen(true);
+            setRentdropopen(false);
+          }}
         >
           <span>Buy</span>
           <AngleDown width={12} />
         </li>
         {buydropopen && !loading && (
           <div
-            className="flex absolute top-[18vh] bg-[#fff] w-[80%] shadow-lg rounded-lg"
-            onMouseLeave={() =>  setBuydropopen(false)}
+            className="flex absolute left-[8%] top-[18vh] bg-[#fff] w-[60%] shadow-lg rounded-lg"
+            onMouseLeave={() => setBuydropopen(false)}
           >
             {/* Category List */}
-            <ul className="w-1/4 border-r pr-4 p-4 rounded-t-lg rounded-b-lg bg-[#fae5d8]">
+            <ul className="w-1/3 text-lg border-r pl-12 py-12 rounded-t-lg rounded-b-lg bg-[#fae5d8]">
+            <li className="text-xl -mt-6 mb-2  -ml-4">Buying Options</li>
               <li
-                className={`cursor-pointer hover:text-[#FF5D00] ${
+                className={`cursor-pointer  ${
                   currentcategory === 1 ? "text-[#FF5D00]" : ""
                 }`}
                 onClick={() => setCurrentCategory(1)}
@@ -71,7 +75,7 @@ const DesktopNav = () => {
                 Residential
               </li>
               <li
-                className={`cursor-pointer py-2 hover:text-[#FF5D00] ${
+                className={`cursor-pointer py-2  ${
                   currentcategory === 2 ? "text-[#FF5D00]" : ""
                 }`}
                 onClick={() => setCurrentCategory(2)}
@@ -79,7 +83,7 @@ const DesktopNav = () => {
                 Commercial
               </li>
               <li
-                className={`cursor-pointer py-2 hover:text-[#FF5D00] ${
+                className={`cursor-pointer py-2  ${
                   currentcategory === 3 ? "text-[#FF5D00]" : ""
                 }`}
                 onClick={() => setCurrentCategory(3)}
@@ -87,7 +91,7 @@ const DesktopNav = () => {
                 Plots / Land
               </li>
               <li
-                className={`cursor-pointer py-2 hover:text-[#FF5D00] ${
+                className={`cursor-pointer py-2  ${
                   currentcategory === 4 ? "text-[#FF5D00]" : ""
                 }`}
                 onClick={() => setCurrentCategory(4)}
@@ -97,15 +101,12 @@ const DesktopNav = () => {
             </ul>
 
             {/* Property Type List */}
-            <ul className="w-3/4 pl-4">
+            <ul className="text-base text-gray-500 w-1/3 border-r pl-12 py-12">
               {propertytypelist?.length > 0 ? (
                 propertytypelist
                   .filter((item) => item.category === currentcategory)
                   .map((item, index) => (
-                    <li
-                      key={index}
-                      className="cursor-pointer py-2 hover:text-[#FF5D00]"
-                    >
+                    <li key={index} className="cursor-pointer py-2 ">
                       {item.name}
                     </li>
                   ))
@@ -113,26 +114,46 @@ const DesktopNav = () => {
                 <li>No property types found</li>
               )}
             </ul>
+            {/* Property Image */}
+            <div className="w-1/3 flex items-center justify-center px-4">
+              <img
+                src={
+                  currentcategory === 1
+                    ? "/Residential.jpg"
+                    : currentcategory === 2
+                    ? "/Commercial.jpg"
+                    : currentcategory === 3
+                    ? "/Land.jpg"
+                    : "/Trending.jpg"
+                }
+                alt="property image"
+                className="w-full h-auto rounded-lg"
+              />
+            </div>
           </div>
         )}
 
         {/* Rent Dropdown */}
         <li
           className="flex gap-2 cursor-pointer"
-          onMouseEnter={() => { setRentdropopen(true) ; setBuydropopen(false)}}
+          onMouseEnter={() => {
+            setRentdropopen(true);
+            setBuydropopen(false);
+          }}
         >
           <span>Rent</span>
           <AngleDown width={12} />
         </li>
         {rentdropopen && !loading && (
           <div
-            className="flex absolute top-[18vh] bg-[#fff] w-[80%] shadow-lg rounded-lg"
+            className="flex absolute left-[8%] top-[18vh] bg-[#fff] w-[60%] shadow-lg rounded-lg"
             onMouseLeave={() => setRentdropopen(false)}
           >
             {/* Category List */}
-            <ul className="w-1/4 border-r pr-4 p-4 rounded-t-lg rounded-b-lg bg-[#fae5d8]">
+            <ul className="w-1/3 text-lg border-r pl-12 py-12 rounded-t-lg rounded-b-lg bg-[#fae5d8]">
+              <li className="text-xl -mt-6 mb-2  -ml-4">Renting Options</li>
               <li
-                className={`cursor-pointer hover:text-[#FF5D00] ${
+                className={`cursor-pointer  ${
                   currentRentCategory === 1 ? "text-[#FF5D00]" : ""
                 }`}
                 onClick={() => setCurrentRentCategory(1)}
@@ -140,7 +161,7 @@ const DesktopNav = () => {
                 Residential
               </li>
               <li
-                className={`cursor-pointer py-2 hover:text-[#FF5D00] ${
+                className={`cursor-pointer py-2  ${
                   currentRentCategory === 2 ? "text-[#FF5D00]" : ""
                 }`}
                 onClick={() => setCurrentRentCategory(2)}
@@ -148,7 +169,15 @@ const DesktopNav = () => {
                 Commercial
               </li>
               <li
-                className={`cursor-pointer py-2 hover:text-[#FF5D00] ${
+                className={`cursor-pointer py-2  ${
+                  currentRentCategory === 3 ? "text-[#FF5D00]" : ""
+                }`}
+                onClick={() => setCurrentRentCategory(3)}
+              >
+                Plots / Land
+              </li>
+              <li
+                className={`cursor-pointer py-2  ${
                   currentRentCategory === 4 ? "text-[#FF5D00]" : ""
                 }`}
                 onClick={() => setCurrentRentCategory(4)}
@@ -158,15 +187,12 @@ const DesktopNav = () => {
             </ul>
 
             {/* Property Type List */}
-            <ul className="w-3/4 pl-4">
+            <ul className="text-base text-gray-500 w-1/3 border-r pl-12 py-12">
               {propertytypelist?.length > 0 ? (
                 propertytypelist
                   .filter((item) => item.category === currentRentCategory)
                   .map((item, index) => (
-                    <li
-                      key={index}
-                      className="cursor-pointer py-2 hover:text-[#FF5D00]"
-                    >
+                    <li key={index} className="cursor-pointer py-2 ">
                       {item.name}
                     </li>
                   ))
@@ -174,6 +200,23 @@ const DesktopNav = () => {
                 <li>No property types found</li>
               )}
             </ul>
+
+            {/* Property Image */}
+            <div className="w-1/3 flex items-center justify-center px-4">
+              <img
+                src={
+                  currentRentCategory === 1
+                    ? "/Residential.jpg"
+                    : currentRentCategory === 2
+                    ? "/Commercial.jpg"
+                    : currentRentCategory === 3
+                    ? "/Land.jpg"
+                    : "/Trending.jpg"
+                }
+                alt="property image"
+                className="w-full h-auto rounded-lg"
+              />
+            </div>
           </div>
         )}
 
