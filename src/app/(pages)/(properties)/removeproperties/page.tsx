@@ -33,6 +33,7 @@ const Page = () => {
   const [isClient, setIsClient] = useState(false);
   const [brokerslist, setBrokerslist] = useState([]);
   const [displaybrokerlist, setDisplayBrokerslist] = useState([]);
+  const [sidebaropen, setSidebarOpen] = useState(false);
 
   const removeElement = (id) => {
     const filteredlist = displaybrokerlist.filter(
@@ -88,8 +89,7 @@ const Page = () => {
     fetchbrokerslist();
   }, []);
 
-  // Avoids rendering DataTable until hydration completes
-  if (!isClient) return <AdminHeader />;
+  
 
   // Table Columns Definition
   const columns = [
@@ -181,7 +181,7 @@ const Page = () => {
           />
         </div>
       </div>
-      <AdminHeader />
+      <AdminHeader sidebaropen={sidebaropen} setSidebarOpen={setSidebarOpen} />
       <ToastContainer
         position="top-right"
         autoClose={3000}
