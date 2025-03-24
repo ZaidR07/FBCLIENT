@@ -10,6 +10,7 @@ const Page = () => {
   const [images, setImages] = useState([]);
   const [previewUrls, setPreviewUrls] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [sidebaropen, setSidebarOpen] = useState(false);
 
   const handleFileChange = (event) => {
     const files = Array.from(event.target.files);
@@ -53,7 +54,7 @@ const Page = () => {
 
   return (
     <div className="mt-[12vh]">
-      <AdminHeader />
+      <AdminHeader sidebaropen={sidebaropen} setSidebarOpen={setSidebarOpen} />
       <ToastContainer
         position="top-center"
         style={{ top: "0vh", zIndex: 9999999999999 }}
