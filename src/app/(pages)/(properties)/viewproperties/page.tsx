@@ -43,6 +43,7 @@ const Page = () => {
   const [isClient, setIsClient] = useState(false);
   const [brokerslist, setBrokerslist] = useState([]);
   const [displaybrokerlist, setDisplayBrokerslist] = useState([]);
+  const [sidebaropen, setSidebarOpen] = useState(false);
 
   const fetchbrokerslist = async () => {
     const response = await axios.get(`${uri}getproperties`);
@@ -74,6 +75,7 @@ const Page = () => {
 
   return (
     <div>
+      <AdminHeader sidebaropen={sidebaropen} setSidebarOpen={setSidebarOpen} />
       <div className="min-h-screen mt-[10vh] px-[5%] py-[5vh] bg-gray-200">
         <input
           type="search"
@@ -91,7 +93,7 @@ const Page = () => {
           customStyles={customStyles}
         />
       </div>
-      <AdminHeader />
+      
     </div>
   );
 };
