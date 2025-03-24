@@ -24,7 +24,7 @@ const Page = () => {
     const load = async () => {
       try {
         const response = await axios.get(`${uri}getvariables`);
-        if (response.status == 200) {
+        if (response.status === 200) {
           setVariables(response.data.payload || {});
         } else {
           toast.error(response.data.message);
@@ -36,16 +36,18 @@ const Page = () => {
     load();
   }, []);
 
+  // ** Fixed handleAddItem Function **
   const handleAddItem = (name, value, category = null) => {
-    if (!value.trim()) return;
-    if (name === "propertytypelist") {
-      setFormdata((prev) => ({
-        ...prev,
-        [name]: [...prev[name], { name: value, category }],
-      }));
-    } else {
-      setFormdata((prev) => ({ ...prev, [name]: [...prev[name], value] }));
-    }
+    if (!value || value.trim() === "") return; // Prevent empty values
+
+    setFormdata((prev) => ({
+      ...prev,
+      [name]: Array.isArray(prev[name])
+        ? name === "propertytypelist"
+          ? [...prev[name], { name: value, category }]
+          : [...prev[name], value]
+        : [value], // Ensure array initialization
+    }));
   };
 
   const handleRemoveItem = (name, index) => {
@@ -61,7 +63,7 @@ const Page = () => {
         category: name,
         value,
       });
-      if (response.status == 200) {
+      if (response.status === 200) {
         toast.success("Variable deleted successfully");
         setVariables((prev) => ({
           ...prev,
@@ -81,7 +83,7 @@ const Page = () => {
       const response = await axios.post(`${uri}addvariables`, {
         payload: formdata,
       });
-      if (response.status != 200) {
+      if (response.status !== 200) {
         toast.error(response.data.message);
         return;
       }
@@ -105,9 +107,8 @@ const Page = () => {
   const renderInputSection = (label, name, placeholder) => (
     <div className="mt-4">
       <label className="block text-gray-700 font-bold">{label}</label>
-      {/* Display Current DB Variables with Delete Option */}
       <span className="text-sm text-green-500">
-        Current Variables in System :-
+        Current Variables in System:
       </span>
       {variables[name]?.length > 0 && (
         <ul className="mt-2 text-sm text-green-500">
@@ -155,21 +156,16 @@ const Page = () => {
           type="button"
           className="ml-2 max-w-[18%] px-4 py-1 rounded-md text-white bg-[#f3701f] hover:bg-[#d95b17] transition"
           onClick={() => {
-            const inputElement = document.getElementById(
-              name
-            ) as HTMLInputElement | null;
-            const categoryElement = document.getElementById(
-              `${name}-category`
-            ) as HTMLSelectElement | null;
+            const inputElement = document.getElementById(name);
+            const categoryElement = document.getElementById(`${name}-category`);
 
-            if (inputElement && categoryElement) {
+            if (inputElement) {
               handleAddItem(
                 name,
                 inputElement.value,
-                name === "propertytypelist"
-                  ? parseInt(categoryElement.value)
-                  : null
+                name === "propertytypelist" ? parseInt(categoryElement.value) : null
               );
+              inputElement.value = ""; // Clear input field after adding
             }
           }}
         >
@@ -177,7 +173,6 @@ const Page = () => {
         </button>
       </div>
 
-      {/* Display Added Items */}
       {formdata[name].length > 0 && (
         <ul className="mt-2 space-y-1">
           {formdata[name].map((item, index) => (
@@ -244,12 +239,9 @@ const Page = () => {
             "furnishingstatuslist",
             "Enter Furnishing Type"
           )}
-          {renderInputSection(
-            "Train Line",
-            "linelist",
-            "Enter Local train line"
-          )}
+          {renderInputSection("Train Line", "linelist", "Enter Local train line")}
           {renderInputSection("Location", "locationlist", "Example: Goregaon")}
+
           <div className="mt-6 text-center">
             <button
               type="submit"

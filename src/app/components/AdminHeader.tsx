@@ -2,41 +2,43 @@
 import { useState } from "react";
 import Image from "next/image";
 
-const AdminHeader = () => {
-  const [sidebaropen, setSidebarOpen] = useState(false);
+const nav = [
+  {
+    icon: "dashboardsvg.svg",
+    name: "Dashboard",
+    width: 50,
+    route: "dashboard",
+  },
+  {
+    icon: "user.svg",
+    name: "Brokers",
+    width: 35,
+    route: "viewbrokers",
+    subnav: ["View Brokers", "Add Brokers", "Update/Remove Brokers"],
+  },
+  {
+    icon: "home.svg",
+    name: "Properties",
+    width: 40,
+    route: "viewproperties",
+    subnav: ["View Properties", "Add Properties", "Remove Properties"],
+  },
+  {
+    icon: "settings.svg",
+    name: "Settings",
+    width: 50,
+    route: "company",
+    subnav: ["Company", "variables" ],
+  },
+];
+
+const AdminHeader = ({ sidebaropen, setSidebarOpen }) => {
+  
   const [brokermenuopen, setBrokerMenuOpen] = useState(false);
   const [propertymenuopen, setPropertyMenuOpen] = useState(false);
   const [subnavlist, setSubnavlist] = useState([]);
 
-  const nav = [
-    {
-      icon: "dashboardsvg.svg",
-      name: "Dashboard",
-      width: 50,
-      route: "dashboard",
-    },
-    {
-      icon: "user.svg",
-      name: "Brokers",
-      width: 35,
-      route: "viewbrokers",
-      subnav: ["View Brokers", "Add Brokers", "Update/Remove Brokers"],
-    },
-    {
-      icon: "home.svg",
-      name: "Properties",
-      width: 40,
-      route: "viewproperties",
-      subnav: ["View Properties", "Add Properties", "Remove Properties"],
-    },
-    {
-      icon: "settings.svg",
-      name: "Settings",
-      width: 50,
-      route: "company",
-      subnav: ["Company", "variables" ],
-    },
-  ];
+  
 
   const setsubnav = (name) => {
     if (subnavlist.length > 0 && subnavlist[0].name == name) {
@@ -91,7 +93,7 @@ const AdminHeader = () => {
       <div
         className={`${
           sidebaropen
-            ? "lg:w-[30%] scale-y-110 lg:scale-y-100"
+            ? "lg:w-[23%] scale-y-110 lg:scale-y-100"
             : "translate-x-[-100%] lg:translate-x-0 scale-y-0 lg:scale-y-100 lg:w-[10%]"
         } origin-top transition-transform duration-700 ease-in-out w-full  min-h-[90vh] bg-[#FF5D00] fixed lg:relative top-[10vh] lg:top-[0vh] pt-[4vh] z-[99999]`}
       >

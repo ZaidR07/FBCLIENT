@@ -12,6 +12,8 @@ const Page = () => {
     properties: 0,
   });
 
+  const [sidebaropen, setSidebarOpen] = useState(false);
+
   const fetchdata = async () => {
     try {
       const response = await axios.get(`${uri}getdashboardnumbers`, {
@@ -27,9 +29,13 @@ const Page = () => {
   }, []);
 
   return (
-    <div className=" bg-gray-200 min-h-[88vh] lg:mt-[12vh] flex">
-      <AdminHeader />
-      <div className="grid grid-cols-2 gap-4 w-full  pt-[15vh] pb-6 px-[5%]">
+    <div className=" bg-gray-200 min-h-[88vh] w-full lg:mt-[12vh] flex">
+      <AdminHeader sidebaropen={sidebaropen} setSidebarOpen={setSidebarOpen} />
+      <div
+        className={`grid grid-cols-2 gap-4 w-full  pt-[15vh] pb-6 px-[5%] ${
+          sidebaropen ? "lg:w-[77%]" : "lg:w-[90%]"
+        }`}
+      >
         <div className="h-40 rounded-xl bg-white shadow-lg flex flex-col justify-around items-center">
           <span className="text-7xl text-[#FF5D00]">{numbers.brokers}</span>
           <span className="text-[#FF5D00] text-2xl">Brokers</span>

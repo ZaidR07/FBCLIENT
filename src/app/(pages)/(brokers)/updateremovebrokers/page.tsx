@@ -29,13 +29,12 @@ const PenIcon = () => (
   </svg>
 );
 
-
-
 const Page = () => {
   const [isClient, setIsClient] = useState(false);
   const [brokerslist, setBrokerslist] = useState([]);
   const [displaybrokerlist, setDisplayBrokerslist] = useState([]);
   const [updatecliked, setUpdateClicked] = useState(false);
+  const [sidebaropen, setSidebarOpen] = useState(false);
 
   const [formdata, setFormdata] = useState({
     broker_id: "",
@@ -46,8 +45,6 @@ const Page = () => {
     mobile2: "",
     address: "",
   });
-
-  
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -165,9 +162,6 @@ const Page = () => {
     fetchbrokerslist();
   }, []);
 
-  // Avoids rendering DataTable until hydration completes
-  if (!isClient) return <AdminHeader />;
-
   // Table Columns Definition
   const columns = [
     {
@@ -221,16 +215,20 @@ const Page = () => {
   ];
 
   return (
-    <>
-      <div className="mt-[10vh] px-4 sm:px-[5%] py-[5vh]">
-        <input
-          type="search"
-          className="border border-[#FF5D00] mb-[3vh] rounded-xl px-3 py-1 w-full sm:max-w-[50%] block mx-auto text-sm sm:text-base"
-          placeholder="Search..."
-          onChange={(e) => filtersearch(e.target.value)}
-        />
-
+    <div className="mt-[10vh] lg:mt-[12vh] flex">
+      <AdminHeader sidebaropen={sidebaropen} setSidebarOpen={setSidebarOpen} />
+      <div
+        className={`py-[5vh] px-[5%] ${
+          sidebaropen ? "lg:w-[77%]" : "lg:w-[90%]"
+        }`}
+      >
         <div className="overflow-x-auto">
+          <input
+            type="search"
+            className="border border-[#FF5D00] mb-[3vh] rounded-xl px-3 py-1 w-full sm:max-w-[50%] block mx-auto text-sm sm:text-base"
+            placeholder="Search..."
+            onChange={(e) => filtersearch(e.target.value)}
+          />
           <p className="text-sm font-semibold mb-2">
             Total Brokers: {displaybrokerlist.length}
           </p>
@@ -274,7 +272,7 @@ const Page = () => {
           />
         </div>
       </div>
-      <AdminHeader />
+
       <ToastContainer
         position="top-center"
         style={{ top: "0vh", zIndex: 9999999999999 }}
@@ -371,7 +369,7 @@ const Page = () => {
           </form>
         </div>
       )}
-    </>
+    </div>
   );
 };
 

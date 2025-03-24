@@ -40,8 +40,8 @@ const Page = () => {
     furnishingstatuslist: [],
     amenitieslist: [],
     constructionstatuslist: [],
-    linelist : [],
-    locationlist : []
+    linelist: [],
+    locationlist: [],
   });
 
   const handleload = async () => {
@@ -52,6 +52,7 @@ const Page = () => {
   };
 
   const [highlightInput, setHighlightInput] = useState("");
+  const [currentpropertytype, setCurrentPropertytype] = useState(1);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -148,10 +149,40 @@ const Page = () => {
           Add Property
         </h1>
         <form className="p-6 bg-white rounded-2xl" onSubmit={handleSubmit}>
+          {/* Property Type Select Field */}
+          <div className="mb-4">
+            <label>
+              Property Type <span className="text-red-700">*</span>
+            </label>
+            <select
+              name="type"
+              value={formdata.type}
+              onChange={(e) => {
+                handleChange(e);
+                const selectedOption = variables?.propertytypelist.find(
+                  (item) => item.name === e.target.value
+                );
+                if (selectedOption) {
+                  setCurrentPropertytype(selectedOption.category);
+                }
+              }}
+              className="border-b-2 border-black w-full mt-3"
+              required
+            >
+              <option value="">Select Type</option>
+              {variables?.propertytypelist?.map((item, index) => (
+                <option key={index} value={item.name}>
+                  {item.name}
+                </option>
+              ))}
+            </select>
+          </div>
+
           {/* Society Name */}
           <div className="mb-4">
             <label>
-              Society Name <span className="text-red-700 text-xl">*</span>{" "}
+              Society / Building / Plot Name{" "}
+              <span className="text-red-700 text-xl">*</span>{" "}
             </label>
             <input
               name="Societyname"
@@ -163,62 +194,63 @@ const Page = () => {
             />
           </div>
 
-          {/* Floor */}
-          <div className="mb-4 flex ">
-            <div className="w-[45%] mr-[10%]">
-              <label>
-                Floor <span className="text-red-700 text-xl">*</span>
-              </label>
-              <input
-                name="floor"
-                value={formdata.floor}
-                onChange={handleChange}
-                type="number"
-                className="border-b-2 border-black w-full"
-                required
-              />
-            </div>
-            <div className="w-[45%]">
-              {/* Building Floors */}
+          {currentpropertytype != 3 && (
+            <>
+              <div className="mb-4 flex ">
+                {/* Floor  */}
+                <div className="w-[45%] mr-[10%]">
+                  <label>
+                    Floor <span className="text-red-700 text-xl">*</span>
+                  </label>
+                  <input
+                    name="floor"
+                    value={formdata.floor}
+                    onChange={handleChange}
+                    type="number"
+                    className="border-b-2 border-black w-full"
+                    required
+                  />
+                </div>
+                <div className="w-[45%]">
+                  {/* Building Floors */}
+                  <div className="mb-4">
+                    <label>
+                      Building Floors{" "}
+                      <span className="text-red-700 text-xl">*</span>
+                    </label>
+                    <input
+                      name="buildingfloors"
+                      value={formdata.buildingfloors}
+                      onChange={handleChange}
+                      type="number"
+                      className="border-b-2 border-black w-full"
+                    />
+                  </div>
+                </div>
+              </div>
               <div className="mb-4">
                 <label>
-                  Building Floors{" "}
-                  <span className="text-red-700 text-xl">*</span>
+                  Bedrooms <span className="text-red-700 text-xl">*</span>
                 </label>
-                <input
-                  name="buildingfloors"
-                  value={formdata.buildingfloors}
-                  onChange={handleChange}
-                  type="number"
-                  className="border-b-2 border-black w-full"
-                />
+                <div className="flex flex-wrap gap-3 mt-2">
+                  {variables &&
+                    (variables.bhklist || []).map((option, index) => (
+                      <label key={index} className="flex gap-2 items-center">
+                        <input
+                          type="radio"
+                          name="bedrooms"
+                          value={option}
+                          checked={formdata.bedrooms === option}
+                          onChange={handleChange}
+                          required
+                        />
+                        <span>{option}</span>
+                      </label>
+                    ))}
+                </div>
               </div>
-            </div>
-          </div>
-
-          {/* Bedrooms */}
-          {/* Bedrooms */}
-          <div className="mb-4">
-            <label>
-              Bedrooms <span className="text-red-700 text-xl">*</span>
-            </label>
-            <div className="flex flex-wrap gap-3 mt-2">
-              {variables &&
-                (variables.bhklist || []).map((option, index) => (
-                  <label key={index} className="flex gap-2 items-center">
-                    <input
-                      type="radio"
-                      name="bedrooms"
-                      value={option}
-                      checked={formdata.bedrooms === option}
-                      onChange={handleChange}
-                      required
-                    />
-                    <span>{option}</span>
-                  </label>
-                ))}
-            </div>
-          </div>
+            </>
+          )}
 
           {/* Area */}
           <div className="mb-4">
@@ -252,7 +284,7 @@ const Page = () => {
             </div>
           </div>
 
-          {forValue == "Sale" && (
+          {forValue == "Sale" && currentpropertytype != 3 && (
             <>
               {/* // Facing */}
               <div className="mb-4">
@@ -346,8 +378,10 @@ const Page = () => {
             >
               <option value="">Select Type</option>
               {variables &&
-                (variables.linelist || []).map((item) => (
-                  <option value={item}>{item}</option>
+                (variables.linelist || []).map((item, index) => (
+                  <option key={index} value={item}>
+                    {item}
+                  </option>
                 ))}
             </select>
           </div>
@@ -357,9 +391,10 @@ const Page = () => {
               Location <span className="text-red-600">*</span>
             </label>
             <Select
-              options={(variables.locationlist || []).map((item) => ({
+              options={(variables.locationlist || []).map((item, index) => ({
                 value: item,
                 label: item,
+                key: index,
               }))}
               isSearchable
               value={
@@ -408,44 +443,28 @@ const Page = () => {
           </div>
 
           {/* Property Type Select Field */}
-          <div className="mb-4">
-            <label>
-              Property Type <span className="text-red-700">*</span>
-            </label>
-            <select
-              name="type"
-              value={formdata.type}
-              onChange={handleChange}
-              className="border-b-2 border-black w-full mt-3"
-              required
-            >
-              <option value="">Select Type</option>
-              {variables &&
-                (variables.propertytypelist || []).map((item) => (
-                  <option value={item}>{item}</option>
-                ))}
-            </select>
-          </div>
-
-          {/* Property Type Select Field */}
-          <div className="mb-4">
-            <label>
-              Furnishing <span className="text-red-700">*</span>
-            </label>
-            <select
-              name="furnishing"
-              value={formdata.furnishing}
-              onChange={handleChange}
-              className="border-b-2 border-black w-full mt-3"
-              required
-            >
-              <option value="">Select Type</option>
-              {variables &&
-                (variables.furnishingstatuslist || []).map((item) => (
-                  <option value={item}>{item}</option>
-                ))}
-            </select>
-          </div>
+          {currentpropertytype != 3 && (
+            <div className="mb-4">
+              <label>
+                Furnishing <span className="text-red-700">*</span>
+              </label>
+              <select
+                name="furnishing"
+                value={formdata.furnishing}
+                onChange={handleChange}
+                className="border-b-2 border-black w-full mt-3"
+                required
+              >
+                <option value="">Select Type</option>
+                {variables &&
+                  (variables.furnishingstatuslist || []).map((item, index) => (
+                    <option key={index} value={item}>
+                      {item}
+                    </option>
+                  ))}
+              </select>
+            </div>
+          )}
 
           {/* Highlights Section */}
           <div className="mb-4">
@@ -485,46 +504,50 @@ const Page = () => {
               ))}
             </ul>
           </div>
+
+          
           {/* Amenities Section */}
-          <div className="mb-4">
-            <label>
-              Amenities <span className="text-red-700">*</span>
-            </label>
-            <div className="flex flex-wrap gap-4 mt-4">
-              {variables &&
-                (variables.amenitieslist || []).map((item) => {
-                  const isSelected = formdata.amenities.includes(item);
-                  return (
-                    <button
-                      type="button"
-                      key={item}
-                      onClick={() => {
-                        setFormdata((prevData) => ({
-                          ...prevData,
-                          amenities: isSelected
-                            ? prevData.amenities.filter(
-                                (amenity) => amenity !== item
-                              )
-                            : [...prevData.amenities, item],
-                        }));
-                      }}
-                      className={`p-2 flex items-center gap-2 rounded-xl ${
-                        isSelected
-                          ? "bg-blue-500 text-white"
-                          : "bg-gray-200 text-black"
-                      }`}
-                    >
-                      <span>{item}</span>
-                      {isSelected ? (
-                        <span className="text-2xl">-</span>
-                      ) : (
-                        <span className="text-2xl">+</span>
-                      )}
-                    </button>
-                  );
-                })}
+          {currentpropertytype != 3 && (
+            <div className="mb-4">
+              <label>
+                Amenities <span className="text-red-700">*</span>
+              </label>
+              <div className="flex flex-wrap gap-4 mt-4">
+                {variables &&
+                  (variables.amenitieslist || []).map((item, index) => {
+                    const isSelected = formdata.amenities.includes(item);
+                    return (
+                      <button
+                        type="button"
+                        key={index}
+                        onClick={() => {
+                          setFormdata((prevData) => ({
+                            ...prevData,
+                            amenities: isSelected
+                              ? prevData.amenities.filter(
+                                  (amenity) => amenity !== item
+                                )
+                              : [...prevData.amenities, item],
+                          }));
+                        }}
+                        className={`p-2 flex items-center gap-2 rounded-xl ${
+                          isSelected
+                            ? "bg-blue-500 text-white"
+                            : "bg-gray-200 text-black"
+                        }`}
+                      >
+                        <span>{item}</span>
+                        {isSelected ? (
+                          <span className="text-2xl">-</span>
+                        ) : (
+                          <span className="text-2xl">+</span>
+                        )}
+                      </button>
+                    );
+                  })}
+              </div>
             </div>
-          </div>
+          )}
 
           <AddPropertiesPhotos
             formdata={formdata}

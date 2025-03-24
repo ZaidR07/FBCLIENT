@@ -34,6 +34,7 @@ const Page = () => {
   const [isClient, setIsClient] = useState(false);
   const [brokerslist, setBrokerslist] = useState([]);
   const [displaybrokerlist, setDisplayBrokerslist] = useState([]);
+  const [sidebaropen, setSidebarOpen] = useState(false);
 
   const fetchbrokerslist = async () => {
     const response = await axios.get(`${uri}getbrokers`);
@@ -65,9 +66,13 @@ const Page = () => {
 
   return (
     <div className="flex relative lg:top-[12vh]">
-      <AdminHeader />
+      <AdminHeader sidebaropen={sidebaropen} setSidebarOpen={setSidebarOpen} />
 
-      <div className="min-h-[88vh] w-full mt-[10vh] lg:mt-[0vh] px-[5%] py-[5vh] bg-gray-200">
+      <div
+        className={`min-h-[88vh] w-full mt-[10vh] lg:mt-[0vh] px-[5%] py-[5vh] bg-gray-200 ${
+          sidebaropen ? "lg:w-[77%]" : "lg:w-[90%]"
+        }`}
+      >
         <input
           type="search"
           name=""

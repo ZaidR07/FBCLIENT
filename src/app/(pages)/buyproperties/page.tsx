@@ -210,6 +210,7 @@ const Page = () => {
 
       if (type)
         filteredList = filteredList.filter((item) => item.type === type);
+      
       if (view) filteredList = filteredList.filter((item) => item.for === view);
 
       if (search) {

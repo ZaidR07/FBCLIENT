@@ -65,7 +65,7 @@ const DesktopNav = () => {
           >
             {/* Category List */}
             <ul className="w-1/3 text-lg border-r pl-12 py-12 rounded-t-lg rounded-b-lg bg-[#fae5d8]">
-            <li className="text-xl -mt-6 mb-2  -ml-4">Buying Options</li>
+              <li className="text-xl -mt-6 mb-2  -ml-4">Buying Options</li>
               <li
                 className={`cursor-pointer  ${
                   currentcategory === 1 ? "text-[#FF5D00]" : ""
@@ -106,7 +106,15 @@ const DesktopNav = () => {
                 propertytypelist
                   .filter((item) => item.category === currentcategory)
                   .map((item, index) => (
-                    <li key={index} className="cursor-pointer py-2 ">
+                    <li
+                      key={index}
+                      onClick={() =>
+                        router.push(
+                          `/buyproperties?type=${item.name}&view=Sale`
+                        )
+                      }
+                      className="cursor-pointer py-2 "
+                    >
                       {item.name}
                     </li>
                   ))
@@ -192,7 +200,15 @@ const DesktopNav = () => {
                 propertytypelist
                   .filter((item) => item.category === currentRentCategory)
                   .map((item, index) => (
-                    <li key={index} className="cursor-pointer py-2 ">
+                    <li
+                      key={index}
+                      onClick={() =>
+                        router.push(
+                          `/buyproperties?type=${item.name}&view=Rent`
+                        )
+                      }
+                      className="cursor-pointer py-2 "
+                    >
                       {item.name}
                     </li>
                   ))
