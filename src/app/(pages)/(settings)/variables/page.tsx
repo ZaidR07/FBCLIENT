@@ -19,6 +19,7 @@ const Page = () => {
     linelist: [],
     locationlist: [],
   });
+  const [sidebaropen, setSidebarOpen] = useState(false);
 
   useEffect(() => {
     const load = async () => {
@@ -156,18 +157,19 @@ const Page = () => {
           type="button"
           className="ml-2 max-w-[18%] px-4 py-1 rounded-md text-white bg-[#f3701f] hover:bg-[#d95b17] transition"
           onClick={() => {
-            const inputElement = document.getElementById(name);
-            const categoryElement = document.getElementById(`${name}-category`);
-
+            const inputElement = document.getElementById(name) as HTMLInputElement | null;
+            const categoryElement = document.getElementById(`${name}-category`) as HTMLSelectElement | null;
+          
             if (inputElement) {
               handleAddItem(
                 name,
                 inputElement.value,
-                name === "propertytypelist" ? parseInt(categoryElement.value) : null
+                name === "propertytypelist" && categoryElement ? parseInt(categoryElement.value) : null
               );
               inputElement.value = ""; // Clear input field after adding
             }
           }}
+          
         >
           Add
         </button>
@@ -199,7 +201,7 @@ const Page = () => {
 
   return (
     <div className="bg-gray-200 w-full min-h-screen">
-      <AdminHeader />
+      <AdminHeader sidebaropen={sidebaropen} setSidebarOpen={setSidebarOpen} />
       <ToastContainer
         position="top-right"
         autoClose={3000}

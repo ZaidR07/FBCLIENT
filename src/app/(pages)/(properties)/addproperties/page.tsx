@@ -53,6 +53,7 @@ const Page = () => {
 
   const [highlightInput, setHighlightInput] = useState("");
   const [currentpropertytype, setCurrentPropertytype] = useState(1);
+  const [sidebaropen, setSidebarOpen] = useState(false);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -134,7 +135,7 @@ const Page = () => {
 
   return (
     <>
-      <AdminHeader />
+      <AdminHeader sidebaropen={sidebaropen} setSidebarOpen={setSidebarOpen} />
       <ToastContainer
         position="top-center"
         style={{ top: "0vh", zIndex: 9999999999999 }}
@@ -505,7 +506,7 @@ const Page = () => {
             </ul>
           </div>
 
-          
+
           {/* Amenities Section */}
           {currentpropertytype != 3 && (
             <div className="mb-4">
