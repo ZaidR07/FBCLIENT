@@ -53,7 +53,7 @@ const Page = () => {
   };
 
   return (
-    <div className="mt-[12vh]">
+    <div className="flex relative mt-[12vh]">
       <AdminHeader sidebaropen={sidebaropen} setSidebarOpen={setSidebarOpen} />
       <ToastContainer
         position="top-center"
@@ -65,7 +65,9 @@ const Page = () => {
         draggable
       />
 
-      <section className=" px-4 py-4 bg-white shadow-lg rounded-lg w-[90%] mx-auto mt-6">
+      <section className={` py-4 bg-white shadow-lg rounded-lg  mx-auto mt-6 px-[5%] ${
+          sidebaropen ? "lg:w-[77%]" : "lg:w-[90%]"
+        }`}>
         <h2 className="text-xl text-[#FF5D00] text-center font-semibold mb-4">
           Carousel Images
         </h2>

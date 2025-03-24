@@ -57,7 +57,7 @@ const AdminHeader = ({ sidebaropen, setSidebarOpen }) => {
   return (
     <>
       {/* Top Bar */}
-      <div className="bg-white w-full  h-[10vh] lg:h-[12vh] shadow-xl flex items-center z-[999999] fixed top-0">
+      <div className="bg-white w-full  h-[10vh] lg:h-[12vh] shadow-xl flex items-center z-[999999] fixed top-0 bottom-0">
         {/* Menu Icon */}
         <svg
           xmlns="http://www.w3.org/2000/svg"

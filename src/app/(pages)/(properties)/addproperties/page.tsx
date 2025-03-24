@@ -134,7 +134,7 @@ const Page = () => {
   }, []);
 
   return (
-    <>
+    <div className="flex relative lg:top-[12vh]">
       <AdminHeader sidebaropen={sidebaropen} setSidebarOpen={setSidebarOpen} />
       <ToastContainer
         position="top-center"
@@ -145,7 +145,11 @@ const Page = () => {
         pauseOnHover
         draggable
       />
-      <div className="w-full min-h-[90vh] bg-gray-200 px-[6%] py-[5vh] mt-[8vh]">
+      <div
+        className={`w-full min-h-[90vh] bg-gray-200 px-[6%] py-[5vh] ${
+          sidebaropen ? "lg:w-[77%]" : "lg:w-[90%]"
+        }`}
+      >
         <h1 className="text-2xl text-center mb-5 text-[#FF5D00]">
           Add Property
         </h1>
@@ -506,7 +510,6 @@ const Page = () => {
             </ul>
           </div>
 
-
           {/* Amenities Section */}
           {currentpropertytype != 3 && (
             <div className="mb-4">
@@ -564,7 +567,7 @@ const Page = () => {
         </form>
       </div>
       {forbox && (
-        <div className="absolute top-[35vh] left-[15%] w-[70%] bg-[#FF5D00] shadow-lg rounded-xl px-8 py-4">
+        <div className="absolute top-[35vh] left-[15%] w-[70%] lg:w-[40%] lg:left-[30%] bg-[#FF5D00] shadow-lg rounded-xl px-8 py-4">
           <h1 className="text-center font-bold text-white">Listing For</h1>
           <div className="w-full mt-2 flex justify-between">
             <button
@@ -598,7 +601,7 @@ const Page = () => {
           </div>
         </div>
       )}
-    </>
+    </div>
   );
 };
 

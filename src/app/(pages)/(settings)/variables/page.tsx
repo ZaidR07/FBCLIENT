@@ -200,7 +200,7 @@ const Page = () => {
   );
 
   return (
-    <div className="bg-gray-200 w-full min-h-screen">
+    <div className="bg-gray-200 w-full min-h-screen lg:mt-[12vh] lg:flex">
       <AdminHeader sidebaropen={sidebaropen} setSidebarOpen={setSidebarOpen} />
       <ToastContainer
         position="top-right"
@@ -209,7 +209,9 @@ const Page = () => {
         className="z-[9999999]"
       />
 
-      <div className="px-[5%] py-[5vh] mt-[10vh]">
+      <div className={`px-[5%] py-[5vh] mt-[10vh] lg:mt-0 ${
+          sidebaropen ? "lg:w-[77%]" : "lg:w-[90%]"
+        }`}>
         <form
           className="bg-white shadow-xl rounded-lg px-[5%] py-[2vh]"
           onSubmit={handleSubmit}

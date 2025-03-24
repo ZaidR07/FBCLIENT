@@ -89,8 +89,6 @@ const Page = () => {
     fetchbrokerslist();
   }, []);
 
-  
-
   // Table Columns Definition
   const columns = [
     // {
@@ -132,8 +130,13 @@ const Page = () => {
   ];
 
   return (
-    <>
-      <div className="mt-[10vh] px-4 sm:px-[5%] py-[5vh]">
+    <div className="lg:flex max-w-full relative lg:top-[12vh]">
+      <AdminHeader sidebaropen={sidebaropen} setSidebarOpen={setSidebarOpen} />
+      <div
+        className={` px-4 sm:px-[5%] py-[5vh] ${
+          sidebaropen ? "lg:w-[77%]" : "lg:w-[90%]"
+        }`}
+      >
         <input
           type="search"
           className="border border-[#FF5D00] mb-[3vh] rounded-xl px-3 py-1 w-full sm:max-w-[50%] block mx-auto text-sm sm:text-base"
@@ -141,47 +144,45 @@ const Page = () => {
           onChange={(e) => filtersearch(e.target.value)}
         />
 
-        <div className="overflow-x-auto">
-          <DataTable
-            paginationPerPage={10}
-            columns={columns}
-            data={displaybrokerlist}
-            pagination
-            customStyles={{
-              headRow: {
-                style: {
-                  backgroundColor: "#f87123",
-                  fontWeight: "bold",
-                  fontSize: "14px",
-                  textAlign: "left",
-                  padding: "15px",
-                },
+        <DataTable
+          paginationPerPage={10}
+          columns={columns}
+          data={displaybrokerlist}
+          pagination
+          customStyles={{
+            headRow: {
+              style: {
+                backgroundColor: "#f87123",
+                fontWeight: "bold",
+                fontSize: "14px",
+                textAlign: "left",
+                padding: "15px",
               },
-              headCells: {
-                style: {
-                  padding: "0px", // ✅ Removes padding from head row cells
-                  textAlign: "left",
-                },
+            },
+            headCells: {
+              style: {
+                padding: "0px", // ✅ Removes padding from head row cells
+                textAlign: "left",
               },
+            },
 
-              rows: {
-                style: {
-                  minHeight: "40px",
-                  fontSize: "12px",
-                  padding: "5px",
-                },
+            rows: {
+              style: {
+                minHeight: "40px",
+                fontSize: "12px",
+                padding: "5px",
               },
-              cells: {
-                style: {
-                  padding: "8px",
-                  textAlign: "left",
-                },
+            },
+            cells: {
+              style: {
+                padding: "8px",
+                textAlign: "left",
               },
-            }}
-          />
-        </div>
+            },
+          }}
+        />
       </div>
-      <AdminHeader sidebaropen={sidebaropen} setSidebarOpen={setSidebarOpen} />
+
       <ToastContainer
         position="top-right"
         autoClose={3000}
@@ -190,7 +191,7 @@ const Page = () => {
         pauseOnHover
         draggable
       />
-    </>
+    </div>
   );
 };
 

@@ -6,29 +6,20 @@ import { uri } from "@/constant";
 import axios from "axios";
 
 const columns = [
-    { name: "Society Name", selector: (row) => row.Societyname , width : "150px" },
-    { 
-      name: "Area", 
-      selector: (row) => `${row.area} ${row.areaunits}`, 
-      sortable: true 
-    },
-    { name: "Bedrooms", selector: (row) => row.bedrooms , width : "100px" },
-    { name: "Floor No.", selector: (row) => row.floor },
-    { name: "Total Floor", selector: (row) => row.buildingfloors },
-    { name: "Property Type", selector: (row) => row.type },
+  { name: "Society Name", selector: (row) => row.Societyname, width: "150px" },
+  {
+    name: "Area",
+    selector: (row) => `${row.area} ${row.areaunits}`,
+    sortable: true,
+  },
+  { name: "Bedrooms", selector: (row) => row.bedrooms, width: "100px" },
+  { name: "Floor No.", selector: (row) => row.floor },
+  { name: "Total Floor", selector: (row) => row.buildingfloors },
+  { name: "Property Type", selector: (row) => row.type },
 
-
-    
-
-    { name: "Price", selector: (row) => row.price },
-    { name: "Listed By", selector: (row) => row.listedby },
-   
-
-
-
-
-  ];
-  
+  { name: "Price", selector: (row) => row.price },
+  { name: "Listed By", selector: (row) => row.listedby },
+];
 
 const customStyles = {
   headRow: {
@@ -61,9 +52,9 @@ const Page = () => {
           )
         )
       );
-      return
+      return;
     }
-    setDisplayBrokerslist(brokerslist)
+    setDisplayBrokerslist(brokerslist);
   };
 
   useEffect(() => {
@@ -74,9 +65,13 @@ const Page = () => {
   if (!isClient) return null; // Avoids rendering until hydration completes
 
   return (
-    <div>
+    <div className="lg:flex relative lg:top-[12vh] bg-[#fff]">
       <AdminHeader sidebaropen={sidebaropen} setSidebarOpen={setSidebarOpen} />
-      <div className="min-h-screen mt-[10vh] px-[5%] py-[5vh] bg-gray-200">
+      <div
+        className={`min-h-screen  px-[5%] py-[5vh] bg-gray-200 ${
+          sidebaropen ? "lg:w-[77%]" : "lg:w-[90%]"
+        } `}
+      >
         <input
           type="search"
           name=""
@@ -93,7 +88,6 @@ const Page = () => {
           customStyles={customStyles}
         />
       </div>
-      
     </div>
   );
 };

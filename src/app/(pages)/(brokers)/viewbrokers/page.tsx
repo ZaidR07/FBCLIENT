@@ -65,7 +65,7 @@ const Page = () => {
   if (!isClient) return null; // Avoids rendering until hydration completes
 
   return (
-    <div className="flex relative lg:top-[12vh]">
+    <div className="lg:mt-[12vh] lg:flex">
       <AdminHeader sidebaropen={sidebaropen} setSidebarOpen={setSidebarOpen} />
 
       <div
