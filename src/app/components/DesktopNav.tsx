@@ -7,6 +7,8 @@ import { useRouter } from "next/navigation";
 import Register from "./Register";
 import axios from "axios";
 import { uri } from "@/constant";
+import Cookies from "js-cookie"; // Import js-cookie
+import Profile from "./Profile";
 
 const TrendIcon = () => {
   return (
@@ -67,6 +69,27 @@ const DesktopNav = () => {
   useEffect(() => {
     loaddata();
   }, [loaddata]);
+
+  const [user, setUser] = useState(null); // State for user
+
+  const userCookie = Cookies.get("user"); // Using js-cookie
+
+  const getUserCookie = () => {
+    
+
+    if (userCookie) {
+      try {
+        setUser(JSON.parse(decodeURIComponent(userCookie))); // Parse JSON safely
+      } catch {
+        setUser(userCookie); // Fallback if not JSON
+      }
+    }
+  };
+
+  // Extract user from cookies
+  useEffect(() => {
+    getUserCookie()
+  }, [userCookie]);
 
   return (
     <nav className="relative hidden w-full h-full lg:flex  items-center  px-[5vw] ">
@@ -375,12 +398,16 @@ const DesktopNav = () => {
             Help
           </li>
         </ul>
-        <button
-          className="text-lg text-white px-6 py-2 bg-[#FF5D00] rounded-md"
-          onClick={() => setRegisterOpen(true)}
-        >
-          Sign up
-        </button>
+        {user ? (
+          <Profile user={user} />
+        ) : (
+          <button
+            className="text-lg text-white px-6 py-2 bg-[#FF5D00] rounded-md"
+            onClick={() => setRegisterOpen(true)}
+          >
+            Sign up
+          </button>
+        )}
       </div>
     </nav>
   );

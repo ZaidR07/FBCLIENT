@@ -9,6 +9,7 @@ import Searchsection from "./components/SearchSection";
 import RecentlyListed from "./components/RecentlyListed";
 import NumberBar from "./components/NumberBar";
 import Footer from "./components/Footer";
+import Profile from "./components/Profile";
 
 import PropertyTypes from "./components/PropertyTypes";
 
@@ -17,7 +18,7 @@ import { useRouter } from "next/navigation";
 import Register from "./components/Register";
 
 import FeaturedBrokers from "./components/FeaturedBrokers";
-
+import Cookies from "js-cookie"; // Import js-cookie
 
 const HomeIcon = () => {
   return (
@@ -57,10 +58,28 @@ const KeyIcon = () => (
 const Page = () => {
   const [companyInfo, setCompanyInfo] = useState({ carousel: [] });
 
-  const [ registeropen , setRegisterOpen ] = useState(false);
+  const [registeropen, setRegisterOpen] = useState(false);
+
+  const [user, setUser] = useState(null); // State for user
 
   const router = useRouter(); // Initialize router
 
+  const userCookie = Cookies.get("user"); // Using js-cookie
+
+  const getUserCookie = () => {
+    if (userCookie) {
+      try {
+        setUser(JSON.parse(decodeURIComponent(userCookie))); // Parse JSON safely
+      } catch {
+        setUser(userCookie); // Fallback if not JSON
+      }
+    }
+  };
+
+  // Extract user from cookies
+  useEffect(() => {
+    getUserCookie();
+  }, [userCookie]);
 
   const handleLoad = async () => {
     try {
@@ -87,40 +106,60 @@ const Page = () => {
       <Header />
       <nav className="lg:hidden w-full mt-[8vh]  h-[6vh] bg-[#FF5D00] shadow-2xl flex items-center justify-between px-4">
         <div className="flex gap-4">
-          <button onClick={() => router.push("/buyproperties?view=Sale")} className="flex gap-1 items-center px-2 py-1 bg-white text-[#FF5D00] rounded-xl">
+          <button
+            onClick={() => router.push("/buyproperties?view=Sale")}
+            className="flex gap-1 items-center px-2 py-1 bg-white text-[#FF5D00] rounded-xl"
+          >
             <HomeIcon />
             <span className="text-sm">Buy</span>
           </button>
-          <button onClick={() => router.push("/buyproperties?view=Rent")} className="flex gap-1 items-center px-2 py-1 bg-white text-[#FF5D00] rounded-xl">
+          <button
+            onClick={() => router.push("/buyproperties?view=Rent")}
+            className="flex gap-1 items-center px-2 py-1 bg-white text-[#FF5D00] rounded-xl"
+          >
             <KeyIcon />
             <span className="text-sm">Rent</span>
           </button>
-          <button onClick={() => router.push("/buyproperties?view=Pg")} className="flex gap-1 items-center px-2 py-1 bg-white text-[#FF5D00] rounded-xl">
+          <button
+            onClick={() => router.push("/buyproperties?view=Pg")}
+            className="flex gap-1 items-center px-2 py-1 bg-white text-[#FF5D00] rounded-xl"
+          >
             <BedIcon />
             <span className="text-sm">PG</span>
           </button>
         </div>
-        <button onClick={() => setRegisterOpen(true)} className="text-white text-xl font-bold">Sign Up</button>
+
+        {user ? (
+          <Profile user={user} />
+        ) : (
+
+        <button
+          onClick={() => setRegisterOpen(true)}
+          className="text-white text-xl font-bold"
+        >
+          Sign Up
+        </button>
+        )}
       </nav>
       <section className="mt-1 lg:mt-[16vh] px-[1%] rounded-md">
         {/* <CarouselComponent companyInfo={companyInfo} /> */}
-        <CarouselComponent/>
+        <CarouselComponent />
         <Searchsection />
       </section>
       <section className="mt-[4vh]">
         <RecentlyListed />
       </section>
       <section>
-        <PropertyTypes/>
+        <PropertyTypes />
       </section>
       <section className="mt-[4vh]">
         <NumberBar />
       </section>
-      <Register registeropen = {registeropen} setRegisterOpen = {setRegisterOpen}/>
+      <Register registeropen={registeropen} setRegisterOpen={setRegisterOpen} />
 
-      <FeaturedBrokers/>
-      
-      <Footer/>
+      <FeaturedBrokers />
+
+      <Footer />
     </>
   );
 };

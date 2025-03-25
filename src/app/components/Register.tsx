@@ -26,9 +26,11 @@ const Register = ({ registeropen, setRegisterOpen }) => {
     e.preventDefault();
 
     try {
-      const response = await axios.post(`${uri}Registeruser`, {
-        payload: formdata
-      });
+      const response = await axios.post(
+        `${uri}Registeruser`,
+        { payload: formdata },
+        { withCredentials: true } // Ensures cookies are stored
+      );
 
       if (response.status === 200) {
         toast.success(response.data.message);
