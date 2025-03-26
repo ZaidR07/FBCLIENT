@@ -157,19 +157,24 @@ const Page = () => {
           type="button"
           className="ml-2 max-w-[18%] px-4 py-1 rounded-md text-white bg-[#f3701f] hover:bg-[#d95b17] transition"
           onClick={() => {
-            const inputElement = document.getElementById(name) as HTMLInputElement | null;
-            const categoryElement = document.getElementById(`${name}-category`) as HTMLSelectElement | null;
-          
+            const inputElement = document.getElementById(
+              name
+            ) as HTMLInputElement | null;
+            const categoryElement = document.getElementById(
+              `${name}-category`
+            ) as HTMLSelectElement | null;
+
             if (inputElement) {
               handleAddItem(
                 name,
                 inputElement.value,
-                name === "propertytypelist" && categoryElement ? parseInt(categoryElement.value) : null
+                name === "propertytypelist" && categoryElement
+                  ? parseInt(categoryElement.value)
+                  : null
               );
               inputElement.value = ""; // Clear input field after adding
             }
           }}
-          
         >
           Add
         </button>
@@ -209,9 +214,11 @@ const Page = () => {
         className="z-[9999999]"
       />
 
-      <div className={`px-[5%] py-[5vh] mt-[10vh] lg:mt-0 ${
+      <div
+        className={`px-[5%] py-[5vh] mt-[10vh] lg:mt-0 ${
           sidebaropen ? "lg:w-[77%]" : "lg:w-[90%]"
-        }`}>
+        }`}
+      >
         <form
           className="bg-white shadow-xl rounded-lg px-[5%] py-[2vh]"
           onSubmit={handleSubmit}
@@ -243,7 +250,11 @@ const Page = () => {
             "furnishingstatuslist",
             "Enter Furnishing Type"
           )}
-          {renderInputSection("Train Line", "linelist", "Enter Local train line")}
+          {renderInputSection(
+            "Train Line",
+            "linelist",
+            "Enter Local train line"
+          )}
           {renderInputSection("Location", "locationlist", "Example: Goregaon")}
 
           <div className="mt-6 text-center">
