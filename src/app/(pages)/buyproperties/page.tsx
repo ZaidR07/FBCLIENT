@@ -17,8 +17,6 @@ import {
   SortIcon,
 } from "@/app/Icons";
 
-const windowwidth = window.innerWidth;
-
 const Dropdown = ({ label, options, selected, onSelect }) => {
   const [isOpen, setIsOpen] = useState(false);
 
@@ -178,6 +176,16 @@ const Page = () => {
     furnishingstatuslist: [],
     purchasetypelist: [],
   });
+
+  const [windowwidth, setWindowWidth] = useState(0);
+
+  useEffect(() => {
+    // This code only runs on the client side
+    setWindowWidth(window.innerWidth);
+    const handleResize = () => setWindowWidth(window.innerWidth);
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
   // Get query parameters on component mount and set state
   useEffect(() => {

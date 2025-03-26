@@ -8,9 +8,6 @@ import { uri } from "@/constant";
 import { RupeeIcon, RulerIcon, HomeIcon } from "@/app/Icons";
 import { ToastContainer, toast } from "react-toastify";
 
-const windowwidth = window.innerWidth;
-
-
 const FillHeartIcon = ({ property_id, removeFromWishlist }) => {
   return (
     <svg
@@ -46,6 +43,9 @@ const Page = () => {
   const [loading, setLoading] = useState(true);
   const [propertylist, setPropertylist] = useState([]);
 
+  const [windowwidth, setWindowWidth] = useState(0);
+
+
   const loaddata = useCallback(async () => {
     if (!email) return;
 
@@ -68,6 +68,15 @@ const Page = () => {
   useEffect(() => {
     loaddata();
   }, [loaddata]);
+
+
+  useEffect(() => {
+    // This code only runs on the client side
+    setWindowWidth(window.innerWidth);
+    const handleResize = () => setWindowWidth(window.innerWidth);
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
   const removeFromWishlist = async (property_id) => {
     try {
