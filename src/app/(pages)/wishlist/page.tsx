@@ -8,12 +8,10 @@ import { uri } from "@/constant";
 import { RupeeIcon, RulerIcon, HomeIcon } from "@/app/Icons";
 import { ToastContainer, toast } from "react-toastify";
 
-const FillHeartIcon = ({property_id , removeFromWishlist}) => {
+const windowwidth = window.innerWidth;
 
 
-
-
-  
+const FillHeartIcon = ({ property_id, removeFromWishlist }) => {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
@@ -73,33 +71,29 @@ const Page = () => {
 
   const removeFromWishlist = async (property_id) => {
     try {
-      if(!property_id){
+      if (!property_id) {
         alert("something Went Wrong");
-        return
+        return;
       }
-      const response = await axios.post(`${uri}removewishlist`,{
-        property_id : property_id , email : email
-      })
+      const response = await axios.post(`${uri}removewishlist`, {
+        property_id: property_id,
+        email: email,
+      });
 
-      if(response.status != 200){
+      if (response.status != 200) {
         toast.error(response.data.message);
-        return
+        return;
       }
 
       toast.success(response.data.message);
 
-      setPropertylist(propertylist.filter((item) => item.property_id != property_id)); 
-
-
-
-
-
-
+      setPropertylist(
+        propertylist.filter((item) => item.property_id != property_id)
+      );
     } catch {
-        toast.error("something Went Wrong");
-      
+      toast.error("something Went Wrong");
     }
-  }
+  };
 
   return (
     <div className="bg-gray-100 mt-[8vh] lg:mt-[14vh] lg:pt-[5vh] min-h-screen">
@@ -110,7 +104,7 @@ const Page = () => {
         hideProgressBar
         className="z-[9999999]"
       />
-      <div className="px-[5%] py-[5vh]">
+      <div className="px-[10%] py-[5vh] flex flex-col gap-4">
         {loading ? (
           <div>Loading...</div>
         ) : propertylist?.length > 0 ? (
@@ -119,33 +113,56 @@ const Page = () => {
               className="w-full border-2  border-gray-300 shadow-md rounded-xl flex items-center gap-[4%] justify-between px-[2.5%] pb-4 pt-3 bg-white relative"
               key={index}
             >
-              <FillHeartIcon removeFromWishlist = {removeFromWishlist}  property_id = {item.property_id}/>
-              <div className=" max-w-[35%] h-full bg-yellow-300 rounded-xl">
+              <FillHeartIcon
+                removeFromWishlist={removeFromWishlist}
+                property_id={item.property_id}
+              />
+              <div className="w-[35%] h-full bg-yellow-300 rounded-xl">
                 <img
                   src={item.images[0]}
-                  className="h-[15vh] min-w-[30vw] object-cover"
+                  className="h-[15vh] lg:h-[40vh] w-[100%]   object-cover"
                   alt=""
                 />
               </div>
-              <div className="w-[57%] relative">
-                <span className="text-lg block">{item.Societyname}</span>
+              <div className="w-[57%] relative lg:flex lg:gap-2 lg:flex-col">
+                <span className="text-lg block lg:text-2xl xl:text-3xl">
+                  {item.Societyname}
+                </span>
 
-                <span className="text-gray-500">{item.address}</span>
-                <div className="mt-1 flex gap-3">
-                  <div className="flex gap-1">
-                    <RulerIcon width={20} fill="#FF5D00" />
-                    <span className="text-sm">{item.area}</span>
-                    <span className="text-sm">{item.areaunits}</span>
+                <span className="text-gray-500 lg:text-xl">{item.address}</span>
+                <div className="mt-1 flex gap-3 lg:gap-6">
+                  <div className="flex gap-1 lg:gap-2">
+                    <RulerIcon
+                      width={windowwidth < 800 ? 12 : 25}
+                      fill="#FF5D00"
+                    />
+                    <span className="text-sm lg:text-xl xl:text-2xl">
+                      {item.area}
+                    </span>
+                    <span className="text-sm lg:text-xl xl:text-2xl">
+                      {item.areaunits}
+                    </span>
                   </div>
                   <div className="flex gap-1">
-                    <HomeIcon width={20} fill="#FF5D00" />
-                    <span className="text-sm">{item.bedrooms}</span>
+                    <HomeIcon
+                      width={windowwidth < 800 ? 12 : 25}
+                      fill="#FF5D00"
+                    />
+                    <span className="text-sm lg:text-xl xl:text-2xl">
+                      {item.bedrooms || "NA"}
+                    </span>
                   </div>
                 </div>
                 <div className="flex gap-2 mt-2">
-                  <RupeeIcon width={12} fill="#FF5D00" />
-                  <span className="text-sm">{item.price}</span>
+                  <RupeeIcon
+                    width={windowwidth < 800 ? 12 : 20}
+                    fill="#FF5D00"
+                  />
+                  <span className="text-sm lg:text-xl xl:text-2xl">
+                    {item.price}
+                  </span>
                 </div>
+
                 {/* Highlights Section  */}
                 <div className="mt-1">
                   <span>Highlights:</span>
@@ -161,7 +178,7 @@ const Page = () => {
                   )}
                 </div>
 
-                <button className="mt-2 px-3 py-1 bg-[#FF5D00] text-white rounded text-sm">
+                <button className="mt-2 px-3 py-1 lg:py-2 bg-[#FF5D00] text-white rounded text-sm lg:max-w-[40%]">
                   View Details
                 </button>
               </div>

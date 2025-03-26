@@ -6,7 +6,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import axios from "axios";
 import { uri } from "@/constant";
 import { useCallback } from "react";
-import QueryParamsHandler from "@/app/components/SearchParameters";
+import { QueryParamsHandler } from "@/app/components/SearchParameters";
 import {
   RupeeIcon,
   HomeIcon,
@@ -16,6 +16,8 @@ import {
   FilterIcon,
   SortIcon,
 } from "@/app/Icons";
+
+const windowwidth = window.innerWidth;
 
 const Dropdown = ({ label, options, selected, onSelect }) => {
   const [isOpen, setIsOpen] = useState(false);
@@ -32,23 +34,36 @@ const Dropdown = ({ label, options, selected, onSelect }) => {
       <AnimatePresence>
         {isOpen && (
           <motion.ul
-            className="absolute min-w-[100%] bg-white border-2 border-gray-300 mt-1 rounded-lg shadow-lg z-40"
+            className="absolute  bg-white border-2 border-gray-300 mt-1 rounded-lg shadow-lg z-30"
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -10 }}
           >
-            {options.map((option) => (
-              <li
-                key={option}
-                className="px-3 py-2 hover:bg-gray-200 cursor-pointer"
-                onClick={() => {
-                  onSelect(option);
-                  setIsOpen(false);
-                }}
-              >
-                {option}
-              </li>
-            ))}
+            {options.map((option, index) =>
+              label === "Type" ? (
+                <li
+                  key={index}
+                  className="px-3 py-2 hover:bg-gray-200 cursor-pointer"
+                  onClick={() => {
+                    onSelect(option.name);
+                    setIsOpen(false);
+                  }}
+                >
+                  {option.name}
+                </li>
+              ) : (
+                <li
+                  key={index}
+                  className="px-3 py-2 hover:bg-gray-200 cursor-pointer"
+                  onClick={() => {
+                    onSelect(option);
+                    setIsOpen(false);
+                  }}
+                >
+                  {option}
+                </li>
+              )
+            )}
           </motion.ul>
         )}
       </AnimatePresence>
@@ -117,7 +132,7 @@ const PriceDropdown = ({ onApply }) => {
                 }}
                 className="bg-[#f3701f] text-white py-2 px-4 rounded-lg"
               >
-                Apply
+                Close
               </button>
             </div>
           </motion.div>
@@ -142,8 +157,10 @@ const Page = () => {
   const [bhkValue, setBhkValue] = useState("Bedrooms");
   const [propertyValue, setPropertyValue] = useState("Type");
   const [constructionstatusvalues, setConstructionStatusValues] = useState([]);
-  const [postedbyValues, setPostedbyValues] = useState([]);
+  const [furnishingstatusValues, setFurnishingStatusValues] = useState([]);
   const [amenitiesvalues, setAmenitiesValues] = useState([]);
+
+  const [purchasetypevalues, setPurchaseTypeValues] = useState([]);
 
   const [range, setRange] = useState([100, 10000]); // Default min-max values
   const [priceRange, setPriceRange] = useState([0, 1000000000]); // Price range state
@@ -158,6 +175,8 @@ const Page = () => {
     propertytypelist: [],
     constructionstatuslist: [],
     amenitieslist: [],
+    furnishingstatuslist: [],
+    purchasetypelist: [],
   });
 
   // Get query parameters on component mount and set state
@@ -210,7 +229,7 @@ const Page = () => {
 
       if (type)
         filteredList = filteredList.filter((item) => item.type === type);
-      
+
       if (view) filteredList = filteredList.filter((item) => item.for === view);
 
       if (search) {
@@ -251,7 +270,6 @@ const Page = () => {
     return () => clearInterval(interval);
   }, []);
 
-
   const filterpropertylist = () => {
     let newlist = originalpropertiesList;
 
@@ -262,7 +280,6 @@ const Page = () => {
     if (propertyValue && propertyValue !== "Type") {
       newlist = newlist.filter((item) => item.type == propertyValue);
     }
-
 
     if (constructionstatusvalues && constructionstatusvalues.length > 0) {
       newlist = newlist.filter((item) =>
@@ -277,6 +294,20 @@ const Page = () => {
       );
     }
 
+    // Filter by furnishing status
+    if (furnishingstatusValues && furnishingstatusValues.length > 0) {
+      newlist = newlist.filter((item) =>
+        furnishingstatusValues.includes(item.furnishing)
+      );
+    }
+
+    // Filter by Purchase Type
+    if (purchasetypevalues && purchasetypevalues.length > 0) {
+      newlist = newlist.filter((item) =>
+        purchasetypevalues.includes(item.purchasetype)
+      );
+    }
+
     // Filter by Price Range
     if (priceRange) {
       newlist = newlist.filter(
@@ -288,8 +319,15 @@ const Page = () => {
   };
 
   useEffect(() => {
-    filterpropertylist()
-  },[propertyValue , bhkValue , priceRange , constructionstatusvalues , amenitiesvalues])
+    filterpropertylist();
+  }, [
+    propertyValue,
+    bhkValue,
+    priceRange,
+    constructionstatusvalues,
+    amenitiesvalues,
+    furnishingstatusValues,
+  ]);
 
   const handleReset = () => {
     setBhkValue("Bedrooms");
@@ -299,18 +337,20 @@ const Page = () => {
     setRange([100, 10000]);
     setPriceRange([0, 10000000000]);
     setPropertiesList(originalpropertiesList);
+    setFurnishingStatusValues([]);
   };
 
   return (
     <div className="bg-gray-100 mt-[8vh] lg:mt-[14vh] lg:pt-[5vh] min-h-screen">
       <Header />
+
       <Suspense fallback={<div>Loading...</div>}>
         <QueryParamsHandler
-          onParams={({ type, view, search }) => {
+          onParams={useCallback(({ type, view, search }) => {
             setType(type);
             setView(view);
             setSearch(search);
-          }}
+          }, [])}
         />
       </Suspense>
       <nav className="lg:hidden w-full h-[8vh] bg-[#f3701f] shadow-2xl flex items-center justify-between px-4">
@@ -326,29 +366,6 @@ const Page = () => {
         <button className="text-white text-xl font-bold">Sign Up</button>
       </nav>
 
-      <section className="flex mt-[2vh] lg:mt-0 px-[5%] lg:px-[3%] w-full gap-1 lg:fixed">
-        <PriceDropdown
-          onApply={(range) => {
-            setPriceRange(range);
-            filterpropertylist();
-          }}
-        />
-        <Dropdown
-          label="BHK"
-          options={variables.bhklist || []}
-          selected={bhkValue}
-          onSelect={setBhkValue}
-        />
-        {type == "" && (
-          <Dropdown
-            label="Type"
-            options={variables.propertytypelist || []}
-            selected={propertyValue}
-            onSelect={setPropertyValue}
-          />
-        )}
-      </section>
-
       {/* Filter & Sort Buttons */}
       <div className="mt-[2vh] lg:mt-0  flex justify-between px-5">
         <button
@@ -363,10 +380,9 @@ const Page = () => {
           <SortIcon width={20} fill="#f3701f" />
         </button>
       </div>
-
       {/* Filter Sidebar  */}
       <div
-        className={`w-[60%] lg:w-[32%] min-h-[50vh] bg-[#fff] fixed rounded-2xl mt-[5vh]  z-10 pl-[8%] lg:px-[2%] py-5 border-2 border-[#f3701f] lg:border-gray-300 transition-transform duration-500 ease-in-out 
+        className={`w-[65%] lg:w-[30%] max-h-[55vh] lg:max-h-[70vh] bg-[#fff] fixed rounded-2xl mt-[12vh] lg:mt-[5vh] z-30 lg:z-0 pl-[8%] pr-4 lg:px-[2%] py-5 border-2 border-[#f3701f] lg:border-gray-300 transition-transform duration-500 ease-in-out overflow-y-scroll 
     lg:translate-x-[5%] ${
       filteropen ? "translate-x-[-10%]" : "-translate-x-full"
     }`}
@@ -399,7 +415,39 @@ const Page = () => {
             ))}
         </div>
 
+        {/* Purchase Type  */}
         <div>
+          <div className="mt-4 flex gap-3">
+            <span className="font-semibold text-lg">Purchase Type</span>
+
+            <AngleDownIcon width={20} fill="#000" />
+          </div>
+
+          {variables.purchasetypelist &&
+            variables.purchasetypelist.length > 0 &&
+            variables.purchasetypelist.map((item, index) => (
+              <div key={index} className="flex gap-2">
+                <div className="flex gap-2">
+                  <input
+                    type="checkbox"
+                    value={item}
+                    checked={furnishingstatusValues.includes(item)} // Check if item exists in state array
+                    onChange={(e) => {
+                      setFurnishingStatusValues(
+                        (prev) =>
+                          prev.includes(item)
+                            ? prev.filter((val) => val !== item) // Remove if already selected
+                            : [...prev, item] // Add if not selected
+                      );
+                    }}
+                  />
+                  <span>{item}</span>
+                </div>
+              </div>
+            ))}
+        </div>
+
+        <div className="mt-4">
           <div className="flex gap-3 items-center">
             <span className="font-semibold text-lg">Area</span>
             <AngleDownIcon width={20} fill="#000" />
@@ -446,14 +494,46 @@ const Page = () => {
           {variables.amenitieslist &&
             variables.amenitieslist.length > 0 &&
             variables.amenitieslist.map((item, index) => (
-              <div className="flex gap-2">
-                <div key={index} className="flex gap-2">
+              <div key={index} className="flex gap-2">
+                <div className="flex gap-2">
                   <input
                     type="checkbox"
                     value={item}
                     checked={amenitiesvalues.includes(item)} // Check if item exists in state array
                     onChange={(e) => {
                       setAmenitiesValues(
+                        (prev) =>
+                          prev.includes(item)
+                            ? prev.filter((val) => val !== item) // Remove if already selected
+                            : [...prev, item] // Add if not selected
+                      );
+                    }}
+                  />
+                  <span>{item}</span>
+                </div>
+              </div>
+            ))}
+        </div>
+
+        {/* Furnishing Status  */}
+        <div>
+          <div className="mt-4 flex gap-3">
+            <span className="font-semibold text-lg">Furnishing Status</span>
+
+            <AngleDownIcon width={20} fill="#000" />
+          </div>
+
+          {variables.furnishingstatuslist &&
+            variables.furnishingstatuslist.length > 0 &&
+            variables.furnishingstatuslist.map((item, index) => (
+              <div key={index} className="flex gap-2">
+                <div className="flex gap-2">
+                  <input
+                    type="checkbox"
+                    value={item}
+                    checked={furnishingstatusValues.includes(item)} // Check if item exists in state array
+                    onChange={(e) => {
+                      setFurnishingStatusValues(
                         (prev) =>
                           prev.includes(item)
                             ? prev.filter((val) => val !== item) // Remove if already selected
@@ -477,50 +557,91 @@ const Page = () => {
           </button>
           <button
             onClick={() => {
-
               setFilterOpen(false);
             }}
             className="bg-[#f3701f] py-2 px-4 rounded-xl text-white"
           >
-            Apply
+            Close
           </button>
         </div>
       </div>
 
+      <section className="flex mt-[2vh] lg:-mt-8  px-[5%] lg:px-[3%] w-full gap-2 lg:fixed">
+        <PriceDropdown
+          onApply={(range) => {
+            setPriceRange(range);
+            filterpropertylist();
+          }}
+        />
+        <Dropdown
+          label="BHK"
+          options={variables.bhklist || []}
+          selected={bhkValue}
+          onSelect={setBhkValue}
+        />
+        {type == "" && (
+          <Dropdown
+            label="Type"
+            options={variables.propertytypelist || []}
+            selected={propertyValue}
+            onSelect={setPropertyValue}
+          />
+        )}
+      </section>
       {/* Properties List */}
-      <section className=" px-[5%] lg:ml-[32%] py-5 flex flex-col gap-4">
+      <section className=" px-[5%] lg:ml-[30%] py-5 flex flex-col gap-4">
         {Array.isArray(propertiesList) && propertiesList.length > 0 ? (
           propertiesList.map((item, key) => (
             <div
               className="w-full border-2  border-gray-300 shadow-md rounded-xl flex items-center gap-[4%] justify-between px-[2.5%] pb-4 pt-3 bg-white"
               key={key}
             >
-              <div className=" max-w-[35%] h-full bg-yellow-300 rounded-xl">
+              <div className="w-[35%] h-full bg-yellow-300 rounded-xl">
                 <img
                   src={item.images[0]}
-                  className="h-[15vh] min-w-[30vw] object-cover"
+                  className="h-[15vh] lg:h-[40vh] w-[100%]   object-coverr"
                   alt=""
                 />
               </div>
-              <div className="w-[57%] relative">
-                <span className="text-lg block">{item.Societyname}</span>
+              <div className="w-[57%] relative lg:flex lg:gap-2 lg:flex-col">
+                <span className="text-lg block lg:text-2xl xl:text-3xl">
+                  {item.Societyname}
+                </span>
 
-                <span className="text-gray-500">{item.address}</span>
-                <div className="mt-1 flex gap-3">
-                  <div className="flex gap-1">
-                    <RulerIcon width={20} fill="#FF5D00" />
-                    <span className="text-sm">{item.area}</span>
-                    <span className="text-sm">{item.areaunits}</span>
+                <span className="text-gray-500 lg:text-xl">{item.address}</span>
+                <div className="mt-1 flex gap-3 lg:gap-6">
+                  <div className="flex gap-1 lg:gap-2">
+                    <RulerIcon
+                      width={windowwidth < 800 ? 12 : 25}
+                      fill="#FF5D00"
+                    />
+                    <span className="text-sm lg:text-xl xl:text-2xl">
+                      {item.area}
+                    </span>
+                    <span className="text-sm lg:text-xl xl:text-2xl">
+                      {item.areaunits}
+                    </span>
                   </div>
                   <div className="flex gap-1">
-                    <HomeIcon width={20} fill="#FF5D00" />
-                    <span className="text-sm">{item.bedrooms}</span>
+                    <HomeIcon
+                      width={windowwidth < 800 ? 12 : 25}
+                      fill="#FF5D00"
+                    />
+                    <span className="text-sm lg:text-xl xl:text-2xl">
+                      {item.bedrooms || "NA"}
+                    </span>
                   </div>
                 </div>
                 <div className="flex gap-2 mt-2">
-                  <RupeeIcon width={12} fill="#FF5D00" />
-                  <span className="text-sm">{item.price}</span>
+                  <RupeeIcon
+                    width={windowwidth < 800 ? 12 : 20}
+                    fill="#FF5D00"
+                  />
+                  <span className="text-sm lg:text-xl xl:text-2xl">
+                    {item.price}
+                  </span>
                 </div>
+
                 {/* Highlights Section  */}
                 <div className="mt-1">
                   <span>Highlights:</span>
@@ -536,7 +657,7 @@ const Page = () => {
                   )}
                 </div>
 
-                <button className="mt-2 px-3 py-1 bg-[#FF5D00] text-white rounded text-sm">
+                <button className="mt-2 px-3 py-1 lg:py-2 bg-[#FF5D00] text-white rounded text-sm lg:max-w-[40%]">
                   View Details
                 </button>
               </div>

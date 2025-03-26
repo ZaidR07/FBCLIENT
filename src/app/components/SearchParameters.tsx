@@ -1,17 +1,15 @@
 "use client";
-import { useSearchParams } from "next/navigation";
+import { useEffect } from "react";
 
-const QueryParamsHandler = ({ onParams }) => {
-  const searchParams = useSearchParams();
-  const type = searchParams.get("type") || "";
-  const view = searchParams.get("view") || "";
-  const search = searchParams.get("search") || "";
+export const QueryParamsHandler = ({ onParams }) => {
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    onParams({
+      type: params.get("type") || "",
+      view: params.get("view") || "",
+      search: params.get("search") || "",
+    });
+  }, [onParams]);
 
-
-  // Pass the query params to the parent
-  onParams({ type, view , search});
-
-  return null; // No UI needed
+  return null;
 };
-
-export default QueryParamsHandler;
