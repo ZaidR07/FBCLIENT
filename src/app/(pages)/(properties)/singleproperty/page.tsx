@@ -11,7 +11,28 @@ const PropertyDetails = () => {
   const property_id = searchParams.get("id");
   const router = useRouter();
 
-  const [property, setProperty] = useState([]);
+  const [property, setProperty] = useState({
+    images : [],
+    highlights : [],
+    price : "",
+    areaunits : "",
+    area : "",
+    bedrooms : "",
+    Societyname : "",
+    floor : "",
+    buildingfloors : "",
+    location : "",
+    address : "",
+    facing : "",
+    propertyage : "",
+    constructionstatus : "",
+    furnishing : "",
+    amenities : []
+
+
+
+    
+  });
   const [loading, setLoading] = useState(true);
   const [imageViewer, setImageViewer] = useState({ open: false, index: 0 });
 
@@ -27,6 +48,7 @@ const PropertyDetails = () => {
       if (response.data.payload) {
         setProperty(response.data.payload[0]);
       } else {
+        // @ts-ignore
         setProperty([]);
       }
     } catch (error) {
