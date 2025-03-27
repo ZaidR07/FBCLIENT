@@ -616,7 +616,9 @@ const Page = () => {
                   {item.Societyname}
                 </span>
 
-                <span className="text-gray-500 lg:text-xl">{item.address}</span>
+                <span className="text-gray-500 lg:text-xl">
+                  {item.location}
+                </span>
                 <div className="mt-1 flex gap-3 lg:gap-6">
                   <div className="flex gap-1 lg:gap-2">
                     <RulerIcon
@@ -650,14 +652,17 @@ const Page = () => {
                   </span>
                 </div>
 
-                {/* Highlights Section  */}
-                <div className="mt-1">
-                  <span>Highlights:</span>
+                {/* Highlights Section */}
+                <div className="mt-1 flex flex-wrap gap-1">
+                  <span>Highlights :</span>
                   {Array.isArray(item.highlights) &&
                   item.highlights.length > 0 ? (
                     item.highlights.map((highlight, index) => (
                       <div key={index}>
-                        <span>{highlight}</span>
+                        <span className="text-sm">
+                          {highlight}
+                          {index !== item.highlights.length - 1 && ", "}
+                        </span>
                       </div>
                     ))
                   ) : (
