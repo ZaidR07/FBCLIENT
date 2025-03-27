@@ -7,6 +7,7 @@ import axios from "axios";
 import { uri } from "@/constant";
 import { useCallback } from "react";
 import { QueryParamsHandler } from "@/app/components/SearchParameters";
+import { useRouter } from "next/navigation";
 import {
   RupeeIcon,
   HomeIcon,
@@ -145,6 +146,8 @@ const Page = () => {
     () => ["Enter Location...", "Enter Pincode...", "Enter Project..."],
     []
   );
+
+  const router = useRouter();
 
   const [type, setType] = useState("");
   const [view, setView] = useState("");
@@ -670,7 +673,7 @@ const Page = () => {
                   )}
                 </div>
 
-                <button className="mt-2 px-3 py-1 lg:py-2 bg-[#FF5D00] text-white rounded text-sm lg:max-w-[40%]">
+                <button onClick={() => router.push(`/singleproperty?id=${item.property_id}`)} className="mt-2 px-3 py-1 lg:py-2 bg-[#FF5D00] text-white rounded text-sm lg:max-w-[40%]">
                   View Details
                 </button>
               </div>
