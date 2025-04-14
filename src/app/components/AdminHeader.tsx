@@ -24,6 +24,13 @@ const nav = [
     subnav: ["View Properties", "Add Properties", "Remove Properties"],
   },
   {
+    icon: "user.svg",
+    name: "Vendors",
+    width: 40,
+    route: "viewvendors",
+    subnav: ["View Vendors", "Add Vendors", "Update/Remove Brokers"],
+  },
+  {
     icon: "settings.svg",
     name: "Settings",
     width: 50,
@@ -161,3 +168,4 @@ const AdminHeader = ({ sidebaropen, setSidebarOpen }) => {
 };
 
 export default AdminHeader;
+

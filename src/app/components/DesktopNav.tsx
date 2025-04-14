@@ -7,7 +7,7 @@ import { useRouter } from "next/navigation";
 import Register from "./Register";
 import axios from "axios";
 import { uri } from "@/constant";
-import Cookies from "js-cookie"; // Import js-cookie
+import Cookies from "js-cookie"; 
 import Profile from "./Profile";
 
 const TrendIcon = () => {
@@ -75,8 +75,6 @@ const DesktopNav = () => {
   const userCookie = Cookies.get("user"); // Using js-cookie
 
   const getUserCookie = () => {
-    
-
     if (userCookie) {
       try {
         setUser(JSON.parse(decodeURIComponent(userCookie))); // Parse JSON safely
@@ -88,7 +86,7 @@ const DesktopNav = () => {
 
   // Extract user from cookies
   useEffect(() => {
-    getUserCookie()
+    getUserCookie();
   }, [userCookie]);
 
   return (
@@ -164,16 +162,15 @@ const DesktopNav = () => {
                   propertytypelist
                     .filter((item) => item.category === currentcategory)
                     .map((item, index) => (
-                      <li
-                        key={index}
-                        onClick={() =>
-                          router.push(
-                            `/buyproperties?type=${item.name}&view=Sale`
-                          )
-                        }
-                        className="cursor-pointer py-2 "
-                      >
-                        {item.name}
+                      <li key={index} className="cursor-pointer py-2">
+                        <a
+                          href={`/buyproperties?type=${item.name}&view=Sale`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="block w-full"
+                        >
+                          {item.name}
+                        </a>
                       </li>
                     ))
                 ) : (
@@ -189,15 +186,17 @@ const DesktopNav = () => {
                 {locationlist?.length > 0 ? (
                   locationlist.map((item, index) => (
                     <div className="flex gap-2">
-                      <li
-                        key={index}
-                        onClick={() =>
-                          router.push(`/buyproperties?type=${item}&view=Sale`)
-                        }
-                        className="cursor-pointer py-2 "
-                      >
-                        {item}
+                      <li key={index} className="cursor-pointer py-2">
+                        <a
+                          href={`/buyproperties?type=${item}&view=Sale`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="block w-full"
+                        >
+                          {item}
+                        </a>
                       </li>
+
                       <TrendIcon />
                     </div>
                   ))
@@ -298,16 +297,15 @@ const DesktopNav = () => {
                   propertytypelist
                     .filter((item) => item.category === currentRentCategory)
                     .map((item, index) => (
-                      <li
-                        key={index}
-                        onClick={() =>
-                          router.push(
-                            `/buyproperties?type=${item.name}&view=Rent`
-                          )
-                        }
-                        className="cursor-pointer py-2"
-                      >
-                        {item.name}
+                      <li key={index} className="cursor-pointer py-2">
+                        <a
+                          href={`/buyproperties?type=${item.name}&view=Rent`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="block w-full"
+                        >
+                          {item.name}
+                        </a>
                       </li>
                     ))
                 ) : (
@@ -323,14 +321,17 @@ const DesktopNav = () => {
                 {locationlist?.length > 0 ? (
                   locationlist.map((item, index) => (
                     <div key={index} className="flex gap-2">
-                      <li
-                        onClick={() =>
-                          router.push(`/buyproperties?type=${item}&view=Rent`)
-                        }
-                        className="cursor-pointer py-2"
-                      >
-                        {item}
+                      <li className="cursor-pointer py-2">
+                        <a
+                          href={`/buyproperties?type=${item}&view=Rent`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="block w-full"
+                        >
+                          {item}
+                        </a>
                       </li>
+
                       <TrendIcon />
                     </div>
                   ))
@@ -362,7 +363,14 @@ const DesktopNav = () => {
         )}
 
         <li className="flex gap-2 cursor-pointer">
-          <span>PG</span>
+          <a
+            href={`/buyproperties?view=Pg`}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="block w-full"
+          >
+            PG
+          </a>{" "}
         </li>
         <li
           className="cursor-pointer"

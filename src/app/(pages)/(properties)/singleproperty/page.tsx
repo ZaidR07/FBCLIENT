@@ -28,9 +28,6 @@ const PropertyDetails = () => {
     constructionstatus : "",
     furnishing : "",
     amenities : []
-
-
-
     
   });
   const [loading, setLoading] = useState(true);

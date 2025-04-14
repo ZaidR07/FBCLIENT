@@ -21,19 +21,21 @@ const Page = () => {
   });
   const [sidebaropen, setSidebarOpen] = useState(false);
 
-  useEffect(() => {
-    const load = async () => {
-      try {
-        const response = await axios.get(`${uri}getvariables`);
-        if (response.status === 200) {
-          setVariables(response.data.payload || {});
-        } else {
-          toast.error(response.data.message);
-        }
-      } catch (error) {
-        toast.error("Error fetching variables");
+  const load = async () => {
+    try {
+      const response = await axios.get(`${uri}getvariables`);
+      if (response.status === 200) {
+        setVariables(response.data.payload || {});
+      } else {
+        toast.error(response.data.message);
       }
-    };
+    } catch (error) {
+      toast.error("Error fetching variables");
+    }
+  };
+
+  useEffect(() => {
+    
     load();
   }, []);
 
@@ -100,6 +102,7 @@ const Page = () => {
         linelist: [],
         locationlist: [],
       });
+      load()
     } catch (error) {
       toast.error("Something Went Wrong");
     }
@@ -249,6 +252,11 @@ const Page = () => {
             "Furnishing Type",
             "furnishingstatuslist",
             "Enter Furnishing Type"
+          )}
+           {renderInputSection(
+            "Posted By",
+            "postedbylist",
+            "Enter PostedBy type"
           )}
           {renderInputSection(
             "Train Line",

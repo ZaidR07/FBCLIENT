@@ -24,7 +24,10 @@ const Page = () => {
     amenities: [],
     facing: "",
     propertyage: "",
+    balconies: "",
+    bathrooms: "",
     price: "",
+    postedby: "Company",
     type: "", // Select field for property type
     constructionstatus: "",
     furnishing: "",
@@ -287,6 +290,48 @@ const Page = () => {
                 <option value="hectare">Hectare</option>
               </select>
             </div>
+          </div>
+
+          <div className="mb-4">
+            <label htmlFor="">
+              Bathrooms <span className="text-red-700 text-xl">*</span>
+            </label>
+
+            <select
+              name="bathrooms"
+              value={formdata.bathrooms}
+              onChange={handleChange}
+              className="border-b-2 border-black px-2 py-1 w-full"
+              required
+            >
+              <option value="">Select</option>
+              <option value="1">1</option>
+              <option value="2">2</option>
+              <option value="3">3</option>
+              <option value="4">4</option>
+              <option value="5">5</option>
+            </select>
+          </div>
+
+          <div className="mb-4">
+            <label htmlFor="">
+              Balconies <span className="text-red-700 text-xl">*</span>
+            </label>
+
+            <select
+              name="balconies"
+              value={formdata.balconies}
+              onChange={handleChange}
+              className="border-b-2 border-black px-2 py-1 w-full"
+              required
+            >
+              <option value="">Select</option>
+              <option value="1">1</option>
+              <option value="2">2</option>
+              <option value="3">3</option>
+              <option value="4">4</option>
+              <option value="5">5</option>
+            </select>
           </div>
 
           {forValue == "Sale" && currentpropertytype != 3 && (

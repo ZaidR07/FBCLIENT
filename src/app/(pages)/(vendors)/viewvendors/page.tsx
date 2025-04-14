@@ -7,10 +7,10 @@ import axios from "axios";
 
 const columns = [
   { name: "", cell: (row) => <img src={row.photo} alt="" />, width: "90px" },
-  { name: "Broker ID", selector: (row) => row.broker_id, width: "90px" },
+  { name: "Vendor ID", selector: (row) => row.vendor_id, width: "90px" },
   {
     name: "Name",
-    selector: (row) => row.brokername,
+    selector: (row) => row.vendorname,
     sortable: true,
     width: "150px",
   },
@@ -20,7 +20,6 @@ const columns = [
   { name: "Secondary Mobile", selector: (row) => row.mobile2 },
   { name: "Address", selector: (row) => row.address, width: "300px" }, // Example width
 ];
-
 
 const customStyles = {
   headRow: {
@@ -33,21 +32,21 @@ const customStyles = {
 
 const Page = () => {
   const [isClient, setIsClient] = useState(false);
-  const [brokerslist, setBrokerslist] = useState([]);
-  const [displaybrokerlist, setDisplayBrokerslist] = useState([]);
+  const [vendorslist, setVendorslist] = useState([]);
+  const [displayvendorslist, setDisplayVendorslist] = useState([]);
   const [sidebaropen, setSidebarOpen] = useState(false);
 
   const fetchbrokerslist = async () => {
-    const response = await axios.get(`${uri}getbrokers`);
-    setDisplayBrokerslist(response.data.payload);
-    setBrokerslist(response.data.payload);
+    const response = await axios.get(`${uri}getvendors`);
+    setDisplayVendorslist(response.data.payload);
+    setVendorslist(response.data.payload);
   };
 
   const filtersearch = (data) => {
     if (data) {
       const searchTerm = data.toLowerCase();
-      setDisplayBrokerslist(
-        displaybrokerlist.filter((item) =>
+      setDisplayVendorslist(
+        displayvendorslist.filter((item) =>
           Object.values(item).some((value) =>
             value?.toString().toLowerCase().includes(searchTerm)
           )
@@ -55,7 +54,7 @@ const Page = () => {
       );
       return;
     }
-    setDisplayBrokerslist(brokerslist);
+    setDisplayVendorslist(vendorslist);
   };
 
   useEffect(() => {
@@ -85,7 +84,7 @@ const Page = () => {
         <DataTable
           paginationPerPage={10}
           columns={columns}
-          data={displaybrokerlist}
+          data={displayvendorslist}
           pagination
           customStyles={customStyles}
         />

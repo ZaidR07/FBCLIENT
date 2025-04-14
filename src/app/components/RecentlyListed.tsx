@@ -4,6 +4,7 @@ import { useEffect, useState, useRef } from "react";
 import { priceconverter } from "@/utils/priceconverter";
 import { useRouter } from "next/navigation";
 
+
 import { AngleLeft, AngleRight } from "../Icons";
 
 const RecentlyListed = () => {

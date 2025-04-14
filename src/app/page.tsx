@@ -19,6 +19,7 @@ import Register from "./components/Register";
 
 import FeaturedBrokers from "./components/FeaturedBrokers";
 import Cookies from "js-cookie"; // Import js-cookie
+import Vendors from "./components/Vendors";
 
 const HomeIcon = () => {
   return (
@@ -151,6 +152,9 @@ const Page = () => {
       </section>
       <section>
         <PropertyTypes />
+      </section>
+      <section className="mt-[4vh]">
+        <Vendors/>
       </section>
       <section className="mt-[4vh]">
         <NumberBar />
