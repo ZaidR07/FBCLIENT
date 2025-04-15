@@ -126,7 +126,7 @@ const DesktopNav = () => {
 
   return (
     <nav className="relative hidden w-full h-full lg:flex  items-center ">
-      <ul className="flex w-[42.5%] max-w-[42.5%] gap-16 text-lg justify-end">
+      <ul className="flex w-[42.5%] max-w-[42.5%] gap-16 text-base justify-end">
         {/* Buy Dropdown */}
         <li
           className="flex gap-2 cursor-pointer"
@@ -417,8 +417,8 @@ const DesktopNav = () => {
       <div className="flex w-[10%] ml-[2.5vw] mr-[2.5vw] justify-center ">
         <Image
           src="/Fb_logo.jpg"
-          width={90}
-          height={90}
+          width={80}
+          height={80}
           alt="logo"
           className=""
           onClick={() => router.push("/")}
@@ -427,7 +427,7 @@ const DesktopNav = () => {
 
       
       <div className="flex gap-6 items-center w-[42.5%] max-w-[42.5%]">
-        <ul className="flex gap-6  text-lg 2xl:text-xl">
+        <ul className="flex gap-6  text-base 2xl:text-lg">
           <li className="cursor-pointer flex" onClick={() => router.push("/")}>
             <span>For&nbsp;Owners</span> <ChevronDown />
           </li>
