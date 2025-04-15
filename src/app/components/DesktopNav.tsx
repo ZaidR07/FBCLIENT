@@ -2,13 +2,17 @@
 
 import React, { useState, useEffect, useCallback } from "react";
 import Image from "next/image";
-import { AngleDown } from "../Icons";
+
 import { useRouter } from "next/navigation";
 import Register from "./Register";
 import axios from "axios";
 import { uri } from "@/constant";
-import Cookies from "js-cookie"; 
-import Profile from "./Profile";
+import Cookies from "js-cookie";
+
+import { ChevronDown } from "lucide-react";
+import { motion } from "framer-motion";
+import Sidebar from "./Sidebar";
+
 
 const TrendIcon = () => {
   return (
@@ -23,9 +27,38 @@ const TrendIcon = () => {
   );
 };
 
+const AngleDown = () => {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      viewBox="0 0 512 512"
+      width={20}
+      fill="#2b2a2a"
+    >
+      <path d="M233.4 406.6c12.5 12.5 32.8 12.5 45.3 0l192-192c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L256 338.7 86.6 169.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3l192 192z" />
+    </svg>
+  );
+};
+
+const HamIcon = ({ setOpenSidebar, opensidebar }) => {
+  return (
+    <motion.svg
+      xmlns="http://www.w3.org/2000/svg"
+      width={30}
+      fill="#130535ca"
+      viewBox="0 0 512 512"
+      className="cursor-pointer ml-[2vw]"
+      animate={{ scale: [0.8, 1.1, 0.8] }} // Enlarges and shrinks
+      transition={{ repeat: Infinity, duration: 1.2, ease: "easeInOut" }} // Smooth looping
+      onClick={() => setOpenSidebar(!opensidebar)} // Pass function to update state
+    >
+      <path d="M0 96C0 78.3 14.3 64 32 64l384 0c17.7 0 32 14.3 32 32s-14.3 32-32 32L32 128C14.3 128 0 113.7 0 96zM64 256c0-17.7 14.3-32 32-32l384 0c17.7 0 32 14.3 32 32s-14.3 32-32 32L96 288c-17.7 0-32-14.3-32-32zM448 416c0 17.7-14.3 32-32 32L32 448c-17.7 0-32-14.3-32-32s14.3-32 32-32l384 0c17.7 0 32 14.3 32 32z" />
+    </motion.svg>
+  );
+};
+
 const DesktopNav = () => {
   const router = useRouter();
-  const [registeropen, setRegisterOpen] = useState(false);
   const [buydropopen, setBuydropopen] = useState(false);
   const [rentdropopen, setRentdropopen] = useState(false); // State for Rent dropdown
   const [loading, setLoading] = useState(true);
@@ -34,6 +67,8 @@ const DesktopNav = () => {
   const [currentcategory, setCurrentCategory] = useState(1);
   const [currentRentCategory, setCurrentRentCategory] = useState(1); // State for Rent category
   const [locationlist, setLocationlist] = useState([]);
+
+  const [opensidebar ,  setOpenSidebar ] = useState();
 
   const loaddata = useCallback(async () => {
     try {
@@ -90,8 +125,8 @@ const DesktopNav = () => {
   }, [userCookie]);
 
   return (
-    <nav className="relative hidden w-full h-full lg:flex  items-center  px-[5vw] ">
-      <ul className="flex w-[35vw] gap-16 text-xl justify-end">
+    <nav className="relative hidden w-full h-full lg:flex  items-center ">
+      <ul className="flex w-[42.5%] max-w-[42.5%] gap-16 text-lg justify-end">
         {/* Buy Dropdown */}
         <li
           className="flex gap-2 cursor-pointer"
@@ -101,7 +136,7 @@ const DesktopNav = () => {
           }}
         >
           <span>Buy</span>
-          <AngleDown width={12} />
+          <AngleDown />
         </li>
         {buydropopen && !loading && (
           <div
@@ -236,7 +271,7 @@ const DesktopNav = () => {
           }}
         >
           <span>Rent</span>
-          <AngleDown width={12} />
+          <AngleDown />
         </li>
         {rentdropopen && !loading && (
           <div
@@ -379,7 +414,7 @@ const DesktopNav = () => {
           Find an Agent
         </li>
       </ul>
-      <div className="flex w-[10%] ml-[5vw] mr-[5vw] justify-center ">
+      <div className="flex w-[10%] ml-[2.5vw] mr-[2.5vw] justify-center ">
         <Image
           src="/Fb_logo.jpg"
           width={90}
@@ -390,33 +425,25 @@ const DesktopNav = () => {
         />
       </div>
 
-      <Register registeropen={registeropen} setRegisterOpen={setRegisterOpen} />
-      <div className="flex gap-16 items-center w-[35vw]">
-        <ul className="flex gap-16 text-xl">
-          <li className="cursor-pointer" onClick={() => router.push("/")}>
-            Home
-          </li>
-          <li className="cursor-pointer" onClick={() => router.push("/about")}>
-            About us
+      
+      <div className="flex gap-6 items-center w-[42.5%] max-w-[42.5%]">
+        <ul className="flex gap-6  text-lg 2xl:text-xl">
+          <li className="cursor-pointer flex" onClick={() => router.push("/")}>
+            <span>For&nbsp;Owners</span> <ChevronDown />
           </li>
           <li
-            className="cursor-pointer"
-            onClick={() => router.push("/contact")}
+            className="cursor-pointer flex"
+            onClick={() => router.push("/about")}
           >
-            Help
+            <span>For&nbsp;Dealers&nbsp;/&nbsp;Builders</span>
+            <ChevronDown />
           </li>
         </ul>
-        {user ? (
-          <Profile user={user} />
-        ) : (
-          <button
-            className="text-lg text-white px-6 py-2 bg-[#FF5D00] rounded-md"
-            onClick={() => setRegisterOpen(true)}
-          >
-            Sign up
-          </button>
-        )}
+        <button className="px-3.5 py-2 rounded-md bg-[#fdf3da] text-[#ff5d00]">Post Property</button>
+        <HamIcon opensidebar={opensidebar} setOpenSidebar={setOpenSidebar}/>
+        
       </div>
+      <Sidebar opensidebar={opensidebar} setOpenSidebar={setOpenSidebar}/>
     </nav>
   );
 };

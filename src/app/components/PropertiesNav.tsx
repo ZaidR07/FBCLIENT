@@ -8,23 +8,25 @@ import { useState, useEffect } from "react";
 import Cookies from "js-cookie";
 import Profile from "./Profile";
 import Register from "./Register";
+import Sidebar from "./Sidebar";
 
-const HamIcon = ({ opennav }) => {
+const HamIcon = ({ setOpenSidebar, opensidebar }) => {
   return (
     <motion.svg
       xmlns="http://www.w3.org/2000/svg"
       width={30}
       fill="#130535ca"
       viewBox="0 0 512 512"
-      className="cursor-pointer"
+      className="cursor-pointer ml-[2vw]"
       animate={{ scale: [0.8, 1.1, 0.8] }} // Enlarges and shrinks
       transition={{ repeat: Infinity, duration: 1.2, ease: "easeInOut" }} // Smooth looping
-      onClick={opennav} // Pass function to update state
+      onClick={() => setOpenSidebar(!opensidebar)} // Pass function to update state
     >
       <path d="M0 96C0 78.3 14.3 64 32 64l384 0c17.7 0 32 14.3 32 32s-14.3 32-32 32L32 128C14.3 128 0 113.7 0 96zM64 256c0-17.7 14.3-32 32-32l384 0c17.7 0 32 14.3 32 32s-14.3 32-32 32L96 288c-17.7 0-32-14.3-32-32zM448 416c0 17.7-14.3 32-32 32L32 448c-17.7 0-32-14.3-32-32s14.3-32 32-32l384 0c17.7 0 32 14.3 32 32z" />
     </motion.svg>
   );
 };
+
 
 
 const LocationIcon = () => (
@@ -100,7 +102,7 @@ const Searchsection = () => {
   };
 
   return (
-    <div className=" bg-[#FF5C01]  px-6 lg:h-[10vh] shadow-xl ml-[5%] w-[70%] rounded-xl  flex items-center gap-4">
+    <div className=" bg-[#FF5C01]  px-6 lg:h-[10vh]   ml-[5%] w-[70%] rounded-xl  flex items-center gap-4">
       {/* Dropdown for Property Type */}
       <select
         className="p-1 lg:p-2 border lg:border-2 rounded-md outline-none bg-[#fff] text-xs text-[#FF5C01] lg:text-base"
@@ -161,6 +163,7 @@ const PropertiesNav = () => {
 
   const [user, setUser] = useState(null); // State for user
   const [registeropen, setRegisterOpen] = useState(false);
+  const [opensidebar, setOpenSidebar] = useState(false);
 
   const userCookie = Cookies.get("user"); // Using js-cookie
 
@@ -180,7 +183,7 @@ const PropertiesNav = () => {
   }, [userCookie]);
 
   return (
-    <nav className="w-full bg-[#fff] items-center fixed top-0 z-[999] flex px-[2.5%]">
+    <nav className="w-full shadow-xl bg-[#fff] items-center fixed top-0 z-[999] flex px-[2.5%]">
       <Register registeropen={registeropen} setRegisterOpen={setRegisterOpen} />
       <Image
         src="/Fb_logo.jpg"
@@ -203,6 +206,10 @@ const PropertiesNav = () => {
           </button>
         )}
       </div>
+      <div>
+        <HamIcon opensidebar={opensidebar} setOpenSidebar={setOpenSidebar} />
+      </div>
+      <Sidebar opensidebar={opensidebar} setOpenSidebar={setOpenSidebar} />
     </nav>
   );
 };
