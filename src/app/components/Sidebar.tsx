@@ -228,131 +228,138 @@ const Sidebar = ({ opensidebar, setOpenSidebar }) => {
 
   return (
     <>
-    <Register registeropen={registeropen} setRegisterOpen={setRegisterOpen} />
+      <Register registeropen={registeropen} setRegisterOpen={setRegisterOpen} />
 
-    <div
-      className={`absolute w-[24%] h-screen px-[2%] bg-white right-0 top-[14vh] z-50 transition-transform duration-300 ${
-        opensidebar ? "translate-x-0" : "translate-x-[100%]"
-      } overflow-y-scroll shadow-2xl rounded-l-2xl`}
-    >
-      <CloseIcon setOpenSidebar={setOpenSidebar} />
-      {user ? (
-        <Profile user={user} />
-      ) : (
-        <button
-          className="text-lg text-white px-4 py-1.5 my-4 bg-[#FF5D00] rounded-md w-full"
-          onClick={() => setRegisterOpen(true)}
-        >
-          Sign&nbsp;up
-        </button>
-      )}
-
-      {navlist1.map((item, index) => (
-        <div key={index}>
-          <li
-            className="list-none flex gap-3 text-lg cursor-pointer p-2 hover:bg-orange-100"
-            onClick={() => {
-              // @ts-ignore
-
-              setFirstOrder(item.order);
-              setSecondOrder(null); // Reset nested state
-            }}
+      <div
+        className={`absolute w-[24%] h-screen px-[2%] bg-white right-0 top-[14vh] z-50 transition-transform duration-300 ${
+          opensidebar ? "translate-x-0" : "translate-x-[100%]"
+        } overflow-y-scroll shadow-2xl rounded-l-2xl`}
+      >
+        <CloseIcon setOpenSidebar={setOpenSidebar} />
+        {user ? (
+          <Profile user={user} />
+        ) : (
+          <button
+            className="text-lg text-white px-4 py-1.5 my-4 bg-[#FF5D00] rounded-md w-full"
+            onClick={() => setRegisterOpen(true)}
           >
-            <ChevronRightIcon width={15} />
-            {item.nav}
-          </li>
+            Sign&nbsp;up
+          </button>
+        )}
 
-          {firstorder === item.order && (
-            <div className="pl-6">
-              {item.subnav.map((subnav, subIndex) => {
-                const hasSupersubnav =
-                  Array.isArray(subnav.supersubnav) &&
-                  subnav.supersubnav.length > 0;
+        {navlist1.map((item, index) => (
+          <div key={index}>
+            <li
+              className="list-none flex gap-3 text-lg cursor-pointer p-2 hover:bg-orange-100"
+              onClick={() => {
+                // @ts-ignore
 
-                return (
-                  <div key={subIndex}>
-                    <li
-                      className={`flex items-center gap-2 ml-4 mb-2 cursor-pointer hover:text-[#ff5d00] `}
-                      onClick={() => {
-                        hasSupersubnav && setSecondOrder(subnav.order);
-                      }}
-                    >
-                      {hasSupersubnav ? (
-                        <ChevronRightIcon width={12} />
-                      ) : (
-                        <CircleIcon width={6} />
-                      )}
-                      {hasSupersubnav ? (
-                        subnav.label
-                      ) : (
-                        <a
-                          href={`${subnav.uri}`}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="block w-full"
-                        >
-                          {subnav.label}
-                        </a>
-                      )}
-                    </li>
+                setFirstOrder(item.order);
+                setSecondOrder(null); // Reset nested state
+              }}
+            >
+              <ChevronRightIcon width={15} />
+              {item.nav}
+            </li>
 
-                    {secondorder === subnav.order && hasSupersubnav && (
-                      <div className="ml-12">
-                        {subnav.supersubnav.map((supersubnav, superIndex) => (
+            {firstorder === item.order && (
+              <div className="pl-6">
+                {item.subnav.map((subnav, subIndex) => {
+                  const hasSupersubnav =
+                    Array.isArray(subnav.supersubnav) &&
+                    subnav.supersubnav.length > 0;
+
+                  return (
+                    <div key={subIndex}>
+                      <li
+                        className={`flex items-center gap-2 ml-4 mb-2 cursor-pointer hover:text-[#ff5d00] `}
+                        onClick={() => {
+                          hasSupersubnav && setSecondOrder(subnav.order);
+                        }}
+                      >
+                        {hasSupersubnav ? (
+                          <ChevronRightIcon width={12} />
+                        ) : (
+                          <CircleIcon width={6} />
+                        )}
+                        {hasSupersubnav ? (
+                          subnav.label
+                        ) : (
                           <a
-                            href={`/buyproperties?type=${
-                              supersubnav.name || supersubnav
-                            }&view=Sale`}
+                            href={`${subnav.uri}`}
                             target="_blank"
                             rel="noopener noreferrer"
-                            key={superIndex}
-                            className="mb-2 cursor-pointer text-sm hover:text-[#ff5d00] flex gap-2"
+                            className="block w-full"
                           >
-                            <CircleIcon width={6} />
-                            {typeof supersubnav === "string"
-                              ? supersubnav
-                              : supersubnav.name}
+                            {subnav.label}
                           </a>
-                        ))}
-                      </div>
-                    )}
-                  </div>
-                );
-              })}
+                        )}
+                      </li>
+
+                      {secondorder === subnav.order && hasSupersubnav && (
+                        <div className="ml-12">
+                          {subnav.supersubnav.map((supersubnav, superIndex) => (
+                            <a
+                              href={`/buyproperties?type=${
+                                supersubnav.name || supersubnav
+                              }&view=Sale`}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              key={superIndex}
+                              className="mb-2 cursor-pointer text-sm hover:text-[#ff5d00] flex gap-2"
+                            >
+                              <CircleIcon width={6} />
+                              {typeof supersubnav === "string"
+                                ? supersubnav
+                                : supersubnav.name}
+                            </a>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+                  );
+                })}
+              </div>
+            )}
+          </div>
+        ))}
+
+        {/* Separation div  */}
+        <div className="w-full mx-[2%] bg-[#130535ca] h-[0.5px] my-[5vh]"></div>
+
+        <div className="flex flex-col gap-2 text-lg ml-2">
+          <div className="flex gap-2">
+            <AboutIcon />
+            <a href="about" target="_blank" rel="noopener noreferrer">
+              About Us
+            </a>
+          </div>
+          <div className="flex gap-2">
+            <HelpIcon />
+            <a
+              href="contact"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="ml-2"
+            >
+              {" "}
+              Help
+            </a>
+          </div>
+        </div>
+
+        <div className="w-full mx-[2%] bg-[#130535ca] h-[0.5px] my-[5vh]"></div>
+
+        <div className="flex flex-col gap-2 text-lg ml-2">
+          <div className="flex gap-2 ">
+            <PhoneIcon />
+            <div className="flex flex-col self-start">
+              <a href="tel ">+91 6839765478</a>
+              <a href="">+91 8639765478</a>
             </div>
-          )}
-        </div>
-      ))}
-
-      {/* Separation div  */}
-      <div className="w-full mx-[2%] bg-[#130535ca] h-[0.5px] my-[5vh]"></div>
-
-      <div className="flex flex-col gap-2 text-lg ml-2">
-        <div className="flex gap-2">
-          <AboutIcon />
-          <a href="">About Us</a>
-        </div>
-        <div className="flex gap-2">
-          <HelpIcon />
-          <a href="" className="ml-2">
-            {" "}
-            Help
-          </a>
-        </div>
-      </div>
-
-      <div className="w-full mx-[2%] bg-[#130535ca] h-[0.5px] my-[5vh]"></div>
-
-      <div className="flex flex-col gap-2 text-lg ml-2">
-        <div className="flex gap-2 ">
-          <PhoneIcon />
-          <div className="flex flex-col self-start">
-            <a href="tel ">+91 6839765478</a>
-            <a href="">+91 8639765478</a>
           </div>
         </div>
       </div>
-    </div>
     </>
   );
 };

@@ -1,17 +1,49 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import Image from "next/image";
 
 const vendorData = [
   { id: 1, emoji: "🛋️", label: "Home Interior" },
-  { id: 2, emoji: "🚿", label: "Plumbing" },
-  { id: 3, emoji: "💡", label: "Electric" },
-  { id: 4, emoji: "🛜", label: "Broadband" },
-  { id: 5, emoji: "🪳", label: "Pest Control" },
-  { id: 6, emoji: "🛢️", label: "Water Suppliers" },
+  { id: 2, image: "/kitchen.png", label: "Modular Kitchen" },
+  { id: 3, emoji: "🚿", label: "Plumbing" },
+  { id: 4, emoji: "💡", label: "Electric" },
+  { id: 5, emoji: "🛜", label: "Broadband" },
+  { id: 6, emoji: "🪳", label: "Pest Control" },
+  { id: 7, emoji: "🏪🛠️", label: "Hardwares" },
+  { id: 8, emoji: "🛏️", label: "Furniture" },
+  { id: 9, image: "/painter.png", label: "Painter" },
+  { id: 10, image: "/carpenter.png", label: "Carpenter" },
+  { id: 11, image: "/maid.png", label: "HouseKeeping / Maid" },
+  { id: 12, image: "/deep.png", label: "Deep Cleaners" },
+  { id: 13, image: "/ac.png", label: "AC Services" , sublabel : "Ac Service, Repair , Installation and more" },
+  { id: 14, image: "/legal.png", label: "Legal Works" , sublabel : "(Sale / Purchase, Rental Agreement etc)" },
+
+
 ];
 
 const Vendors = () => {
   const router = useRouter();
+  const [emojiswidth, setEmojisWidth] = useState(0);
+
+  const windowWidth = window.innerWidth;
+
+  const calculateWidth = () => {
+    if (windowWidth > 1400) {
+      setEmojisWidth(100);
+    } else if (windowWidth > 1020) {
+      setEmojisWidth(60);
+    } else if (emojiswidth > 780) {
+      setEmojisWidth(40);
+    } else if (windowWidth > 500) {
+      setEmojisWidth(30);
+    } else {
+      setEmojisWidth(20);
+    }
+  };
+
+  useEffect(() => {
+    calculateWidth();
+  }, [windowWidth]);
 
   return (
     <div className="px-[5%] bg-[#fef0f9] shadow-inner py-6 md:py-10 lg:py-14 2xl:py-16">
@@ -25,8 +57,21 @@ const Vendors = () => {
             onClick={() => router.push(`/vendorslist?id=${vendor.id}`)}
             className="flex flex-col gap-2 p-6 justify-center items-center border lg:py-16 hover:scale-105 cursor-pointer bg-[#fadcef] rounded-lg"
           >
-            <p className="text-5xl md:text-6xl lg:text-7xl 2xl:text-8xl">{vendor.emoji}</p>
-            <p>{vendor.label}</p>
+            {vendor.emoji ? (
+              <p className="text-5xl md:text-6xl lg:text-7xl 2xl:text-8xl">
+                {vendor.emoji}
+              </p>
+            ) : (
+              <Image
+                src={vendor.image}
+                width={emojiswidth}
+                height={emojiswidth}
+                alt={vendor.label}
+              />
+            )}
+
+            <p className="text-xl">{vendor.label}</p>
+            <p>{vendor?.sublabel}</p>
           </div>
         ))}
       </div>

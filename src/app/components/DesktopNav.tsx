@@ -12,7 +12,7 @@ import Cookies from "js-cookie";
 import { ChevronDown } from "lucide-react";
 import { motion } from "framer-motion";
 import Sidebar from "./Sidebar";
-
+import { div } from "framer-motion/client";
 
 const TrendIcon = () => {
   return (
@@ -68,7 +68,9 @@ const DesktopNav = () => {
   const [currentRentCategory, setCurrentRentCategory] = useState(1); // State for Rent category
   const [locationlist, setLocationlist] = useState([]);
 
-  const [opensidebar ,  setOpenSidebar ] = useState();
+  const [opensidebar, setOpenSidebar] = useState();
+  const [forownersopen, setForOwnersOpen] = useState(false);
+  const [fordealeropen, setFordealerOpen] = useState(false);
 
   const loaddata = useCallback(async () => {
     try {
@@ -125,7 +127,7 @@ const DesktopNav = () => {
   }, [userCookie]);
 
   return (
-    <nav className="relative hidden w-full h-full lg:flex  items-center ">
+    <nav className="relative hidden w-full h-full lg:flex shadow-lg items-center ">
       <ul className="flex w-[42.5%] max-w-[42.5%] gap-16 text-base justify-end">
         {/* Buy Dropdown */}
         <li
@@ -425,25 +427,86 @@ const DesktopNav = () => {
         />
       </div>
 
-      
       <div className="flex gap-6 items-center w-[42.5%] max-w-[42.5%]">
         <ul className="flex gap-6  text-base 2xl:text-lg">
-          <li className="cursor-pointer flex" onClick={() => router.push("/")}>
-            <span>For&nbsp;Owners</span> <ChevronDown />
-          </li>
           <li
             className="cursor-pointer flex"
+            onMouseEnter={() => setForOwnersOpen(true)}
+            onClick={() => router.push("/")}
+          >
+            <span>For&nbsp;Owners</span>
+            <ChevronDown />
+          </li>
+          {forownersopen && (
+            <div
+              onMouseLeave={() => setForOwnersOpen(false)}
+              className="absolute top-[10vh] gap-2 px-4 py-5 bg-[#fff] shadow-inner rounded-lg flex flex-col"
+            >
+              <a
+                className="hover:text-orange-500 hover:underline"
+                href="postproperty?who=owner"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                Post Property
+              </a>
+              <hr />
+              <a
+                className="hover:text-orange-500 hover:underline"
+                href="viewownerproperty"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                View / Edit Post
+              </a>
+            </div>
+          )}
+          <li
+            className="cursor-pointer flex"
+            onMouseEnter={() => setFordealerOpen(true)}
             onClick={() => router.push("/about")}
           >
             <span>For&nbsp;Dealers&nbsp;/&nbsp;Builders</span>
             <ChevronDown />
+            {fordealeropen && (
+              <div
+                onMouseLeave={() => setFordealerOpen(false)}
+                className="absolute top-[10vh] ml-8 gap-2 px-4 py-5 bg-[#fff] shadow-inner rounded-lg flex flex-col"
+              >
+                <a
+                  className="hover:text-orange-500 hover:underline"
+                  href="postproperty?who=buildbroker"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  Post Property
+                </a>
+                <hr />
+                <a
+                  className="hover:text-orange-500 hover:underline"
+                  href="plans?who=buildbroker"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  Plans & Subscriptions
+                </a>
+              </div>
+            )}
           </li>
         </ul>
-        <button className="px-3.5 py-2 rounded-md bg-[#fdf3da] text-[#ff5d00]">Post Property</button>
-        <HamIcon opensidebar={opensidebar} setOpenSidebar={setOpenSidebar}/>
-        
+        <a
+          href="postproperty"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          <button className="px-3.5 py-2 rounded-md bg-[#fdf3da] text-[#ff5d00]">
+            Post Property
+          </button>
+        </a>
+
+        <HamIcon opensidebar={opensidebar} setOpenSidebar={setOpenSidebar} />
       </div>
-      <Sidebar opensidebar={opensidebar} setOpenSidebar={setOpenSidebar}/>
+      <Sidebar opensidebar={opensidebar} setOpenSidebar={setOpenSidebar} />
     </nav>
   );
 };

@@ -30,7 +30,7 @@ const ContactUs = () => {
     <>
       <nav
         className="w-full h-[8vh] lg:h-[10vh] shadow-lg lg:shadow-2xl flex items-center gap-2 px-3 cursor-pointer"
-        onClick={() => router.back()}
+        onClick={() => router.push("/")}
       >
         <span className="text-3xl lg:text-4xl font-extrabold text-[#f97316]">&larr;</span>
         <span className="text-[#f97316] text-2xl lg:text-3xl mt-2">Back</span>

@@ -18,41 +18,80 @@ const Page = () => {
     address: "",
     photo: null,
   });
-
   const categories = [
     {
+      id: 1,
       label: "Home Interior",
-      value: 1,
+      emoji: "🛋️",
     },
     {
+      id: 2,
+      label: "Modular Kitchen",
+    },
+    {
+      id: 3,
       label: "Plumbing",
-      value: 2,
+      emoji: "🚿",
     },
     {
+      id: 4,
       label: "Electric",
-      value: 3,
+      emoji: "💡",
     },
     {
+      id: 5,
       label: "Broadband",
-      value: 4,
+      emoji: "🛜",
     },
     {
+      id: 6,
       label: "Pest Control",
-      value: 5,
+      emoji: "🪳",
     },
     {
-      label: "Water Suppliers",
-      value: 6,
+      id: 7,
+      label: "Hardwares",
+      emoji: "🏪🛠️",
+    },
+    {
+      id: 8,
+      label: "Furniture",
+      emoji: "🛏️",
+    },
+    {
+      id: 9,
+      label: "Painter",
+    },
+    {
+      id: 10,
+      label: "Carpenter",
+    },
+    {
+      id: 11,
+      label: "HouseKeeping / Maid",
+    },
+    {
+      id: 12,
+      label: "Deep Cleaners",
+    },
+    {
+      id: 13,
+      label: "AC Services",
+    },
+    {
+      id: 14,
+      label: "Legal Works",
     },
   ];
+  
 
   const [sidebaropen, setSidebarOpen] = useState(false);
 
   const handleChange = (e) => {
-    const { name, value } = e.target;
+    const { name, id } = e.target;
     setFormdata((prevData) => ({
       ...prevData,
-      [name]: value,
+      [name]: id,
     }));
   };
 
@@ -64,12 +103,12 @@ const Page = () => {
   };
 
   const handleCategorychange = (e) => {
-    const { name, value } = e.target;
+    const { name, id } = e.target;
 
-    if (value != "0") {
+    if (id != "0") {
       setFormdata((prevData) => ({
         ...prevData,
-        [name]: value,
+        [name]: id,
       }));
     }
 
@@ -150,7 +189,7 @@ const Page = () => {
             >
               <option value="0">select a category</option>
               {categories?.map((item) => (
-                <option value={item.value}>{item.label}</option>
+                <option value={item.id}>{item.label}</option>
               ))}
             </select>
           </div>

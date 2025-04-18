@@ -137,8 +137,8 @@ const Page = () => {
   }, []);
 
   return (
-    <div className="flex relative lg:top-[12vh]">
-      <AdminHeader sidebaropen={sidebaropen} setSidebarOpen={setSidebarOpen} />
+    <div className="flex relative ">
+      {/* <AdminHeader sidebaropen={sidebaropen} setSidebarOpen={setSidebarOpen} /> */}
       <ToastContainer
         position="top-center"
         style={{ top: "0vh", zIndex: 9999999999999 }}
@@ -149,9 +149,7 @@ const Page = () => {
         draggable
       />
       <div
-        className={`w-full min-h-[90vh] bg-gray-200 px-[6%] py-[5vh] ${
-          sidebaropen ? "lg:w-[77%]" : "lg:w-[90%]"
-        }`}
+        className={`w-full min-h-[90vh] bg-gray-200 px-[6%] py-[5vh]`}
       >
         <h1 className="text-2xl text-center mb-5 text-[#FF5D00]">
           Add Property
@@ -613,14 +611,14 @@ const Page = () => {
       </div>
       {forbox && (
         <div className="absolute top-[35vh] left-[15%] w-[70%] lg:w-[40%] lg:left-[30%] bg-[#FF5D00] shadow-lg rounded-xl px-8 py-4">
-          <h1 className="text-center font-bold text-white">Listing For</h1>
-          <div className="w-full mt-2 flex justify-between">
+          <h1 className="text-center text-lg md:text-xl lg:text-2xl font-bold text-white">Listing For</h1>
+          <div className="w-full mt-2 md:mt-4 lg:mt-6 flex justify-between">
             <button
               onClick={() => {
                 setForValue("Sale");
                 setForbox(false);
               }}
-              className="px-6 py-1 text-[#FF5D00] font-semibold bg-white rounded-2xl"
+              className="px-4 md:px-6 lg:px-8 py-1 text-[#FF5D00] font-semibold bg-white rounded-2xl"
             >
               Sale
             </button>
@@ -629,16 +627,17 @@ const Page = () => {
                 setForValue("Rent");
                 setForbox(false);
               }}
-              className="px-6 py-1 text-[#FF5D00] font-semibold bg-white rounded-2xl"
+              className="px-4 md:px-6 lg:px-8 py-1 text-[#FF5D00] font-semibold bg-white rounded-2xl"
             >
               Rent
             </button>
+
             <button
               onClick={() => {
-                setForValue("Rent");
+                setForValue("PG");
                 setForbox(false);
               }}
-              className="px-6 py-1 text-[#FF5D00] font-semibold bg-white rounded-2xl"
+              className="px-4 md:px-6 lg:px-8 py-1 text-[#FF5D00] font-semibold bg-white rounded-2xl"
             >
               PG
             </button>

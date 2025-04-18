@@ -1,59 +1,72 @@
 "use client";
-import { useState } from "react";
+import { useState, useRef } from "react";
 
-const AddPropertiesPhotos = (props) => {
-  const { formdata, onImagesChange } = props; // Destructure props
+const AddPropertiesPhotos = ({ formdata, onImagesChange }) => {
   const [previewUrls, setPreviewUrls] = useState([]);
+  const fileInputRef = useRef(null);
 
   const handleFileChange = (event) => {
+    event.preventDefault();
+    event.stopPropagation();
+    
     const files = Array.from(event.target.files);
+    if (!files.length) return;
 
     // Create preview URLs
-    // @ts-ignore
-    const newPreviews = files.map((file) => URL.createObjectURL(file));
+    const newPreviews = files.map(file => URL.createObjectURL(file));
 
-    // Update the images in the parent component
+    // Update images in parent component
     const newImages = [...formdata.images, ...files];
-    onImagesChange(newImages); // Call the function passed from the parent
+    onImagesChange(newImages);
 
-    // Update the preview URLs
-    setPreviewUrls((prevPreviews) => [...prevPreviews, ...newPreviews]);
+    // Update preview URLs
+    setPreviewUrls(prev => [...prev, ...newPreviews]);
+    
+    // Reset the file input to allow selecting the same files again
+    if (fileInputRef.current) {
+      fileInputRef.current.value = '';
+    }
+  };
+
+  const triggerFileInput = () => {
+    fileInputRef.current?.click();
   };
 
   return (
     <div className="mt-[2vh]">
-      <section className="">
+      <section>
         <h2 className="text-lg text-[#FF5D00] mb-4">Property Images</h2>
 
-        {/* File Input */}
+        {/* Hidden file input */}
         <input
           type="file"
+          ref={fileInputRef}
           accept="image/*"
           multiple
           onChange={handleFileChange}
-          className="block w-full border p-2 rounded-md"
+          className="hidden"
         />
 
-        {/* Image Preview */}
+        {/* Image Previews */}
         <div className="mt-4 grid grid-cols-3 gap-2">
           {previewUrls.map((src, index) => (
-            <img
-              key={index}
-              src={src}
-              alt="Preview"
-              className="w-24 h-24 object-cover rounded-md"
-            />
+            <div key={index} className="relative">
+              <img
+                src={src}
+                alt="Preview"
+                className="w-24 h-24 object-cover rounded-md"
+              />
+            </div>
           ))}
         </div>
 
-        {/* "Add More" Button */}
+        {/* Add Images Button */}
         <button
+          type="button"
           className="mt-6 bg-green-600 text-white px-4 py-2 rounded-md"
-          // @ts-ignore
-
-          onClick={() => document.querySelector("input[type='file']").click()}
+          onClick={triggerFileInput}
         >
-          Add More Images
+          {formdata.images.length > 0 ? 'Add More Images' : 'Add Images'}
         </button>
       </section>
     </div>
