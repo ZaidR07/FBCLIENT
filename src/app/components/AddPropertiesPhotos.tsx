@@ -13,6 +13,7 @@ const AddPropertiesPhotos = ({ formdata, onImagesChange }) => {
     if (!files.length) return;
 
     // Create preview URLs
+    // @ts-ignore
     const newPreviews = files.map(file => URL.createObjectURL(file));
 
     // Update images in parent component

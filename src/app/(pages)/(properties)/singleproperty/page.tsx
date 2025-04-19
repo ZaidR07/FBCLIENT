@@ -1,12 +1,14 @@
 "use client";
 import { useSearchParams, useRouter } from "next/navigation";
-import { useEffect, useState, useCallback, Suspense } from "react";
+import { useEffect, useState, useCallback, Suspense , useRef } from "react";
 import { uri } from "@/constant";
 import axios from "axios";
 import { HomeIcon, RulerIcon, RupeeIcon } from "@/app/Icons";
 import { priceconverter } from "@/utils/priceconverter";
 
 import DesktopNav from "@/app/components/DesktopNav";
+import MobileNav from "@/app/components/MobileNav";
+import { AngleLeft, AngleRight } from "@/app/Icons";
 
 const WhatsAppIcon = () => {
   return (
@@ -34,13 +36,40 @@ const PhoneIcon = () => {
   );
 };
 
+const PropertyCard = ({ property, router }) => (
+  <div
+    onClick={() => router.push(`singleproperty?id=${property.property_id}`)}
+    className="bg-transparent min-w-[40%] max-w-[40%] xl:min-w-[25%] xl:max-w-[25%] px-2 py-2 relative rounded-lg border-t-[1px] border-[#fa9c66] shadow-md shadow-[#fa9c66] cursor-pointer"
+  >
+    <div className="relative">
+      <img
+        src={property.images?.length > 0 ? property.images[0] : "/rent.png"}
+        alt="Property"
+        className="rounded-lg w-full lg:h-[40vh] h-[110px] object-cover"
+      />
+      <div className="absolute bottom-2 left-3 rounded-lg p-1 text-sm bg-orange-100 text-[#FF5D00]">
+        {priceconverter(property.price)}
+      </div>
+    </div>
+    <span className="text-xs">{property.bedrooms}</span>{" "}
+    <span className="text-xs">{property.type}</span>{" "}
+    <span className="text-xs text-wrap">{property.floor} Floor</span>
+    <br />
+    <span className="text-xs block">
+      {property.Societyname?.length > 18
+        ? property.Societyname.substring(0, 18) + "..."
+        : property.Societyname || "N/A"}
+    </span>
+    <span className="text-xs block">{property.location}</span>
+  </div>
+);
+
 const PropertyDetails = () => {
   const searchParams = useSearchParams();
   const property_id = searchParams.get("id");
   const [poster, setPoster] = useState({
-    brokername : "",
-    mobile1 : ""
-
+    brokername: "",
+    mobile1: "",
   });
   const router = useRouter();
 
@@ -66,6 +95,36 @@ const PropertyDetails = () => {
   });
   const [loading, setLoading] = useState(true);
   const [imageViewer, setImageViewer] = useState({ open: false, index: 0 });
+  const [propertieslist, setPropertieslist] = useState([
+    {
+      Societyname: "",
+      floor: "",
+      bedrooms: "",
+      area: "",
+      areaunits: "",
+      buildingfloors: "",
+      address: "",
+      amenities: [], // array of strings
+      facing: "",
+      propertyage: "",
+      balconies: "",
+      bathrooms: "",
+      price: "",
+      postedby: "",
+      type: "",
+      constructionstatus: "",
+      furnishing: "",
+      highlights: [], // array of strings
+      location: "",
+      line: "",
+      for: "",
+      property_id: null, // or 0 if you prefer default numeric
+      active: false,
+      images: [], // array of image URLs or objects
+      postedby_id: null,
+      postedbytype: null,
+    },
+  ]);
 
   const colours = ["#CCEFEA", "#E3FBDA", "#FFEFCB"];
 
@@ -91,6 +150,17 @@ const PropertyDetails = () => {
 
         if (postedbyresponse.data.payload) {
           setPoster(postedbyresponse.data.payload); // Store poster info
+        }
+
+        const brokerpropertiesresponse = await axios.get(
+          `${uri}getbrokerproperties`,
+          {
+            params: { id: propertyData.postedby_id },
+          }
+        );
+
+        if (brokerpropertiesresponse.data.payload) {
+          setPropertieslist(brokerpropertiesresponse.data.payload);
         }
       } else {
         //@ts-ignore
@@ -140,6 +210,8 @@ const PropertyDetails = () => {
 
   const [windowwidth, setWindowWidth] = useState(0);
 
+  const propRef = useRef(null);
+
   useEffect(() => {
     // This code only runs on the client side
     setWindowWidth(window.innerWidth);
@@ -147,6 +219,14 @@ const PropertyDetails = () => {
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
   }, []);
+
+  const scrollLeft = (ref) => {
+    if (ref.current) ref.current.scrollBy({ left: -300, behavior: "smooth" });
+  };
+
+  const scrollRight = (ref) => {
+    if (ref.current) ref.current.scrollBy({ left: 300, behavior: "smooth" });
+  };
 
   return (
     <div className="bg-[#fff] min-h-screen">
@@ -161,13 +241,14 @@ const PropertyDetails = () => {
 
       {/* Loading Spinner */}
       <DesktopNav />
+      <MobileNav />
       {loading ? (
         <div className="flex mt-[20vh] justify-center items-center py-6">
           <span className="animate-spin inline-block w-8 h-8 border-4 border-t-transparent border-orange-500 rounded-full"></span>
         </div>
       ) : property ? (
         <div>
-          <div className="mx-[4%]  my-[4vh]  rounded-md">
+          <div className="mx-[4%] mt-[10vh] lg:mt-[8vh]  rounded-md">
             <div className="grid gap-2 grid-cols-4 min-h-[20vh]">
               {/* First Image (Large) */}
               <div
@@ -218,39 +299,42 @@ const PropertyDetails = () => {
               </div>
             </div>
           </div>
-          <div className="mt-[5vh]">
+          <div className="mt-[5vh] px-[5%]">
             <div className="flex gap-2 flex-wrap">
               {property.highlights?.map((item, index) => (
                 <li
                   key={index}
-                  className="list-none inline-block px-2 py-2 rounded-md mb-2 text-gray-800 text-sm"
+                  className="list-none inline-block px-2 md:p-4 lg:p-5 2xl:p-6 py-2 rounded-md mb-2 text-gray-800 text-sm"
                   style={{ backgroundColor: colours[index % colours.length] }}
                 >
                   {item}
                 </li>
               ))}
             </div>
-            <div className="flex gap-6 mt-2">
-              <div className="flex gap-2">
-                <RupeeIcon width={windowwidth < 800 ? 15 : 20} fill="#FF5D00" />
-                <span className="text-xl">
+
+            <div className="flex justify-center lg:w-[80%] gap-6 mt-2 bg-[#ff5d00] text-white px-4 md:px-6 md:py-5 lg:px-[1%] lg:py-[2vh] py-3 rounded-xl">
+              <div className="flex flex-1 gap-2 lg:border lg:border-[#fff] lg:p-8 lg:rounded-lg">
+                <RupeeIcon width={windowwidth < 800 ? 15 : 20} fill="#FFF" />
+                <span className="text-base md:text-2xl lg:text-3xl 2xl:text-4xl">
                   {priceconverter(property.price)}
                 </span>
               </div>
-              <div className="flex gap-2">
-                <RulerIcon width={windowwidth < 800 ? 20 : 20} fill="#FF5D00" />
-                <span className="text-xl">
+              <div className="flex flex-1 gap-2 lg:border lg:border-[#fff] lg:p-8 lg:rounded-lg">
+                <RulerIcon width={windowwidth < 800 ? 20 : 30} fill="#FFF" />
+                <span className="text-base md:text-2xl lg:text-3xl 2xl:text-4xl">
                   {`${property.area} ${property.areaunits}`}
                 </span>
               </div>
-              <div className="flex gap-2">
-                <HomeIcon width={windowwidth < 800 ? 20 : 20} fill="#FF5D00" />
-                <span className="text-xl">{property.bedrooms}</span>
+              <div className="flex flex-1 gap-2 lg:border lg:border-[#fff] lg:p-8 lg:rounded-lg">
+                <HomeIcon width={windowwidth < 800 ? 20 : 30} fill="#FFF" />
+                <span className="text-base md:text-2xl lg:text-3xl 2xl:text-4xl">
+                  {property.bedrooms}
+                </span>
               </div>
             </div>
 
             {/* Description  */}
-            <div className="mt-5">
+            <div className="mt-5 bg-[#faeee8] rounded-lg p-4">
               <h1 className="text-xl">Description :</h1>
               <li>
                 Society Name &nbsp; -{" "}
@@ -329,36 +413,67 @@ const PropertyDetails = () => {
                   )}
                 </span>
               </li>
-              <div className="w-full lg:w-[50%] flex mt-[5vh] gap-[5%]">
-                <button className="w-full px-[2.5%] text-sm text-wrap md:text-base lg:text-lg xl:text-xl text-blue-600 bg-blue-200 py-4 md:py-6 lg:py-8 rounded-md">
-                  {windowwidth < 500 ? (
-                    <a
-                      className="flex items-center justify-center gap-2"
-                      href={`tel:${poster?.mobile1 || ""}`}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                    >
-                      <PhoneIcon />
-                      {`${poster?.brokername || "Unknown"}  `}
-                    </a>
-                  ) : (
-                    <span className="flex gap-4 justify-center items-center">
-                      <PhoneIcon />
-                      {poster?.mobile1}
-                    </span>
-                  )}
-                </button>
-
-                <button className="w-full text-sm text-wrap md:text-base lg:text-lg xl:text-xl  text-[#00c749] px-[2.5%] bg-green-200 py-4 rounded-md">
+            </div>
+            <div className="w-full lg:w-[40%] flex mt-[5vh] gap-[5%]">
+              <button className="w-full px-[2.5%] text-sm text-wrap md:text-base lg:text-lg xl:text-xl text-blue-600 bg-blue-200 py-5 md:py-6 lg:py-8  rounded-md">
+                {windowwidth < 500 ? (
                   <a
-                    href={`https://wa.me/${poster?.mobile1 || ""}`}
+                    className="flex items-center justify-center gap-2"
+                    href={`tel:${poster?.mobile1 || ""}`}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="w-full text-[#00c749] bg-green-200 py-4 rounded-md flex items-center justify-center gap-2"
                   >
-                    <WhatsAppIcon />
+                    <PhoneIcon />
                     {`${poster?.brokername || "Unknown"}  `}
                   </a>
+                ) : (
+                  <span className="flex gap-4 justify-center items-center">
+                    <PhoneIcon />
+                    {poster?.mobile1}
+                  </span>
+                )}
+              </button>
+
+              <button className="w-full text-sm text-wrap md:text-base lg:text-lg xl:text-xl   text-[#00c749] px-[2.5%] bg-green-200  rounded-md">
+                <a
+                  href={`https://wa.me/${poster?.mobile1 || ""}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="w-full text-[#00c749] bg-green-200  rounded-md flex items-center justify-center gap-2"
+                >
+                  <WhatsAppIcon />
+                  {`${poster?.brokername || "Unknown"}  `}
+                </a>
+              </button>
+            </div>
+            <div className="mt-[5vh] lg:mt-[8vh]">
+              <h1 className="text-center text-xl md:text-2xl lg:text-3xl">
+                More Properties from {poster?.brokername}
+              </h1>
+              <div className="relative mt-5">
+                <button
+                  onClick={() => scrollLeft(propRef)}
+                  className="hidden lg:block absolute left-0 top-1/2 transform -translate-y-1/2 z-10 bg-gray-200 p-2 rounded-full shadow-md"
+                >
+                  <AngleLeft className="w-6 h-6 text-gray-600" />
+                </button>
+                <div
+                  ref={propRef}
+                  className="overflow-x-auto whitespace-nowrap flex gap-3 lg:gap-8 pb-2 scrollbar-hide"
+                >
+                  {propertieslist.map((property, index) => (
+                    <PropertyCard
+                      key={index}
+                      property={property}
+                      router={router}
+                    />
+                  ))}
+                </div>
+                <button
+                  onClick={() => scrollRight(propRef)}
+                  className="hidden lg:block absolute right-0 top-1/2 transform -translate-y-1/2 z-10 bg-gray-200 p-2 rounded-full shadow-md"
+                >
+                  <AngleRight className="w-6 h-6 text-gray-600" />
                 </button>
               </div>
             </div>
