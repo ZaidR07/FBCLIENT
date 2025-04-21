@@ -1,3 +1,4 @@
+"use client"
 import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
@@ -15,35 +16,28 @@ const vendorData = [
   { id: 10, image: "/carpenter.png", label: "Carpenter" },
   { id: 11, image: "/maid.png", label: "HouseKeeping / Maid" },
   { id: 12, image: "/deep.png", label: "Deep Cleaners" },
-  { id: 13, image: "/ac.png", label: "AC Services" , sublabel : "Ac Service, Repair , Installation and more" },
-  { id: 14, image: "/legal.png", label: "Legal Works" , sublabel : "(Sale / Purchase, Rental Agreement etc)" },
-
-
+  { id: 13, image: "/ac.png", label: "AC Services", sublabel: "Ac Service, Repair , Installation and more" },
+  { id: 14, image: "/legal.png", label: "Legal Works", sublabel: "(Sale / Purchase, Rental Agreement etc)" },
 ];
 
 const Vendors = () => {
   const router = useRouter();
-  const [emojiswidth, setEmojisWidth] = useState(0);
-
-  const windowWidth = window.innerWidth;
-
-  const calculateWidth = () => {
-    if (windowWidth > 1400) {
-      setEmojisWidth(100);
-    } else if (windowWidth > 1020) {
-      setEmojisWidth(60);
-    } else if (emojiswidth > 780) {
-      setEmojisWidth(40);
-    } else if (windowWidth > 500) {
-      setEmojisWidth(30);
-    } else {
-      setEmojisWidth(20);
-    }
-  };
+  const [emojiswidth, setEmojisWidth] = useState(40); // default width
 
   useEffect(() => {
-    calculateWidth();
-  }, [windowWidth]);
+    const handleResize = () => {
+      const width = window.innerWidth;
+      if (width > 1400) setEmojisWidth(100);
+      else if (width > 1020) setEmojisWidth(60);
+      else if (width > 780) setEmojisWidth(40);
+      else if (width > 500) setEmojisWidth(30);
+      else setEmojisWidth(20);
+    };
+
+    handleResize(); // initial call
+    window.addEventListener("resize", handleResize); // update on resize
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
   return (
     <div className="px-[5%] bg-[#fef0f9] shadow-inner py-6 md:py-10 lg:py-14 2xl:py-16">
@@ -70,8 +64,8 @@ const Vendors = () => {
               />
             )}
 
-            <p className="text-xl">{vendor.label}</p>
-            <p>{vendor?.sublabel}</p>
+            <p className="text-xl text-center">{vendor.label}</p>
+            {vendor.sublabel && <p className="text-center text-sm">{vendor.sublabel}</p>}
           </div>
         ))}
       </div>
