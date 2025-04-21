@@ -4,7 +4,7 @@ import React, { useState, useEffect, useCallback } from "react";
 import Image from "next/image";
 
 import { useRouter } from "next/navigation";
-import Register from "./Register";
+
 import axios from "axios";
 import { uri } from "@/constant";
 import Cookies from "js-cookie";
@@ -12,7 +12,7 @@ import Cookies from "js-cookie";
 import { ChevronDown } from "lucide-react";
 import { motion } from "framer-motion";
 import Sidebar from "./Sidebar";
-import { div } from "framer-motion/client";
+import Register from "./Register";
 
 const TrendIcon = () => {
   return (
@@ -108,15 +108,19 @@ const DesktopNav = () => {
   }, [loaddata]);
 
   const [user, setUser] = useState(null); // State for user
+  const [usertype, setUserType] = useState(null);
 
   const userCookie = Cookies.get("user"); // Using js-cookie
 
   const getUserCookie = () => {
     if (userCookie) {
       try {
-        setUser(JSON.parse(decodeURIComponent(userCookie))); // Parse JSON safely
+        setUser(userCookie);
+
+        setUserType(userCookie.slice(-1)); // Adjust this based on actual cookie structure
       } catch {
         setUser(userCookie); // Fallback if not JSON
+        alert(typeof userCookie);
       }
     }
   };
@@ -451,14 +455,26 @@ const DesktopNav = () => {
                 Post Property
               </a>
               <hr />
-              <a
-                className="hover:text-orange-500 hover:underline"
-                href="viewownerproperty"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                View / Edit Post
-              </a>
+              {user ? (
+                usertype == 2 || usertype == "2" ? (
+                  <a
+                    className="hover:text-orange-500 hover:underline"
+                    href="viewownerproperty"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    View / Edit Post
+                  </a>
+                ) : (
+                  <>
+                    <span onClick={() => alert("This facility is for owners only")}>
+                      View / Edit Post
+                    </span>
+                  </>
+                )
+              ) : (
+                <span onClick={() => alert("Please Register First")}>View / Edit Post</span>
+              )}
             </div>
           )}
           <li
@@ -494,11 +510,7 @@ const DesktopNav = () => {
             )}
           </li>
         </ul>
-        <a
-          href="postproperty"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
+        <a href="postproperty" target="_blank" rel="noopener noreferrer">
           <button className="px-3.5 py-2 rounded-md bg-[#fdf3da] text-[#ff5d00]">
             Post Property
           </button>

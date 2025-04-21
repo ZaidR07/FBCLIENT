@@ -6,6 +6,8 @@ import axios from "axios";
 import { useCallback, useEffect } from "react";
 import { uri } from "@/constant";
 import { RupeeIcon, HomeIcon, RulerIcon } from "@/app/Icons";
+import Cookies from "js-cookie";
+import { log } from "console";
 
 const page = () => {
   const [propertieslist, setPropertieslist] = useState([
@@ -39,16 +41,39 @@ const page = () => {
     },
   ]);
 
+  const [user, setUser] = useState(null); // State for user
+
+  const userCookie = Cookies.get("user"); // Using js-cookie
+
+  const getUserCookie = () => {
+    if (userCookie) {
+      try {
+        setUser(userCookie);
+      } catch {
+        console.error("Error Setting Cookies");
+      }
+    }
+  };
+
+  // Extract user from cookies
+  useEffect(() => {
+    getUserCookie();
+  }, [userCookie]);
+
   const getData = useCallback(async () => {
     try {
-      const propertyRes = await axios.get(`${uri}getproperties`);
+      if (userCookie) {
+        const propertyRes = await axios.get(`${uri}getownerproperties`, {
+          params: { user: userCookie },
+        });
 
-      if (propertyRes.data.payload.length < 0) {
-        console.error("Invalid response data");
-        return;
+        if (propertyRes.data.payload.length < 0) {
+          console.error("Invalid response data");
+          return;
+        }
+
+        setPropertieslist(propertyRes.data.payload);
       }
-
-      setPropertieslist(propertyRes.data.payload);
     } catch (error) {
       console.error("Error fetching data:", error);
     }
@@ -56,7 +81,7 @@ const page = () => {
 
   useEffect(() => {
     getData();
-  }, [getData()]);
+  }, [getData]);
 
   const [windowwidth, setWindowWidth] = useState(0);
 
@@ -72,7 +97,7 @@ const page = () => {
     <div className="">
       <Header />
       {/* Properties List */}
-      <section className=" px-[5%] ] py-5 flex flex-col gap-4">
+      <section className=" px-[5%] w-[50%] mt-[14vh] py-5 flex flex-col gap-4">
         <div></div>
         {Array.isArray(propertieslist) && propertieslist.length > 0 ? (
           propertieslist.map((item, key) => (
@@ -145,10 +170,14 @@ const page = () => {
                     <span>NA</span>
                   )}
                 </div>
-
-                <button className="mt-2 px-3 py-1 lg:py-2 bg-[#FF5D00] text-white rounded text-sm lg:max-w-[40%]">
-                  View Details
-                </button>
+                <div className="flex gap-4 md:gap-6">
+                  <button className="mt-2 px-3 py-1 lg:py-2 bg-[#FF5D00] text-white rounded text-sm lg:max-w-[40%]">
+                    View Details
+                  </button>
+                  <button className="mt-2 px-3 py-1 lg:py-2 bg-[#FF5D00] text-white rounded text-sm lg:max-w-[40%]">
+                    Edit Details
+                  </button>
+                </div>
               </div>
             </div>
           ))

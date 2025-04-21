@@ -49,12 +49,15 @@ const Page = () => {
         headers: {
           "Content-Type": "multipart/form-data",
         },
+        validateStatus: () => true, // allows us to handle all statuses manually
       });
-      if (response.data?.message) {
-        toast.success(`${response.data.message}`);
-      } else {
-        toast.error("Unexpected response format");
+
+      if (response.status !== 200) {
+        toast.error(response.data.message || "Something went wrong.");
+        return; 
       }
+
+      toast.success(response.data.message || "Broker added successfully!");
     } catch (error) {
       toast.error("Failed to add broker. Please try again.");
     }
@@ -64,7 +67,7 @@ const Page = () => {
     <div className="flex relative lg:top-[12vh]">
       <AdminHeader sidebaropen={sidebaropen} setSidebarOpen={setSidebarOpen} />
       <ToastContainer
-        position="top-center"
+        position="bottom-right"
         autoClose={2000}
         hideProgressBar
         closeOnClick

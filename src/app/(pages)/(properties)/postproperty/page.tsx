@@ -1,10 +1,11 @@
 "use client";
-import AdminHeader from "@/app/components/AdminHeader";
+
 import { uri } from "@/constant";
 import { useEffect, useState } from "react";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import axios from "axios";
+import Cookies from "js-cookie";
 
 import Select from "react-select";
 import AddPropertiesPhotos from "@/app/components/AddPropertiesPhotos";
@@ -12,6 +13,27 @@ import AddPropertiesPhotos from "@/app/components/AddPropertiesPhotos";
 const Page = () => {
   const [forValue, setForValue] = useState("");
   const [forbox, setForbox] = useState(true);
+
+  const [user, setUser] = useState(null); // State for user
+
+  const userCookie = Cookies.get("user"); // Using js-cookie
+
+  const getUserCookie = () => {
+    if (userCookie) {
+      try {
+        const email = userCookie.split("^");
+       
+        setUser(email[0]);
+      } catch {
+        alert("Something Went Wrong");
+      }
+    }
+  };
+
+  // Extract user from cookies
+  useEffect(() => {
+    getUserCookie();
+  }, [userCookie]);
 
   const [formdata, setFormdata] = useState({
     Societyname: "",
@@ -27,7 +49,7 @@ const Page = () => {
     balconies: "",
     bathrooms: "",
     price: "",
-    postedby: "Company",
+    postedby: user,
     type: "", // Select field for property type
     constructionstatus: "",
     furnishing: "",
@@ -36,6 +58,12 @@ const Page = () => {
     line: "",
     images: [],
   });
+
+  useEffect(() => {
+    if (user) {
+      setFormdata(prev => ({ ...prev, postedby: user }));
+    }
+  }, [user]);
 
   const [variables, setVariables] = useState({
     bhklist: [],
@@ -148,9 +176,7 @@ const Page = () => {
         pauseOnHover
         draggable
       />
-      <div
-        className={`w-full min-h-[90vh] bg-gray-200 px-[6%] py-[5vh]`}
-      >
+      <div className={`w-full min-h-[90vh] bg-gray-200 px-[6%] py-[5vh]`}>
         <h1 className="text-2xl text-center mb-5 text-[#FF5D00]">
           Add Property
         </h1>
@@ -611,7 +637,9 @@ const Page = () => {
       </div>
       {forbox && (
         <div className="absolute top-[35vh] left-[15%] w-[70%] lg:w-[40%] lg:left-[30%] bg-[#FF5D00] shadow-lg rounded-xl px-8 py-4">
-          <h1 className="text-center text-lg md:text-xl lg:text-2xl font-bold text-white">Listing For</h1>
+          <h1 className="text-center text-lg md:text-xl lg:text-2xl font-bold text-white">
+            Listing For
+          </h1>
           <div className="w-full mt-2 md:mt-4 lg:mt-6 flex justify-between">
             <button
               onClick={() => {
