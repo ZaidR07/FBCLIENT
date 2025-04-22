@@ -6,6 +6,8 @@ import { useState, useEffect } from "react";
 import { uri } from "@/constant";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import Cookies from "js-cookie";
+
 
 const Register = ({ registeropen, setRegisterOpen }) => {
   const [operation, setOperation] = useState("Register");
@@ -88,6 +90,7 @@ const Register = ({ registeropen, setRegisterOpen }) => {
       );
       if (response.status === 200) {
         toast.success(response.data.message);
+        Cookies.set("user",`${loginformdata.email}^${loginformdata.usertype}`)
       } else {
         toast.error(response.data.message);
       }
