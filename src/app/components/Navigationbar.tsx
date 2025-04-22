@@ -4,10 +4,11 @@ import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import axios from "axios";
 import { uri } from "@/constant";
+import Cookies from "js-cookie";
 
 const Navigationbar = ({ isOpen }) => {
   const [expanded, setExpanded] = useState(null);
-  
+
   const router = useRouter(); // Initialize router
 
   const toggleExpand = (section) => {
@@ -21,6 +22,9 @@ const Navigationbar = ({ isOpen }) => {
     postedbylist: [],
     amenitieslist: [],
   });
+
+  const [user, setUser] = useState(null); // State for user
+  const [usertype, setUserType] = useState(null);
 
   const handleNavigation = (path) => {
     router.push(path); // Navigate to the provided path
@@ -40,6 +44,26 @@ const Navigationbar = ({ isOpen }) => {
   useEffect(() => {
     handleload();
   }, []);
+
+  const userCookie = Cookies.get("user"); // Using js-cookie
+
+  const getUserCookie = () => {
+    if (userCookie) {
+      try {
+        setUser(userCookie);
+
+        setUserType(userCookie.slice(-1)); // Adjust this based on actual cookie structure
+      } catch {
+        setUser(userCookie); // Fallback if not JSON
+        alert(typeof userCookie);
+      }
+    }
+  };
+
+  // Extract user from cookies
+  useEffect(() => {
+    getUserCookie();
+  }, [userCookie]);
 
   return (
     <motion.nav
@@ -64,17 +88,129 @@ const Navigationbar = ({ isOpen }) => {
                 initial={{ opacity: 0, height: 0 }}
                 animate={{ opacity: 1, height: "auto" }}
                 exit={{ opacity: 0, height: 0 }}
-                className="ml-6 py-2 space-y-3 border-b-[1px]"
+                className="ml-8 py-2 space-y-3 border-b-[1px] list-disc"
               >
                 {variables.propertytypelist?.map((item, index) => (
                   <li
                     key={index}
                     className="text-sm cursor-pointer hover:text-gray-300"
-                    onClick={() => handleNavigation(`/buyproperties?type=${item}&view=Sale`)}
+                    onClick={() =>
+                      handleNavigation(
+                        `/buyproperties?type=${item.name}&view=Sale`
+                      )
+                    }
                   >
-                    {item}
+                    {item.name}
                   </li>
                 ))}
+              </motion.ul>
+            )}
+          </AnimatePresence>
+        </li>
+
+        {/* For Owners Section */}
+        <li>
+          <button
+            onClick={() => toggleExpand("forwoners")}
+            className="w-full flex justify-between items-center text-lg border-b-[1px]"
+          >
+            <div className="flex gap-2">🏠 For Owners</div>
+            <span>{expanded === "forwoners" ? "▲" : "▼"}</span>
+          </button>
+          <AnimatePresence>
+            {expanded === "forwoners" && (
+              <motion.ul
+                initial={{ opacity: 0, height: 0 }}
+                animate={{ opacity: 1, height: "auto" }}
+                exit={{ opacity: 0, height: 0 }}
+                className="ml-6 py-2 space-y-3 border-b-[1px]"
+              >
+                <li className="list-disc">
+                  <a
+                    className="text-sm cursor-pointer hover:text-gray-300"
+                    href="postproperty?who=owner"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    Post Property
+                  </a>
+                </li>
+
+                {user ? (
+                  usertype == 2 || usertype == "2" ? (
+                    <a
+                      className="hover:text-orange-500 hover:underline text-sm"
+                      href="viewownerproperty"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      View / Edit Post
+                    </a>
+                  ) : (
+                    <li className="list-disc">
+                      <span
+                        className="text-sm"
+                        onClick={() =>
+                          alert("This facility is for owners only")
+                        }
+                      >
+                        View / Edit Post
+                      </span>
+                    </li>
+                  )
+                ) : (
+                  <li className="list-disc">
+                    <span
+                      className="text-sm"
+                      onClick={() => alert("Please Register First")}
+                    >
+                      View / Edit Post
+                    </span>
+                  </li>
+                )}
+              </motion.ul>
+            )}
+          </AnimatePresence>
+        </li>
+
+        {/* For Owners Section */}
+        <li>
+          <button
+            onClick={() => toggleExpand("forbrokers")}
+            className="w-full flex justify-between items-center text-lg border-b-[1px]"
+          >
+            <div className="flex gap-2">👨‍💼 For Dealers / Builders</div>
+            <span>{expanded === "forbrokers" ? "▲" : "▼"}</span>
+          </button>
+          <AnimatePresence>
+            {expanded === "forbrokers" && (
+              <motion.ul
+                initial={{ opacity: 0, height: 0 }}
+                animate={{ opacity: 1, height: "auto" }}
+                exit={{ opacity: 0, height: 0 }}
+                className="ml-6 py-2 space-y-3 border-b-[1px]"
+              >
+                <li className="list-disc">
+                  <a
+                    className="text-sm cursor-pointer hover:text-gray-300"
+                    href="postproperty?who=owner"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    Post Property
+                  </a>
+                </li>
+
+                <li className="list-disc">
+                  <a
+                    className="text-sm cursor-pointer hover:text-gray-300"
+                    href="plans?who=buildbroker"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    Plans & Subscriptions
+                  </a>
+                </li>
               </motion.ul>
             )}
           </AnimatePresence>
@@ -101,9 +237,13 @@ const Navigationbar = ({ isOpen }) => {
                   <li
                     key={index}
                     className="text-sm cursor-pointer hover:text-gray-300"
-                    onClick={() => handleNavigation(`/buyproperties?type=${item}&view=Rent`)}
+                    onClick={() =>
+                      handleNavigation(
+                        `/buyproperties?type=${item.name}&view=Rent`
+                      )
+                    }
                   >
-                    {item}
+                    {item.name}
                   </li>
                 ))}
               </motion.ul>
