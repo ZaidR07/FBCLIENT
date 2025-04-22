@@ -68,11 +68,14 @@ const Page = () => {
 
   useEffect(() => {
     const cookie = Cookies.get("user");
-    console.log("Cookie:", cookie); // Debug
+    console.log("All cookies:", Cookies.get());
+    console.log("Raw Cookie:", cookie); // This should log the encoded value
     if (cookie) {
       try {
-        setUser(cookie);
-        setUserType(cookie.slice(-1));
+        const decoded = decodeURIComponent(cookie);
+        console.log("Decoded Cookie:", decoded);
+        setUser(decoded);
+        setUserType(decoded.slice(-1)); // Example logic
       } catch (err) {
         console.error("Cookie parse error", err);
       }
