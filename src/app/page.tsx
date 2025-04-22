@@ -61,26 +61,23 @@ const Page = () => {
 
   const [registeropen, setRegisterOpen] = useState(false);
 
-  const [user, setUser] = useState(null); // State for user
-
   const router = useRouter(); // Initialize router
 
-  const userCookie = Cookies.get("user"); // Using js-cookie
+  const [user, setUser] = useState(null); // State for user
+  const [usertype, setUserType] = useState(null);
 
-  const getUserCookie = () => {
-    if (userCookie) {
+  useEffect(() => {
+    const cookie = Cookies.get("user");
+    console.log("Cookie:", cookie); // Debug
+    if (cookie) {
       try {
-        setUser(JSON.parse(decodeURIComponent(userCookie))); // Parse JSON safely
-      } catch {
-        setUser(userCookie); // Fallback if not JSON
+        setUser(cookie);
+        setUserType(cookie.slice(-1));
+      } catch (err) {
+        console.error("Cookie parse error", err);
       }
     }
-  };
-
-  // Extract user from cookies
-  useEffect(() => {
-    getUserCookie();
-  }, [userCookie]);
+  }, []);
 
   const handleLoad = async () => {
     try {
@@ -133,13 +130,12 @@ const Page = () => {
         {user ? (
           <Profile user={user} />
         ) : (
-
-        <button
-          onClick={() => setRegisterOpen(true)}
-          className="text-white text-xl font-bold"
-        >
-          Sign Up
-        </button>
+          <button
+            onClick={() => setRegisterOpen(true)}
+            className="text-white text-xl font-bold"
+          >
+            Sign Up
+          </button>
         )}
       </nav>
       <section className="mt-1 lg:mt-[16vh] px-[1%] rounded-md">
@@ -154,7 +150,7 @@ const Page = () => {
         <PropertyTypes />
       </section>
       <section className="mt-[4vh]">
-        <Vendors/>
+        <Vendors />
       </section>
       <section className="mt-[4vh]">
         <NumberBar />

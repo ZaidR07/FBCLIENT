@@ -70,7 +70,7 @@ const Navigationbar = ({ isOpen }) => {
       initial={{ y: "100%" }}
       animate={{ y: isOpen ? "0%" : "100%" }}
       transition={{ duration: 0.5, ease: "easeInOut" }}
-      className="w-[100vw] pt-16 fixed bottom-0 h-[88vh] bg-[#FF5D00] shadow-2xl p-6 flex flex-col text-white"
+      className="w-[100vw] pt-24 fixed bottom-0 h-[92vh] bg-[#FF5D00] shadow-2xl p-6 flex flex-col text-white"
     >
       <ul className="space-y-4">
         {/* Buy Section */}
@@ -125,16 +125,25 @@ const Navigationbar = ({ isOpen }) => {
                 exit={{ opacity: 0, height: 0 }}
                 className="ml-6 py-2 space-y-3 border-b-[1px]"
               >
-                <li className="list-disc">
-                  <a
-                    className="text-sm cursor-pointer hover:text-gray-300"
-                    href="postproperty?who=owner"
-                    target="_blank"
-                    rel="noopener noreferrer"
+                {usertype == 2 || usertype == "2" ? (
+                  <li className="list-disc">
+                    <a
+                      className="text-sm cursor-pointer hover:text-gray-300"
+                      href="postproperty?who=owner"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      Post Property
+                    </a>
+                  </li>
+                ) : (
+                  <li
+                    className="list-disc text-sm"
+                    onClick={() => alert("Please Register or Login as Owner")}
                   >
                     Post Property
-                  </a>
-                </li>
+                  </li>
+                )}
 
                 {user ? (
                   usertype == 2 || usertype == "2" ? (
@@ -190,16 +199,25 @@ const Navigationbar = ({ isOpen }) => {
                 exit={{ opacity: 0, height: 0 }}
                 className="ml-6 py-2 space-y-3 border-b-[1px]"
               >
-                <li className="list-disc">
-                  <a
-                    className="text-sm cursor-pointer hover:text-gray-300"
-                    href="postproperty?who=owner"
-                    target="_blank"
-                    rel="noopener noreferrer"
+                {usertype == 3 || usertype == "3" ? (
+                  <li className="list-disc">
+                    <a
+                      className="text-sm cursor-pointer hover:text-gray-300"
+                      href="postproperty?who=owner"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      Post Property
+                    </a>
+                  </li>
+                ) : (
+                  <li
+                    className="list-disc text-sm"
+                    onClick={() => alert("Please Register or Login as Dealer / Builder")}
                   >
                     Post Property
-                  </a>
-                </li>
+                  </li>
+                )}
 
                 <li className="list-disc">
                   <a
@@ -277,6 +295,9 @@ const Navigationbar = ({ isOpen }) => {
           🆘 Help
         </li>
       </ul>
+      <button className="text-[#ff5d00] bg-[#f5d7c5] rounded-md py-2 mt-6">
+        Post Property
+      </button>
     </motion.nav>
   );
 };

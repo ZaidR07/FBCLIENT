@@ -12,7 +12,7 @@ import Cookies from "js-cookie";
 import { ChevronDown } from "lucide-react";
 import { motion } from "framer-motion";
 import Sidebar from "./Sidebar";
-import Register from "./Register";
+
 
 const TrendIcon = () => {
   return (
@@ -446,14 +446,21 @@ const DesktopNav = () => {
               onMouseLeave={() => setForOwnersOpen(false)}
               className="absolute top-[10vh] gap-2 px-4 py-5 bg-[#fff] shadow-inner rounded-lg flex flex-col"
             >
-              <a
-                className="hover:text-orange-500 hover:underline"
-                href="postproperty?who=owner"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                Post Property
-              </a>
+              {usertype == 2 || usertype == "2" ? (
+                <a
+                  className="hover:text-orange-500 hover:underline"
+                  href="postproperty?who=owner"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  Post Property
+                </a>
+              ) : (
+                <span onClick={() => alert("Please Register or Login as Owner")}>
+                  Post Property
+                </span>
+              )}
+
               <hr />
               {user ? (
                 usertype == 2 || usertype == "2" ? (
@@ -467,20 +474,23 @@ const DesktopNav = () => {
                   </a>
                 ) : (
                   <>
-                    <span onClick={() => alert("This facility is for owners only")}>
+                    <span
+                      onClick={() => alert("This facility is for owners only")}
+                    >
                       View / Edit Post
                     </span>
                   </>
                 )
               ) : (
-                <span onClick={() => alert("Please Register First")}>View / Edit Post</span>
+                <span onClick={() => alert("Please Register or Login or Login First")}>
+                  View / Edit Post
+                </span>
               )}
             </div>
           )}
           <li
             className="cursor-pointer flex"
             onMouseEnter={() => setFordealerOpen(true)}
-            onClick={() => router.push("/about")}
           >
             <span>For&nbsp;Dealers&nbsp;/&nbsp;Builders</span>
             <ChevronDown />
@@ -489,14 +499,23 @@ const DesktopNav = () => {
                 onMouseLeave={() => setFordealerOpen(false)}
                 className="absolute top-[10vh] ml-8 gap-2 px-4 py-5 bg-[#fff] shadow-inner rounded-lg flex flex-col"
               >
-                <a
-                  className="hover:text-orange-500 hover:underline"
-                  href="postproperty?who=buildbroker"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  Post Property
-                </a>
+                {usertype == 3 || usertype == "3" ? (
+                  <a
+                    className="hover:text-orange-500 hover:underline"
+                    href="postproperty?who=owner"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    Post Property
+                  </a>
+                ) : (
+                  <span
+                    className="hover:text-orange-500 hover:underline"
+                    onClick={() => alert("Please Register or Login as Dealer / Builder")}
+                  >
+                    Post Property
+                  </span>
+                )}
                 <hr />
                 <a
                   className="hover:text-orange-500 hover:underline"
@@ -510,11 +529,17 @@ const DesktopNav = () => {
             )}
           </li>
         </ul>
-        <a href="postproperty" target="_blank" rel="noopener noreferrer">
-          <button className="px-3.5 py-2 rounded-md bg-[#fdf3da] text-[#ff5d00]">
+        {user ? (
+          <a href="postproperty" target="_blank" rel="noopener noreferrer">
+            <button className="px-3.5 py-2 rounded-md bg-[#fdf3da] text-[#ff5d00]">
+              Post Property
+            </button>
+          </a>
+        ) : (
+          <button onClick={() => alert("Please Register or Login First")} className="px-3.5 py-2 rounded-md bg-[#fdf3da] text-[#ff5d00]">
             Post Property
           </button>
-        </a>
+        )}
 
         <HamIcon opensidebar={opensidebar} setOpenSidebar={setOpenSidebar} />
       </div>
