@@ -5,6 +5,8 @@ import { motion } from "framer-motion";
 import Navigationbar from "./Navigationbar";
 import { useRouter } from "next/navigation";
 
+import { useSelector, useDispatch } from "react-redux"; // ✅ correct
+import { setlocation } from "@/slices/locationSlice";
 
 const HamIcon = ({ opennav }) => {
   return (
@@ -20,6 +22,19 @@ const HamIcon = ({ opennav }) => {
     >
       <path d="M0 96C0 78.3 14.3 64 32 64l384 0c17.7 0 32 14.3 32 32s-14.3 32-32 32L32 128C14.3 128 0 113.7 0 96zM64 256c0-17.7 14.3-32 32-32l384 0c17.7 0 32 14.3 32 32s-14.3 32-32 32L96 288c-17.7 0-32-14.3-32-32zM448 416c0 17.7-14.3 32-32 32L32 448c-17.7 0-32-14.3-32-32s14.3-32 32-32l384 0c17.7 0 32 14.3 32 32z" />
     </motion.svg>
+  );
+};
+
+const LocationIcon = () => {
+  return (
+    <svg
+      width={20}
+      fill="#ff5d00"
+      xmlns="http://www.w3.org/2000/svg"
+      viewBox="0 0 384 512"
+    >
+      <path d="M215.7 499.2C267 435 384 279.4 384 192C384 86 298 0 192 0S0 86 0 192c0 87.4 117 243 168.3 307.2c12.3 15.3 35.1 15.3 47.4 0zM192 128a64 64 0 1 1 0 128 64 64 0 1 1 0-128z" />
+    </svg>
   );
 };
 
@@ -44,12 +59,34 @@ const MobileNav = () => {
   const [isOpen, setIsOpen] = useState(false);
   const router = useRouter(); // Initialize router
 
+  const locationstate = useSelector((state: any) => state.location.location); // ✅ useSelector
+
+  const dispatch = useDispatch();
 
   return (
     <>
       {/* Navbar with higher z-index */}
-      <nav className="fixed top-0 left-0 w-full h-[8vh] px-4 lg:hidden flex items-center justify-between bg-white shadow-md z-50">
-        <Image src="/Fb_logo.jpg" width={60} height={60} alt="logo" onClick={() => router.push("/") }/>
+      <nav className="fixed top-0 left-0 w-full h-[8vh] px-4 lg:hidden flex  justify-between bg-white shadow-md z-50">
+        <div className="flex gap-4 ">
+          <Image
+            src="/Fb_logo.jpg"
+            width={60}
+            height={60}
+            alt="logo"
+            onClick={() => router.push("/")}
+          />
+          {locationstate && (
+            <span
+              onClick={() => {
+                dispatch(setlocation(""));
+              }}
+              className="flex gap-2 items-center cursor-pointer"
+            >
+              <LocationIcon /> {locationstate}
+            </span>
+          )}
+        </div>
+
         {isOpen ? (
           <CloseIcon closenav={() => setIsOpen(false)} />
         ) : (

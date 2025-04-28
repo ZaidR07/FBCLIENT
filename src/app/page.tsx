@@ -126,10 +126,7 @@ const Page = () => {
     <>
       <Header />
       {/* LocationBox will update location in redux */}
-      <LocationBox
-        location={locationstate}
-        setLocation={(value) => dispatch(setlocation(value))}
-      />
+     
 
       {/* rest of your code... */}
       <nav className="lg:hidden w-full mt-[8vh] h-[6vh] bg-[#FF5D00] shadow-2xl flex items-center justify-between px-4">
@@ -187,6 +184,11 @@ const Page = () => {
       <section className="mt-[4vh]">
         <NumberBar />
       </section>
+
+      <LocationBox
+        location={locationstate}
+        setLocation={(value) => dispatch(setlocation(value))}
+      />
 
       <Register registeropen={registeropen} setRegisterOpen={setRegisterOpen} />
       <FeaturedBrokers />
