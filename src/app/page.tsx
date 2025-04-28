@@ -186,8 +186,8 @@ const Page = () => {
       </section>
 
       <LocationBox
-        location={locationstate}
-        setLocation={(value) => dispatch(setlocation(value))}
+        locationstate = {locationstate}
+        setlocation={(value) => dispatch(setlocation(value))}
       />
 
       <Register registeropen={registeropen} setRegisterOpen={setRegisterOpen} />

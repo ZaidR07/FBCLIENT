@@ -1,7 +1,7 @@
 "use client";
 import AdminHeader from "@/app/components/AdminHeader";
 import { uri } from "@/constant";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import axios from "axios";
@@ -9,9 +9,24 @@ import axios from "axios";
 import Select from "react-select";
 import AddPropertiesPhotos from "@/app/components/AddPropertiesPhotos";
 
+import { useSelector, useDispatch } from "react-redux"; // ✅ correct
+import { setlocation } from "@/slices/locationSlice";
+import LocationBox from "@/app/components/LocationBox";
+import { motion } from "framer-motion";
+
 const Page = () => {
   const [forValue, setForValue] = useState("");
   const [forbox, setForbox] = useState(true);
+
+  const [suggestions, setSuggestions] = useState([]);
+  const [showSuggestions, setShowSuggestions] = useState(false);
+  const [selectedSuggestionIndex, setSelectedSuggestionIndex] = useState(-1);
+  const [isFocused, setIsFocused] = useState(false);
+  const inputRef = useRef(null);
+
+  const locationstate = useSelector((state: any) => state.location.location); // ✅ useSelector
+
+  const dispatch = useDispatch();
 
   const [formdata, setFormdata] = useState({
     Societyname: "",
@@ -90,6 +105,85 @@ const Page = () => {
     }));
   };
 
+  const getbuildings = async () => {
+    try {
+      if (locationstate !== "") {
+        const response = await axios.get(`${uri}getbuildings`, { params: {location : locationstate} });
+        if (response.status !== 200) {
+          console.error(response.data.message);
+          toast.error("Error Loading Buildings!!");
+          return;
+        }
+        setSuggestions(response.data.payload);
+      }
+    } catch (error) {
+      console.error(error);
+      toast.error("Failed to load buildings!");
+    }
+  };
+
+  useEffect(() => {
+    getbuildings();
+  }, [locationstate]);
+
+  // Filter suggestions based on Societyname input
+  useEffect(() => {
+    if (formdata.Societyname.trim() && isFocused && suggestions.length > 0) {
+      const filtered = suggestions.filter((suggestion) =>
+        suggestion.toLowerCase().includes(formdata.Societyname.toLowerCase())
+      );
+      setShowSuggestions(filtered.length > 0);
+      setSelectedSuggestionIndex(-1);
+    } else {
+      setShowSuggestions(false);
+    }
+  }, [formdata.Societyname, isFocused, suggestions]);
+
+  // Handle selecting a suggestion
+  const handleSuggestionClick = (suggestion) => {
+    setFormdata((prevData) => ({
+      ...prevData,
+      Societyname: suggestion,
+    }));
+    setShowSuggestions(false);
+    setIsFocused(false);
+    inputRef.current.focus();
+  };
+
+  // Handle keyboard navigation for suggestions
+  const handleKeyDown = (e) => {
+    if (!showSuggestions) return;
+
+    if (e.key === "ArrowDown") {
+      e.preventDefault();
+      setSelectedSuggestionIndex((prev) =>
+        prev < suggestions.length - 1 ? prev + 1 : prev
+      );
+    } else if (e.key === "ArrowUp") {
+      e.preventDefault();
+      setSelectedSuggestionIndex((prev) => (prev > 0 ? prev - 1 : -1));
+    } else if (e.key === "Enter" && selectedSuggestionIndex >= 0) {
+      e.preventDefault();
+      handleSuggestionClick(suggestions[selectedSuggestionIndex]);
+    } else if (e.key === "Escape") {
+      setShowSuggestions(false);
+      setSelectedSuggestionIndex(-1);
+    }
+  };
+
+  const LocationIcon = () => {
+    return (
+      <svg
+        width={20}
+        fill="#ff5d00"
+        xmlns="http://www.w3.org/2000/svg"
+        viewBox="0 0 384 512"
+      >
+        <path d="M215.7 499.2C267 435 384 279.4 384 192C384 86 298 0 192 0S0 86 0 192c0 87.4 117 243 168.3 307.2c12.3 15.3 35.1 15.3 47.4 0zM192 128a64 64 0 1 1 0 128 64 64 0 1 1 0-128z" />
+      </svg>
+    );
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
@@ -156,6 +250,16 @@ const Page = () => {
         <h1 className="text-2xl text-center mb-5 text-[#FF5D00]">
           Add Property
         </h1>
+        {locationstate && (
+          <span
+            onClick={() => {
+              dispatch(setlocation(""));
+            }}
+            className="flex gap-2 mb-2 items-center cursor-pointer"
+          >
+            <LocationIcon /> {locationstate}
+          </span>
+        )}
         <form className="p-6 bg-white rounded-2xl" onSubmit={handleSubmit}>
           {/* Property Type Select Field */}
           <div className="mb-4">
@@ -186,20 +290,55 @@ const Page = () => {
             </select>
           </div>
 
-          {/* Society Name */}
-          <div className="mb-4">
+          {/* Society Name with Suggestions */}
+          <div className="mb-4 relative">
             <label>
               Society / Building / Plot Name{" "}
-              <span className="text-red-700 text-xl">*</span>{" "}
+              <span className="text-red-700 text-xl">*</span>
             </label>
-            <input
+            <motion.input
+              ref={inputRef}
               name="Societyname"
               value={formdata.Societyname}
               onChange={handleChange}
+              onFocus={() => setIsFocused(true)}
+              onBlur={() => setIsFocused(false)}
+              onKeyDown={handleKeyDown}
               type="text"
-              className="border-b-2 border-black w-full"
+              className="border-b-2 border-black w-full mt-3 text-gray-600"
+              placeholder={isFocused ? "" : "Enter society name..."}
               required
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, ease: "easeOut" }}
             />
+            {/* Suggestions Dropdown */}
+            {showSuggestions && (
+              <motion.div
+                className="absolute top-full left-0 w-full bg-white shadow-lg rounded-md mt-1 max-h-60 overflow-y-auto z-10"
+                initial={{ opacity: 0, y: -10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.2 }}
+              >
+                {suggestions
+                  .filter((suggestion) =>
+                    suggestion
+                      .toLowerCase()
+                      .includes(formdata.Societyname.toLowerCase())
+                  )
+                  .map((suggestion, index) => (
+                    <div
+                      key={suggestion}
+                      className={`px-4 py-2 text-sm text-gray-600 cursor-pointer hover:bg-gray-100 ${
+                        index === selectedSuggestionIndex ? "bg-gray-100" : ""
+                      }`}
+                      onMouseDown={() => handleSuggestionClick(suggestion)}
+                    >
+                      {suggestion}
+                    </div>
+                  ))}
+              </motion.div>
+            )}
           </div>
 
           {currentpropertytype != 3 && (
@@ -612,7 +751,7 @@ const Page = () => {
         </form>
       </div>
       {forbox && (
-        <div className="absolute top-[35vh] left-[15%] w-[70%] lg:w-[40%] lg:left-[30%] bg-[#FF5D00] shadow-lg rounded-xl px-8 py-4">
+        <div className="absolute top-[35vh] left-[15%] w-[70%] lg:w-[30%] lg:left-[40%] bg-[#FF5D00] shadow-lg rounded-xl px-8 py-4">
           <h1 className="text-center font-bold text-white">Listing For</h1>
           <div className="w-full mt-2 flex justify-between">
             <button
@@ -653,6 +792,14 @@ const Page = () => {
               PG
             </button> */}
           </div>
+        </div>
+      )}
+      {!forbox && locationstate == "" && (
+        <div className="mt-[10vh]">
+          <LocationBox
+            locationstate={locationstate}
+            setlocation={setlocation}
+          />
         </div>
       )}
     </div>
