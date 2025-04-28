@@ -83,7 +83,7 @@ const LocationBox = ({ location , setLocation}) => {
   };
 
   return (
-    <div className={`flex flex-col gap-4 w-[70%] lg:w-[20%] bg-white fixed z-[999999999999999999999999] lg:top-[20vh] top-[30vh] left-[15%] lg:left-[40%] p-4 rounded-lg shadow-lg ${location ? "hidden" : "block"}`}>
+    <div className={`flex flex-col gap-4 w-[70%] lg:w-[20%] bg-white fixed z-[99999999999999999999999999999999] lg:top-[20vh] top-[45vh] left-[15%] lg:left-[40%] p-4 rounded-lg shadow-lg ${location ? "hidden" : "block"}`}>
       <div className="flex items-center gap-4">
        
         <input
