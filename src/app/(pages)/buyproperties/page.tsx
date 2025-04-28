@@ -15,9 +15,9 @@ import {
   SearchIcon,
   AngleDownIcon,
   FilterIcon,
-  SortIcon,
+ 
 } from "@/app/Icons";
-import Searchsection from "@/app/components/SearchSection";
+
 import PropertiesNav from "@/app/components/PropertiesNav";
 
 const AppliedFilters = ({ filters, onRemoveFilter }) => {

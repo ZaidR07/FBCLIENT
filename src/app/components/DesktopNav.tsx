@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect, useCallback } from "react";
 import Image from "next/image";
 
@@ -11,6 +10,8 @@ import Cookies from "js-cookie";
 import { ChevronDown } from "lucide-react";
 import { motion } from "framer-motion";
 import Sidebar from "./Sidebar";
+import { useSelector , useDispatch } from "react-redux"; // ✅ correct
+import { setlocation } from "@/slices/locationSlice";
 
 
 const TrendIcon = () => {
@@ -31,7 +32,7 @@ const AngleDown = () => {
     <svg
       xmlns="http://www.w3.org/2000/svg"
       viewBox="0 0 512 512"
-      width={20}
+      width={15}
       fill="#2b2a2a"
     >
       <path d="M233.4 406.6c12.5 12.5 32.8 12.5 45.3 0l192-192c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L256 338.7 86.6 169.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3l192 192z" />
@@ -56,6 +57,19 @@ const HamIcon = ({ setOpenSidebar, opensidebar }) => {
   );
 };
 
+const LocationIcon = () => {
+  return (
+    <svg
+      width={20}
+      fill="#ff5d00"
+      xmlns="http://www.w3.org/2000/svg"
+      viewBox="0 0 384 512"
+    >
+      <path d="M215.7 499.2C267 435 384 279.4 384 192C384 86 298 0 192 0S0 86 0 192c0 87.4 117 243 168.3 307.2c12.3 15.3 35.1 15.3 47.4 0zM192 128a64 64 0 1 1 0 128 64 64 0 1 1 0-128z" />
+    </svg>
+  );
+};
+
 const DesktopNav = () => {
   const router = useRouter();
   const [buydropopen, setBuydropopen] = useState(false);
@@ -70,6 +84,10 @@ const DesktopNav = () => {
   const [opensidebar, setOpenSidebar] = useState();
   const [forownersopen, setForOwnersOpen] = useState(false);
   const [fordealeropen, setFordealerOpen] = useState(false);
+
+  const locationstate = useSelector((state: any) => state.location.location); // ✅ useSelector
+
+  const dispatch  = useDispatch();
 
   const loaddata = useCallback(async () => {
     try {
@@ -108,8 +126,10 @@ const DesktopNav = () => {
 
   const [user, setUser] = useState(null); // State for user
   const [usertype, setUserType] = useState(null);
+  const [location, setLocation] = useState(null);
 
   const userCookie = Cookies.get("user"); // Using js-cookie
+ 
 
   const getUserCookie = () => {
     if (userCookie) {
@@ -119,19 +139,28 @@ const DesktopNav = () => {
         setUserType(userCookie.slice(-1)); // Adjust this based on actual cookie structure
       } catch {
         setUser(userCookie); // Fallback if not JSON
-        alert(typeof userCookie);
       }
     }
+   
   };
 
   // Extract user from cookies
   useEffect(() => {
     getUserCookie();
-  }, [userCookie]);
+  }, [userCookie , locationstate]);
 
   return (
     <nav className="relative hidden w-full h-full lg:flex shadow-lg items-center ">
-      <ul className="flex w-[42.5%] max-w-[42.5%] gap-16 text-base justify-end">
+      <ul className="flex w-[42.5%] max-w-[42.5%] gap-12 text-base justify-end">
+        {locationstate && (
+          <span
+            onClick={() => {dispatch(setlocation(""))}}
+            className="flex gap-2 cursor-pointer"
+          >
+            <LocationIcon /> {locationstate}
+          </span>
+        )}
+
         {/* Buy Dropdown */}
         <li
           className="flex gap-2 cursor-pointer"
@@ -140,7 +169,7 @@ const DesktopNav = () => {
             setRentdropopen(false);
           }}
         >
-          <span>Buy</span>
+          <span className="text-base">Buy</span>
           <AngleDown />
         </li>
         {buydropopen && !loading && (
@@ -455,7 +484,9 @@ const DesktopNav = () => {
                   Post Property
                 </a>
               ) : (
-                <span onClick={() => alert("Please Register or Login as Owner")}>
+                <span
+                  onClick={() => alert("Please Register or Login as Owner")}
+                >
                   Post Property
                 </span>
               )}
@@ -481,7 +512,11 @@ const DesktopNav = () => {
                   </>
                 )
               ) : (
-                <span onClick={() => alert("Please Register or Login or Login First")}>
+                <span
+                  onClick={() =>
+                    alert("Please Register or Login or Login First")
+                  }
+                >
                   View / Edit Post
                 </span>
               )}
@@ -510,7 +545,9 @@ const DesktopNav = () => {
                 ) : (
                   <span
                     className="hover:text-orange-500 hover:underline"
-                    onClick={() => alert("Please Register or Login as Dealer / Builder")}
+                    onClick={() =>
+                      alert("Please Register or Login as Dealer / Builder")
+                    }
                   >
                     Post Property
                   </span>
@@ -535,7 +572,10 @@ const DesktopNav = () => {
             </button>
           </a>
         ) : (
-          <button onClick={() => alert("Please Register or Login First")} className="px-3.5 py-2 rounded-md bg-[#fdf3da] text-[#ff5d00]">
+          <button
+            onClick={() => alert("Please Register or Login First")}
+            className="px-3.5 py-2 rounded-md bg-[#fdf3da] text-[#ff5d00]"
+          >
             Post Property
           </button>
         )}

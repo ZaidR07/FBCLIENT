@@ -10,7 +10,7 @@ const vendorData = [
   { id: 4, emoji: "💡", label: "Electric" },
   { id: 5, emoji: "🛜", label: "Broadband" },
   { id: 6, emoji: "🪳", label: "Pest Control" },
-  { id: 7, emoji: "🏪🛠️", label: "Hardwares" },
+  { id: 7, emoji: "🛠️", label: "Hardwares" },
   { id: 8, emoji: "🛏️", label: "Furniture" },
   { id: 9, image: "/painter.png", label: "Painter" },
   { id: 10, image: "/carpenter.png", label: "Carpenter" },
@@ -28,10 +28,10 @@ const Vendors = () => {
     const handleResize = () => {
       const width = window.innerWidth;
       if (width > 1400) setEmojisWidth(100);
-      else if (width > 1020) setEmojisWidth(60);
-      else if (width > 780) setEmojisWidth(40);
-      else if (width > 500) setEmojisWidth(30);
-      else setEmojisWidth(20);
+      else if (width > 1020) setEmojisWidth(80);
+      else if (width > 780) setEmojisWidth(70);
+      else if (width > 500) setEmojisWidth(60);
+      else setEmojisWidth(40);
     };
 
     handleResize(); // initial call

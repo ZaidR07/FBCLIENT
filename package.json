@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@headlessui/react": "^2.2.0",
+    "@reduxjs/toolkit": "^2.7.0",
     "axios": "^1.7.9",
     "crypto": "^1.0.1",
     "framer-motion": "^12.4.7",
@@ -20,9 +21,11 @@
     "react-countup": "^6.5.3",
     "react-data-table-component": "^7.6.2",
     "react-dom": "^19.0.0",
+    "react-redux": "^9.2.0",
     "react-responsive-carousel": "^3.2.23",
     "react-select": "^5.10.0",
-    "react-toastify": "^11.0.3"
+    "react-toastify": "^11.0.3",
+    "redux-persist": "^6.0.0"
   },
   "devDependencies": {
     "@types/node": "^20",

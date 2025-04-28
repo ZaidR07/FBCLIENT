@@ -10,16 +10,16 @@ import RecentlyListed from "./components/RecentlyListed";
 import NumberBar from "./components/NumberBar";
 import Footer from "./components/Footer";
 import Profile from "./components/Profile";
-
 import PropertyTypes from "./components/PropertyTypes";
-
 import { useRouter } from "next/navigation";
-
 import Register from "./components/Register";
-
 import FeaturedBrokers from "./components/FeaturedBrokers";
-import Cookies from "js-cookie"; // Import js-cookie
+import Cookies from "js-cookie";
 import Vendors from "./components/Vendors";
+import LocationBox from "./components/LocationBox";
+
+import { setlocation } from "@/slices/locationSlice";
+import { useSelector, useDispatch } from "react-redux"; // ✅ Corrected import
 
 const HomeIcon = () => {
   return (
@@ -57,30 +57,51 @@ const KeyIcon = () => (
 );
 
 const Page = () => {
+  const dispatch = useDispatch(); // ✅ useDispatch
+  const locationstate = useSelector((state: any) => state.location.location); // ✅ useSelector
   const [companyInfo, setCompanyInfo] = useState({ carousel: [] });
-
   const [registeropen, setRegisterOpen] = useState(false);
-
-  const router = useRouter(); // Initialize router
-
-  const [user, setUser] = useState(null); // State for user
+  const router = useRouter();
+  const [user, setUser] = useState(null);
   const [usertype, setUserType] = useState(null);
+  const [buildings, setBuildings] = useState([]);
+  const cookie = Cookies.get("user");
+
+  const getbuildings = async (location: string) => {
+    try {
+      if (location) {
+        const response = await axios.get(`${uri}getbuildings`, {
+          params: { location },
+        });
+
+        if (response.status !== 200) {
+          toast.error("Unable to load buildings");
+          return;
+        }
+
+        setBuildings(response.data.payload);
+      }
+    } catch (error) {
+      console.error("Error fetching buildings:", error);
+    }
+  };
 
   useEffect(() => {
-    const cookie = Cookies.get("user");
-    console.log("All cookies:", Cookies.get());
-    console.log("Raw Cookie:", cookie); // This should log the encoded value
     if (cookie) {
       try {
         const decoded = decodeURIComponent(cookie);
-        console.log("Decoded Cookie:", decoded);
         setUser(decoded);
-        setUserType(decoded.slice(-1)); // Example logic
+        setUserType(decoded.slice(-1)); // example: last char
       } catch (err) {
         console.error("Cookie parse error", err);
       }
     }
-  }, []);
+
+    if (locationstate) {
+      
+      getbuildings(locationstate);
+    }
+  }, [cookie, locationstate]);
 
   const handleLoad = async () => {
     try {
@@ -90,7 +111,6 @@ const Page = () => {
         return;
       }
       console.log(response.data);
-
       setCompanyInfo(response.data);
     } catch (error) {
       toast.error("Error fetching company info");
@@ -105,8 +125,16 @@ const Page = () => {
   return (
     <>
       <Header />
-      <nav className="lg:hidden w-full mt-[8vh]  h-[6vh] bg-[#FF5D00] shadow-2xl flex items-center justify-between px-4">
+      {/* LocationBox will update location in redux */}
+      <LocationBox
+        location={locationstate}
+        setLocation={(value) => dispatch(setlocation(value))}
+      />
+
+      {/* rest of your code... */}
+      <nav className="lg:hidden w-full mt-[8vh] h-[6vh] bg-[#FF5D00] shadow-2xl flex items-center justify-between px-4">
         <div className="flex gap-4">
+          {/* Buttons */}
           <button
             onClick={() => router.push("/buyproperties?view=Sale")}
             className="flex gap-1 items-center px-2 py-1 bg-white text-[#FF5D00] rounded-xl"
@@ -141,11 +169,12 @@ const Page = () => {
           </button>
         )}
       </nav>
+
       <section className="mt-1 lg:mt-[16vh] px-[1%] rounded-md">
-        {/* <CarouselComponent companyInfo={companyInfo} /> */}
         <CarouselComponent />
-        <Searchsection />
+        <Searchsection buildings={buildings} />
       </section>
+
       <section className="mt-[4vh]">
         <RecentlyListed />
       </section>
@@ -158,10 +187,9 @@ const Page = () => {
       <section className="mt-[4vh]">
         <NumberBar />
       </section>
+
       <Register registeropen={registeropen} setRegisterOpen={setRegisterOpen} />
-
       <FeaturedBrokers />
-
       <Footer />
     </>
   );
