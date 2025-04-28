@@ -67,7 +67,7 @@ const MobileNav = () => {
     <>
       {/* Navbar with higher z-index */}
       <nav className="fixed top-0 left-0 w-full h-[8vh] px-4 lg:hidden flex  justify-between bg-white shadow-md z-50">
-        <div className="flex gap-4 ">
+        <div className="flex gap-3 ">
           <Image
             src="/Fb_logo.jpg"
             width={60}

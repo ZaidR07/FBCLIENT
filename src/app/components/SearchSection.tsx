@@ -134,7 +134,7 @@ const Searchsection = ({ buildings }) => {
   };
 
   return (
-    <div className="relative w-[85%] lg:w-[60%] lg:ml-[20%] bg-white shadow-xl px-6 py-2 lg:py-4 rounded-xl -mt-[3vh] lg:-mt-[18vh] z-[9999999] absolute ml-[6.5%] flex items-center gap-2">
+    <div className=" w-[85%] lg:w-[60%] lg:ml-[20%] bg-white shadow-xl px-6 py-2 lg:py-4 rounded-xl -mt-[3vh] lg:-mt-[18vh] z-[9999999] absolute ml-[6.5%] flex items-center gap-2">
       {/* Dropdown for Property Type */}
       <select
         className="p-1 lg:p-2 border lg:border-2 rounded-md text-gray-600 bg-white text-xs lg:text-base"
@@ -167,7 +167,7 @@ const Searchsection = ({ buildings }) => {
         {/* Suggestions Dropdown */}
         {showSuggestions && (
           <motion.div
-            className="absolute top-full left-0 w-full bg-white shadow-lg rounded-md mt-1 max-h-60 overflow-y-auto z-10"
+            className="absolute top-full -left-[10vw] lg:left-0 w-[50vw] lg:w-full bg-white shadow-lg rounded-md mt-1 max-h-60 overflow-y-auto z-10"
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.2 }}
