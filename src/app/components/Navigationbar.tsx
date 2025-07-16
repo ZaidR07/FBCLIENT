@@ -213,7 +213,7 @@ const Navigationbar = ({ isOpen }) => {
                 ) : (
                   <li
                     className="list-disc text-sm"
-                    onClick={() => alert("Please Register or Login as Dealer / Builder")}
+                    onClick={() => alert("Please Login as Dealer / Builder")}
                   >
                     Post Property
                   </li>

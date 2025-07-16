@@ -138,13 +138,34 @@ const Sidebar = ({ opensidebar, setOpenSidebar }) => {
     getUserCookie();
   }, [userCookie]);
 
+  const handleFirstOrderClick = (order) => {
+    // If clicking the same item that's already open, close it
+
+    if (firstorder === order) {
+      setFirstOrder(null);
+    } else {
+      setFirstOrder(order);
+    }
+    // Always reset the second order when changing first order
+    setSecondOrder(null);
+  };
+
+  const handleSecondOrderClick = (order) => {
+    // If clicking the same item that's already open, close it
+    if (secondorder === order) {
+      setSecondOrder(null);
+    } else {
+      setSecondOrder(order);
+    }
+  };
+
   const navlist1 = [
     {
       nav: "For Owners",
 
       subnav: [
         { label: "Post Property", uri: "postproperty?who=buildbroker" },
-        { label: "View / Edit Post", uri: "singlepost?who=buildbroker" },
+        { label: "View / Edit Post", uri: "viewownerproperty" },
       ],
       order: 1,
     },
@@ -247,82 +268,80 @@ const Sidebar = ({ opensidebar, setOpenSidebar }) => {
           </button>
         )}
 
-        {navlist1.map((item, index) => (
-          <div key={index}>
-            <li
-              className="list-none flex gap-3 text-lg cursor-pointer p-2 hover:bg-orange-100"
-              onClick={() => {
-                // @ts-ignore
+      {navlist1.map((item, index) => (
+        <div key={index}>
+          <li
+            className="list-none flex gap-3 text-lg cursor-pointer p-2 hover:bg-orange-100"
+            onClick={() => handleFirstOrderClick(item.order)}
+          >
+            <ChevronRightIcon width={15} />
+            {item.nav}
+          </li>
 
-                setFirstOrder(item.order);
-                setSecondOrder(null); // Reset nested state
-              }}
-            >
-              <ChevronRightIcon width={15} />
-              {item.nav}
-            </li>
+          {firstorder === item.order && (
+            <div className="pl-6">
+              {item.subnav.map((subnav, subIndex) => {
+                const hasSupersubnav =
+                  Array.isArray(subnav.supersubnav) &&
+                  subnav.supersubnav.length > 0;
 
-            {firstorder === item.order && (
-              <div className="pl-6">
-                {item.subnav.map((subnav, subIndex) => {
-                  const hasSupersubnav =
-                    Array.isArray(subnav.supersubnav) &&
-                    subnav.supersubnav.length > 0;
+                return (
+                  <div key={subIndex}>
+                    <li
+                      className={`flex items-center gap-2 ml-4 mb-2 cursor-pointer hover:text-[#ff5d00] `}
+                      onClick={(e) => {
+                        if (hasSupersubnav) {
+                          e.stopPropagation();
+                          handleSecondOrderClick(subnav.order);
+                        }
+                      }}
+                    >
+                      {hasSupersubnav ? (
+                        <ChevronRightIcon width={12} />
+                      ) : (
+                        <CircleIcon width={6} />
+                      )}
+                      {hasSupersubnav ? (
+                        subnav.label
+                      ) : (
+                        <a
+                          href={`${subnav.uri}`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="block w-full"
+                        >
+                          {subnav.label}
+                        </a>
+                      )}
+                    </li>
 
-                  return (
-                    <div key={subIndex}>
-                      <li
-                        className={`flex items-center gap-2 ml-4 mb-2 cursor-pointer hover:text-[#ff5d00] `}
-                        onClick={() => {
-                          hasSupersubnav && setSecondOrder(subnav.order);
-                        }}
-                      >
-                        {hasSupersubnav ? (
-                          <ChevronRightIcon width={12} />
-                        ) : (
-                          <CircleIcon width={6} />
-                        )}
-                        {hasSupersubnav ? (
-                          subnav.label
-                        ) : (
+                    {secondorder === subnav.order && hasSupersubnav && (
+                      <div className="ml-12">
+                        {subnav.supersubnav.map((supersubnav, superIndex) => (
                           <a
-                            href={`${subnav.uri}`}
+                            href={`/buyproperties?type=${
+                              supersubnav.name || supersubnav
+                            }&view=Sale`}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="block w-full"
+                            key={superIndex}
+                            className="mb-2 cursor-pointer text-sm hover:text-[#ff5d00] flex gap-2"
                           >
-                            {subnav.label}
+                            <CircleIcon width={6} />
+                            {typeof supersubnav === "string"
+                              ? supersubnav
+                              : supersubnav.name}
                           </a>
-                        )}
-                      </li>
-
-                      {secondorder === subnav.order && hasSupersubnav && (
-                        <div className="ml-12">
-                          {subnav.supersubnav.map((supersubnav, superIndex) => (
-                            <a
-                              href={`/buyproperties?type=${
-                                supersubnav.name || supersubnav
-                              }&view=Sale`}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              key={superIndex}
-                              className="mb-2 cursor-pointer text-sm hover:text-[#ff5d00] flex gap-2"
-                            >
-                              <CircleIcon width={6} />
-                              {typeof supersubnav === "string"
-                                ? supersubnav
-                                : supersubnav.name}
-                            </a>
-                          ))}
-                        </div>
-                      )}
-                    </div>
-                  );
-                })}
-              </div>
-            )}
-          </div>
-        ))}
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+          )}
+        </div>
+      ))}
 
         {/* Separation div  */}
         <div className="w-full mx-[2%] bg-[#130535ca] h-[0.5px] my-[5vh]"></div>

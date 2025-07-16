@@ -53,13 +53,20 @@ const Separateemail = (user) => {
 
 const ExtendedProfile = ({ dropopen, router, user }) => {
   const email = Separateemail(user);
+  
+  const handleLogout = () => {
+    Cookies.remove("user");
+    window.location.reload(); // This will force a full page reload
+    // Alternatively, you could use router.refresh() for Next.js 13+ but it might not clear all states
+  };
+
   return (
     <>
       {dropopen && (
-        <div className="absolute top-[8vh] right-2 lg:-right-10  lg:top-[14vh] bg-[#fff] shadow-lg rounded-lg px-6 py-4 z-[999]">
+        <div className="absolute top-[8vh] left-2 md:left-4 lg:left-6 xl:left-8 bg-[#fff] shadow-lg rounded-lg px-6 py-4 z-[999]">
           <ul className="space-y-2">
             <li
-              className="flex  cursor-pointer text-lg text-center hover:text-gray-500"
+              className="flex cursor-pointer text-lg text-center hover:text-gray-500"
               onClick={() => router.push(`/wishlist?email=${email}`)}
             >
               <HeartIcon />
@@ -72,16 +79,9 @@ const ExtendedProfile = ({ dropopen, router, user }) => {
           </ul>
           <button
             className="bg-red-500 text-white px-4 py-1 rounded-md w-full mt-4"
-            value="Log Out"
+            onClick={handleLogout}
           >
-            <span
-              className="text-nowrap"
-              onClick={() => {
-                Cookies.remove("user");
-              }}
-            >
-              Log Out
-            </span>
+            <span className="text-nowrap">Log Out</span>
           </button>
         </div>
       )}

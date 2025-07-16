@@ -546,7 +546,7 @@ const DesktopNav = () => {
                   <span
                     className="hover:text-orange-500 hover:underline"
                     onClick={() =>
-                      alert("Please Register or Login as Dealer / Builder")
+                      alert("Please  Login as Dealer / Builder")
                     }
                   >
                     Post Property
