@@ -7,7 +7,7 @@ import { useCallback, useEffect } from "react";
 import { uri } from "@/constant";
 import { RupeeIcon, HomeIcon, RulerIcon } from "@/app/Icons";
 import Cookies from "js-cookie";
-import { log } from "console";
+
 
 const page = () => {
   const [propertieslist, setPropertieslist] = useState([

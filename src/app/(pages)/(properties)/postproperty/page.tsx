@@ -2,7 +2,7 @@
 
 import { uri } from "@/constant";
 import { useEffect, useState, useRef } from "react";
-import { ToastContainer, toast } from "react-toastify";
+import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import axios from "axios";
 import Cookies from "js-cookie";
@@ -17,6 +17,8 @@ import LocationBox from "@/app/components/LocationBox";
 const Page = () => {
   const [forValue, setForValue] = useState("");
   const [forbox, setForbox] = useState(true);
+
+  const [isLoading, setIsLoading] = useState(false);
 
   const [suggestions, setSuggestions] = useState([]);
   const [showSuggestions, setShowSuggestions] = useState(false);
@@ -214,6 +216,8 @@ const Page = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setIsLoading(true); // Start loading
+
     try {
       // Create a new FormData object
       const formData = new FormData();
@@ -221,39 +225,65 @@ const Page = () => {
       // Append all form data fields to the FormData object
       for (const key in formdata) {
         if (key === "images") {
-          // Append each file in the images array
           formdata.images.forEach((file, index) => {
             formData.append(`images`, file);
           });
         } else if (Array.isArray(formdata[key])) {
-          // Append array fields as JSON strings
           formData.append(key, JSON.stringify(formdata[key]));
         } else {
-          // Append other fields
           formData.append(key, formdata[key]);
         }
       }
 
-      // Append the 'for' value
       formData.append("for", forValue);
 
-      // Send the FormData to the server
       const response = await axios.post(`${uri}addproperties`, formData, {
         headers: {
-          "Content-Type": "multipart/form-data", // Set the content type to multipart/form-data
+          "Content-Type": "multipart/form-data",
         },
       });
 
-      if (response.data?.message) {
-        toast.success(response.data.message);
-      } else {
-        toast.error("Unexpected response format");
-      }
+      toast.success(response.data.message);
+
+      // Reset form after successful submission
+      setFormdata({
+        Societyname: "",
+        floor: "",
+        bedrooms: "",
+        area: "",
+        areaunits: "",
+        buildingfloors: "",
+        address: "",
+        amenities: [],
+        facing: "",
+        propertyage: "",
+        balconies: "",
+        bathrooms: "",
+        price: "",
+        postedby: user, // Keep the user
+        type: "",
+        constructionstatus: "",
+        furnishing: "",
+        highlights: [],
+        location: "",
+        line: "",
+        images: [],
+      });
+      setHighlightInput("");
+      setCurrentPropertytype(1);
+      dispatch(setlocation("")); // Reset location
+      setForbox(true); // Show the "Listing For" selection again
     } catch (error) {
-      toast.error("Failed to add property. Please try again.");
-      console.error("Error:", error);
+      if (error.response?.data?.message) {
+        toast.error(error.response.data.message);
+      } else {
+        toast.error("Failed to add property. Please try again.");
+      }
+    } finally {
+      setIsLoading(false); // Stop loading in any case
     }
   };
+
   useEffect(() => {
     handleload();
   }, []);
@@ -261,15 +291,7 @@ const Page = () => {
   return (
     <div className="flex relative ">
       {/* <AdminHeader sidebaropen={sidebaropen} setSidebarOpen={setSidebarOpen} /> */}
-      <ToastContainer
-        position="top-center"
-        style={{ top: "0vh", zIndex: 9999999999999 }}
-        autoClose={2000}
-        hideProgressBar={false}
-        closeOnClick
-        pauseOnHover
-        draggable
-      />
+
       <div className={`w-full min-h-[90vh] bg-gray-200 px-[6%] py-[5vh]`}>
         <h1 className="text-2xl text-center mb-5 text-[#FF5D00]">
           Add Property
@@ -767,9 +789,10 @@ const Page = () => {
 
           <button
             type="submit"
-            className="bg-[#FF5D00] text-white px-4 py-2 rounded-md mt-8 w-full "
+            className="bg-[#FF5D00] text-white px-4 py-2 rounded-md mt-8 w-full"
+            disabled={isLoading}
           >
-            Add Property
+            {isLoading ? "Processing..." : "Add Property"}
           </button>
         </form>
       </div>
@@ -826,6 +849,11 @@ const Page = () => {
             locationstate={locationstate}
             setlocation={setlocation}
           />
+        </div>
+      )}
+      {isLoading && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-orange-500"></div>
         </div>
       )}
     </div>

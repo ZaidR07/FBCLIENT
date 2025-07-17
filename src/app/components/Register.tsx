@@ -4,14 +4,18 @@ import axios from "axios";
 import { motion, AnimatePresence } from "framer-motion";
 import { useState, useEffect } from "react";
 import { uri } from "@/constant";
-import { ToastContainer, toast } from "react-toastify";
+import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Cookies from "js-cookie";
-
+import { X } from "lucide-react";
 
 const Register = ({ registeropen, setRegisterOpen }) => {
   const [operation, setOperation] = useState("Register");
   const [timer, setTimer] = useState(0);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isSendingOtp, setIsSendingOtp] = useState(false);
+  const [isLoggingIn, setIsLoggingIn] = useState(false);
+
   const [formdata, setFormdata] = useState({
     name: "",
     email: "",
@@ -31,7 +35,7 @@ const Register = ({ registeropen, setRegisterOpen }) => {
     const { name, value } = e.target;
     setFormdata((prevData) => ({
       ...prevData,
-      [name]: value, // Correct binding
+      [name]: value,
     }));
   };
 
@@ -39,8 +43,17 @@ const Register = ({ registeropen, setRegisterOpen }) => {
     const { name, value } = e.target;
     setLoginFormdata((prevData) => ({
       ...prevData,
-      [name]: value, // Correct binding
+      [name]: value,
     }));
+  };
+
+  // Format timer to MM:SS
+  const formatTimer = (seconds) => {
+    const mins = Math.floor(seconds / 60);
+    const secs = seconds % 60;
+    return `${mins.toString().padStart(2, "0")}:${secs
+      .toString()
+      .padStart(2, "0")}`;
   };
 
   // Countdown for 2 minutes
@@ -56,54 +69,60 @@ const Register = ({ registeropen, setRegisterOpen }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setIsSubmitting(true);
 
     try {
       const response = await axios.post(
         `${uri}Registeruser`,
         { payload: formdata },
-        { withCredentials: true } // Ensures cookies are stored
+        { withCredentials: true }
       );
 
-      if (response.status === 200) {
-        toast.success(response.data.message);
-      } else {
-        toast.error(response.data.message);
-      }
-
+      toast.success(response.data.message);
       setRegisterOpen(false);
     } catch (error) {
-      toast.error("Something Went Wrong! Please try again later");
+      if (error.response?.data?.message) {
+        toast.error(error.response.data.message);
+      } else {
+        toast.error("Something Went Wrong");
+      }
     } finally {
-      setRegisterOpen(false);
+      setIsSubmitting(false);
       setFormdata({ name: "", email: "", mobile: "", usertype: 1 });
     }
   };
 
   const HandlLogin = async (e) => {
     e.preventDefault();
+    setIsLoggingIn(true);
 
     try {
       const response = await axios.post(
         `${uri}login`,
-        { payload: loginformdata  },
-        { withCredentials: true } // Ensures cookies are stored
+        { payload: loginformdata },
+        { withCredentials: true }
       );
-      if (response.status === 200) {
-        toast.success(response.data.message);
-        Cookies.set("user",`${loginformdata.email}^${loginformdata.usertype}`)
-      } else {
-        toast.error(response.data.message);
-      }
 
+      toast.success(response.data.message);
+      Cookies.set("user", `${loginformdata.email}^${loginformdata.usertype}`);
       setRegisterOpen(false);
     } catch (error) {
-      setRegisterOpen(false);
+      if (error.response?.data?.message) {
+        toast.error(error.response.data.message);
+      } else {
+        toast.error("Something Went Wrong");
+      }
+    } finally {
+      setIsLoggingIn(false);
       setLoginFormdata({ email: "", otp: "", usertype: 1 });
+      setTimer(0);
+      setloginOtpGenerated(false);
     }
   };
 
   const SendLoginOtp = async (e) => {
     e.preventDefault();
+    setIsSendingOtp(true);
 
     try {
       const sendOtpResponse = await axios.post(`${uri}sendloginotp`, {
@@ -111,30 +130,28 @@ const Register = ({ registeropen, setRegisterOpen }) => {
         usertype: loginformdata.usertype,
       });
 
-      if (sendOtpResponse.status != 200) {
-        toast.error(sendOtpResponse.data.message);
-        return;
-      }
       setloginOtpGenerated(true);
       setTimer(120);
-
       toast.success(sendOtpResponse.data.message);
     } catch (error) {
-      toast.error("Something Went Wrong");
+      if (error.response?.data?.message) {
+        toast.error(error.response.data.message);
+      } else {
+        toast.error("Something Went Wrong");
+      }
+      console.error("Error:", error);
+    } finally {
+      setIsSendingOtp(false);
     }
   };
 
+  // Loading spinner component
+  const LoadingSpinner = () => (
+    <div className="inline-block h-4 w-4 animate-spin rounded-full border-2 border-solid border-current border-r-transparent align-[-0.125em] motion-reduce:animate-[spin_1.5s_linear_infinite]"></div>
+  );
+
   return (
     <>
-      <ToastContainer
-        position="top-right"
-        autoClose={2000}
-        hideProgressBar={false}
-        closeOnClick
-        pauseOnHover
-        draggable
-        style={{ top: "0vh", zIndex: 999999999999 , maxHeight : "10vh" }}
-      />
       <AnimatePresence>
         {registeropen && (
           <motion.div
@@ -142,46 +159,61 @@ const Register = ({ registeropen, setRegisterOpen }) => {
             animate={{ y: "5%", opacity: 1 }}
             exit={{ y: "100%", opacity: 0 }}
             transition={{ type: "spring", stiffness: 100, damping: 15 }}
-            className="fixed z-[8888888888888888888] top-[30vh] lg:w-[35%] w-[80%] left-[10%] lg:left-[32.5%] bg-white shadow-lg p-5 rounded-lg"
+            className="fixed z-[8888888888888888888] top-[18vh] lg:w-[35%] w-[80%] left-[10%] lg:left-[32.5%] bg-white shadow-lg p-5 rounded-lg"
           >
             <h2 className="text-xl text-center font-semibold">
               <span
-                className="cursor-pointer"
-                onClick={() => setOperation("Register")}
+                className="cursor-pointer hover:text-[#f3701f] transition-colors"
+                onClick={() => {
+                  setOperation("Register");
+                  setTimer(0);
+                  setloginOtpGenerated(false);
+                }}
               >
                 {operation}
               </span>
             </h2>
+
+            <button
+              className="absolute right-4 top-4 text-3xl"
+              onClick={() => setRegisterOpen(false)}
+            >
+              <X />
+            </button>
+
             {operation == "Register" ? (
-              <form onSubmit={handleSubmit}>
-                <div className="mt-4 flex justify-center gap-4">
-                  <div className="flex gap-2">
+              <form onSubmit={handleSubmit} className="space-y-4">
+                <div className="mt-4 flex justify-center gap-6 p-2 bg-gray-50 rounded-lg">
+                  <label className="flex items-center gap-2 cursor-pointer">
                     <input
                       type="radio"
                       name="usertype"
                       checked={formdata.usertype == 1}
                       value={1}
                       onChange={handleChange}
+                      className="text-[#f3701f] focus:ring-[#f3701f]"
                     />
-                    <span>User</span>
-                  </div>
-                  <div className="flex gap-2">
+                    <span className="text-gray-700 font-medium">User</span>
+                  </label>
+                  <label className="flex items-center gap-2 cursor-pointer">
                     <input
                       type="radio"
                       name="usertype"
                       checked={formdata.usertype == 2}
                       value={2}
                       onChange={handleChange}
+                      className="text-[#f3701f] focus:ring-[#f3701f]"
                     />
-                    <span>Owner</span>
-                  </div>
+                    <span className="text-gray-700 font-medium">Owner</span>
+                  </label>
                 </div>
+
                 <input
                   name="name"
                   type="text"
                   value={formdata.name}
                   placeholder="Enter Name"
-                  className="w-full border p-2 lg:px-4 mt-2 rounded"
+                  className="w-full border p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#f3701f] focus:border-transparent"
                   onChange={handleChange}
                   required
                 />
@@ -190,7 +222,7 @@ const Register = ({ registeropen, setRegisterOpen }) => {
                   type="email"
                   value={formdata.email}
                   placeholder="Enter Email"
-                  className="w-full border p-2 lg:px-4 mt-2 rounded"
+                  className="w-full border p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#f3701f] focus:border-transparent"
                   onChange={handleChange}
                   required
                 />
@@ -199,45 +231,67 @@ const Register = ({ registeropen, setRegisterOpen }) => {
                   type="text"
                   value={formdata.mobile}
                   placeholder="Enter Mobile"
-                  className="w-full border p-2 lg:px-4 mt-2 rounded"
+                  className="w-full border p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#f3701f] focus:border-transparent"
                   onChange={handleChange}
                   required
                 />
-                <button className="w-full bg-[#f3701f] text-white py-2 mt-4 rounded">
-                  Submit
-                </button>
-                <p
-                  className="cursor-pointer text-center text-[#f3701f] mt-4"
-                  onClick={() => setOperation("Login")}
+
+                <button
+                  type="submit"
+                  disabled={isSubmitting}
+                  className="w-full bg-[#f3701f] hover:bg-[#e5601a] text-white py-3 rounded-lg font-medium transition-colors disabled:opacity-70 flex items-center justify-center gap-2"
                 >
-                  Already have an account? Log in
+                  {isSubmitting ? (
+                    <>
+                      <LoadingSpinner />
+                      Registering...
+                    </>
+                  ) : (
+                    "Register"
+                  )}
+                </button>
+
+                <p className="text-center text-gray-600 mt-2">
+                  Already have an account?{" "}
+                  <span
+                    className="text-[#f3701f] font-medium cursor-pointer hover:underline"
+                    onClick={() => {
+                      setOperation("Login");
+                      setTimer(0);
+                      setloginOtpGenerated(false);
+                    }}
+                  >
+                    Log in
+                  </span>
                 </p>
               </form>
             ) : (
-              <form action="">
-                {timer > 0 && <p>{timer}</p>}
+              <form className="space-y-4">
+                {/* Timer display */}
 
-                <div className="mt-4 flex justify-center gap-4">
-                  <div className="flex gap-2">
+                <div className="mt-4 flex justify-center gap-6 p-2 bg-gray-50 rounded-lg">
+                  <label className="flex items-center gap-2 cursor-pointer">
                     <input
                       type="radio"
                       name="usertype"
                       checked={loginformdata.usertype == 1}
                       value={1}
                       onChange={LoginChange}
+                      className="text-[#f3701f] focus:ring-[#f3701f]"
                     />
-                    <span>User</span>
-                  </div>
-                  <div className="flex gap-2">
+                    <span className="text-gray-700 font-medium">User</span>
+                  </label>
+                  <label className="flex items-center gap-2 cursor-pointer">
                     <input
                       type="radio"
                       name="usertype"
                       checked={loginformdata.usertype == 2}
                       value={2}
                       onChange={LoginChange}
+                      className="text-[#f3701f] focus:ring-[#f3701f]"
                     />
-                    <span>Owner</span>
-                  </div>
+                    <span className="text-gray-700 font-medium">Owner</span>
+                  </label>
                 </div>
 
                 <input
@@ -245,46 +299,85 @@ const Register = ({ registeropen, setRegisterOpen }) => {
                   type="email"
                   value={loginformdata.email}
                   placeholder="Enter Email"
-                  className="w-full border p-2 lg:px-4 mt-2 rounded"
+                  className="w-full border p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#f3701f] focus:border-transparent"
                   onChange={LoginChange}
                   required
                 />
-                <div className="flex gap-2 mt-2">
+
+                <div className="flex gap-2">
                   <input
                     disabled={!loginotpgenerated}
                     name="otp"
                     type="text"
                     value={loginformdata.otp}
-                    placeholder="Enter OTP"
-                    className="w-full border p-2 lg:px-4  rounded"
+                    placeholder={
+                      loginotpgenerated ? "Enter OTP" : "Request OTP first"
+                    }
+                    className="flex-1 border p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#f3701f] focus:border-transparent disabled:bg-gray-100 disabled:cursor-not-allowed"
                     onChange={LoginChange}
                     required
                   />
                   <button
-                    disabled={timer > 0}
-                    className="w-[40%] bg-[#f3701f] rounded-md text-white py-2"
+                    type="button"
+                    disabled={timer > 0 || isSendingOtp || !loginformdata.email}
+                    className="px-4 py-3 bg-[#f3701f] hover:bg-[#e5601a] text-white rounded-lg font-medium transition-colors disabled:opacity-70 disabled:cursor-not-allowed flex items-center justify-center gap-2 min-w-[120px]"
                     onClick={SendLoginOtp}
                   >
-                    Send OTP
+                    {isSendingOtp ? (
+                      <>
+                        <LoadingSpinner />
+                        Sending...
+                      </>
+                    ) : timer > 0 ? (
+                      formatTimer(timer)
+                    ) : (
+                      "Send OTP"
+                    )}
                   </button>
                 </div>
 
+                {timer > 0 && (
+                  <div className="flex items-center justify-center gap-2 p-2 bg-blue-50 rounded-lg border border-blue-200">
+                    <div className="w-2 h-2 bg-blue-500 rounded-full animate-pulse"></div>
+                    <span className="text-blue-700 font-medium">
+                      OTP expires in {formatTimer(timer)}
+                    </span>
+                  </div>
+                )}
+
                 <button
-                  disabled={!loginotpgenerated}
-                  className="w-full bg-[#f3701f] text-white py-2 mt-4 rounded"
-                  onClick={ HandlLogin}
+                  type="button"
+                  disabled={
+                    !loginotpgenerated || isLoggingIn || !loginformdata.otp
+                  }
+                  className="w-full bg-[#f3701f] hover:bg-[#e5601a] text-white py-3 rounded-lg font-medium transition-colors disabled:opacity-70 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                  onClick={HandlLogin}
                 >
-                  Submit
+                  {isLoggingIn ? (
+                    <>
+                      <LoadingSpinner />
+                      Logging in...
+                    </>
+                  ) : (
+                    "Login"
+                  )}
                 </button>
+
+                <p className="text-center text-gray-600 mt-2">
+                  Don't have an account?{" "}
+                  <span
+                    className="text-[#f3701f] font-medium cursor-pointer hover:underline"
+                    onClick={() => {
+                      setOperation("Register");
+                      setTimer(0);
+                      setloginOtpGenerated(false);
+                    }}
+                  >
+                    Register
+                  </span>
+                </p>
               </form>
             )}
-
-            <button
-              className="w-full mt-2 text-gray-600 underline"
-              onClick={() => setRegisterOpen(false)}
-            >
-              Close
-            </button>
           </motion.div>
         )}
       </AnimatePresence>

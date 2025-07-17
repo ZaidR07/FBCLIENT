@@ -4,7 +4,7 @@ import AdminHeader from "@/app/components/AdminHeader";
 import DataTable from "react-data-table-component";
 import { uri } from "@/constant";
 import axios from "axios";
-import { ToastContainer, toast } from "react-toastify";
+import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 const TrashIcon = () => (
@@ -183,14 +183,7 @@ const Page = () => {
         />
       </div>
 
-      <ToastContainer
-        position="top-right"
-        autoClose={3000}
-        hideProgressBar={false}
-        closeOnClick
-        pauseOnHover
-        draggable
-      />
+     
     </div>
   );
 };

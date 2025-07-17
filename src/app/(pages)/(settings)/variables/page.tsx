@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import AdminHeader from "@/app/components/AdminHeader";
-import { ToastContainer, toast } from "react-toastify";
+import {  toast } from "react-toastify";
 import axios from "axios";
 import { uri } from "@/constant";
 
@@ -210,13 +210,7 @@ const Page = () => {
   return (
     <div className="bg-gray-200 w-full min-h-screen lg:mt-[12vh] lg:flex">
       <AdminHeader sidebaropen={sidebaropen} setSidebarOpen={setSidebarOpen} />
-      <ToastContainer
-        position="top-right"
-        autoClose={3000}
-        hideProgressBar
-        className="z-[9999999]"
-      />
-
+    
       <div
         className={`px-[5%] py-[5vh] mt-[10vh] lg:mt-0 ${
           sidebaropen ? "lg:w-[77%]" : "lg:w-[90%]"

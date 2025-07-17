@@ -46,5 +46,15 @@ body {
   scrollbar-width: none;
 }
 
+.Toastify__toast-container {
+  z-index: 999999999999 !important;
+  position: fixed !important;
+}
+
+.Toastify__toast {
+  position: relative !important;
+  z-index: 99999999999 !important;
+}
+
 
 

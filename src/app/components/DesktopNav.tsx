@@ -10,9 +10,8 @@ import Cookies from "js-cookie";
 import { ChevronDown } from "lucide-react";
 import { motion } from "framer-motion";
 import Sidebar from "./Sidebar";
-import { useSelector , useDispatch } from "react-redux"; // ✅ correct
+import { useSelector, useDispatch } from "react-redux"; // ✅ correct
 import { setlocation } from "@/slices/locationSlice";
-
 
 const TrendIcon = () => {
   return (
@@ -27,12 +26,12 @@ const TrendIcon = () => {
   );
 };
 
-const AngleDown = () => {
+const AngleDown = ({width}) => {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
       viewBox="0 0 512 512"
-      width={15}
+      width={width}
       fill="#2b2a2a"
     >
       <path d="M233.4 406.6c12.5 12.5 32.8 12.5 45.3 0l192-192c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L256 338.7 86.6 169.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3l192 192z" />
@@ -44,7 +43,7 @@ const HamIcon = ({ setOpenSidebar, opensidebar }) => {
   return (
     <motion.svg
       xmlns="http://www.w3.org/2000/svg"
-      width={30}
+      width={28}
       fill="#130535ca"
       viewBox="0 0 512 512"
       className="cursor-pointer ml-[2vw]"
@@ -87,7 +86,7 @@ const DesktopNav = () => {
 
   const locationstate = useSelector((state: any) => state.location.location); // ✅ useSelector
 
-  const dispatch  = useDispatch();
+  const dispatch = useDispatch();
 
   const loaddata = useCallback(async () => {
     try {
@@ -129,7 +128,6 @@ const DesktopNav = () => {
   const [location, setLocation] = useState(null);
 
   const userCookie = Cookies.get("user"); // Using js-cookie
- 
 
   const getUserCookie = () => {
     if (userCookie) {
@@ -141,21 +139,22 @@ const DesktopNav = () => {
         setUser(userCookie); // Fallback if not JSON
       }
     }
-   
   };
 
   // Extract user from cookies
   useEffect(() => {
     getUserCookie();
-  }, [userCookie , locationstate]);
+  }, [userCookie, locationstate]);
 
   return (
-    <nav className="relative hidden w-full h-full lg:flex shadow-lg items-center ">
-      <ul className="flex w-[42.5%] max-w-[42.5%] gap-12 text-base justify-end">
+    <nav className="relative hidden w-full h-full lg:flex shadow-lg items-center px-[1%]">
+      <ul className="flex w-[44.5%] max-w-[44.5%] lg:gap-6 xl:gap-10 text-base justify-end">
         {locationstate && (
           <span
-            onClick={() => {dispatch(setlocation(""))}}
-            className="flex gap-2 cursor-pointer"
+            onClick={() => {
+              dispatch(setlocation(""));
+            }}
+            className="flex items-center gap-2 lg:text-sm xl:text-base cursor-pointer"
           >
             <LocationIcon /> {locationstate}
           </span>
@@ -163,14 +162,14 @@ const DesktopNav = () => {
 
         {/* Buy Dropdown */}
         <li
-          className="flex gap-2 cursor-pointer"
+          className="flex gap-2 cursor-pointer "
           onMouseEnter={() => {
             setBuydropopen(true);
             setRentdropopen(false);
           }}
         >
-          <span className="text-base">Buy</span>
-          <AngleDown />
+          <span className="lg:text-sm xl:text-base flex items-center">Buy</span>
+          <AngleDown width={13}/>
         </li>
         {buydropopen && !loading && (
           <div
@@ -304,8 +303,8 @@ const DesktopNav = () => {
             setBuydropopen(false);
           }}
         >
-          <span>Rent</span>
-          <AngleDown />
+          <span className="lg:text-sm xl:text-base flex items-center">Rent</span>
+          <AngleDown width={13} />
         </li>
         {rentdropopen && !loading && (
           <div
@@ -431,24 +430,24 @@ const DesktopNav = () => {
           </div>
         )}
 
-        <li className="flex gap-2 cursor-pointer">
+        <li className="flex items-center gap-2 cursor-pointer">
           <a
             href={`/buyproperties?view=Pg`}
             target="_blank"
             rel="noopener noreferrer"
-            className="block w-full"
+            className="block w-full lg:text-sm xl:text-base"
           >
             PG
           </a>{" "}
         </li>
         <li
-          className="cursor-pointer"
+          className="cursor-pointer lg:text-sm xl:text-base flex items-center"
           onClick={() => router.push("/brokerslist")}
         >
           Find an Agent
         </li>
       </ul>
-      <div className="flex w-[10%] ml-[2.5vw] mr-[2.5vw] justify-center ">
+      <div className="flex lg:w-[6%] w-[8%] mx-[2%]  justify-center ">
         <Image
           src="/Fb_logo.jpg"
           width={80}
@@ -459,15 +458,15 @@ const DesktopNav = () => {
         />
       </div>
 
-      <div className="flex gap-6 items-center w-[42.5%] max-w-[42.5%]">
+      <div className="flex lg:gap-2 xl:gap-6 items-center w-[44.5%] max-w-[44.5%]">
         <ul className="flex gap-6  text-base 2xl:text-lg">
           <li
-            className="cursor-pointer flex"
+            className="cursor-pointer  lg:text-sm xl:text-base 2xl:text-base flex items-center gap-2"
             onMouseEnter={() => setForOwnersOpen(true)}
             onClick={() => router.push("/")}
           >
             <span>For&nbsp;Owners</span>
-            <ChevronDown />
+            <AngleDown width={13}/>
           </li>
           {forownersopen && (
             <div
@@ -476,7 +475,7 @@ const DesktopNav = () => {
             >
               {usertype == 2 || usertype == "2" ? (
                 <a
-                  className="hover:text-orange-500 hover:underline"
+                  className="hover:text-orange-500 hover:underline lg:text-sm xl:text-sm"
                   href="postproperty?who=owner"
                   target="_blank"
                   rel="noopener noreferrer"
@@ -485,6 +484,7 @@ const DesktopNav = () => {
                 </a>
               ) : (
                 <span
+                  className="lg:text-sm 2xl:text-base"
                   onClick={() => alert("Please Register or Login as Owner")}
                 >
                   Post Property
@@ -495,7 +495,7 @@ const DesktopNav = () => {
               {user ? (
                 usertype == 2 || usertype == "2" ? (
                   <a
-                    className="hover:text-orange-500 hover:underline"
+                    className="hover:text-orange-500 hover:underline lg:text-sm 2xl:text-base"
                     href="viewownerproperty"
                     target="_blank"
                     rel="noopener noreferrer"
@@ -505,6 +505,7 @@ const DesktopNav = () => {
                 ) : (
                   <>
                     <span
+                      className="lg:text-sm 2xl:text-base"
                       onClick={() => alert("This facility is for owners only")}
                     >
                       View / Edit Post
@@ -513,6 +514,7 @@ const DesktopNav = () => {
                 )
               ) : (
                 <span
+                  className="lg:text-sm 2xl:text-base"
                   onClick={() =>
                     alert("Please Register or Login or Login First")
                   }
@@ -523,11 +525,11 @@ const DesktopNav = () => {
             </div>
           )}
           <li
-            className="cursor-pointer flex"
+            className="cursor-pointer flex gap-2 lg:text-sm xl:text-base 2xl:text-base"
             onMouseEnter={() => setFordealerOpen(true)}
           >
             <span>For&nbsp;Dealers&nbsp;/&nbsp;Builders</span>
-            <ChevronDown />
+            <AngleDown width={13}/>
             {fordealeropen && (
               <div
                 onMouseLeave={() => setFordealerOpen(false)}
@@ -535,7 +537,7 @@ const DesktopNav = () => {
               >
                 {usertype == 3 || usertype == "3" ? (
                   <a
-                    className="hover:text-orange-500 hover:underline"
+                    className="hover:text-orange-500 hover:underline lg:text-xs  2xl:text-base"
                     href="postproperty?who=owner"
                     target="_blank"
                     rel="noopener noreferrer"
@@ -544,17 +546,15 @@ const DesktopNav = () => {
                   </a>
                 ) : (
                   <span
-                    className="hover:text-orange-500 hover:underline"
-                    onClick={() =>
-                      alert("Please  Login as Dealer / Builder")
-                    }
+                    className="hover:text-orange-500 hover:underline lg:text-sm  2xl:text-base"
+                    onClick={() => alert("Please  Login as Dealer / Builder")}
                   >
                     Post Property
                   </span>
                 )}
                 <hr />
                 <a
-                  className="hover:text-orange-500 hover:underline"
+                  className="hover:text-orange-500 hover:underline lg:text-sm  2xl:text-base"
                   href="plans?who=buildbroker"
                   target="_blank"
                   rel="noopener noreferrer"
@@ -567,16 +567,16 @@ const DesktopNav = () => {
         </ul>
         {user ? (
           <a href="postproperty" target="_blank" rel="noopener noreferrer">
-            <button className="px-3.5 py-2 rounded-md bg-[#fdf3da] text-[#ff5d00]">
-              Post Property
+            <button className="lg:px-2 xl:px-3.5 py-2 rounded-md bg-[#fdf3da] text-[#ff5d00] lg:text-xs xl:text-sm 2xl:text-base">
+              Post&nbsp;Property
             </button>
           </a>
         ) : (
           <button
             onClick={() => alert("Please Register or Login First")}
-            className="px-3.5 py-2 rounded-md bg-[#fdf3da] text-[#ff5d00]"
+            className="lg:px-2 xl:px-3.5 py-2 rounded-md bg-[#fdf3da] text-[#ff5d00] lg:text-xs xl:text-sm  2xl:text-base"
           >
-            Post Property
+            Post&nbsp;Property
           </button>
         )}
 

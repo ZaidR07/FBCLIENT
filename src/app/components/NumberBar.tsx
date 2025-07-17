@@ -3,7 +3,7 @@
 import axios from "axios";
 import { uri } from "@/constant";
 import { useEffect, useState } from "react";
-import { ToastContainer, toast } from "react-toastify";
+
 import "react-toastify/dist/ReactToastify.css";
 import CountUp from "react-countup";
 
@@ -95,15 +95,7 @@ const NumberBar = () => {
 
   return (
     <div className="w-full my-[8vh] lg:my-[10vh] py-[4vh] lg:py-[10vh] bg-[#FF5D00]">
-      <ToastContainer
-        position="top-center"
-        style={{ top: "0vh", zIndex: 9999999999999 }}
-        autoClose={2000}
-        hideProgressBar={false}
-        closeOnClick
-        pauseOnHover
-        draggable
-      />
+    
       <div className="flex w-full h-full items-center justify-around lg:justify-evenly">
         <div>
           <div className="flex gap-2 items-center">

@@ -128,7 +128,7 @@ const Navigationbar = ({ isOpen }) => {
                 {usertype == 2 || usertype == "2" ? (
                   <li className="list-disc">
                     <a
-                      className="text-sm cursor-pointer hover:text-gray-300"
+                      className="text-sm cursor-pointer text-orange-200 hover:text-orange-500 hover:underline"
                       href="postproperty?who=owner"
                       target="_blank"
                       rel="noopener noreferrer"
@@ -138,7 +138,7 @@ const Navigationbar = ({ isOpen }) => {
                   </li>
                 ) : (
                   <li
-                    className="list-disc text-sm"
+                    className="list-disc text-sm cursor-pointer text-orange-200 hover:text-orange-500 hover:underline"
                     onClick={() => alert("Please Register or Login as Owner")}
                   >
                     Post Property
@@ -147,18 +147,20 @@ const Navigationbar = ({ isOpen }) => {
 
                 {user ? (
                   usertype == 2 || usertype == "2" ? (
-                    <a
-                      className="hover:text-orange-500 hover:underline text-sm"
-                      href="viewownerproperty"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                    >
-                      View / Edit Post
-                    </a>
+                    <li className="list-disc">
+                      <a
+                        className="text-sm cursor-pointer text-orange-200 hover:text-orange-500 hover:underline"
+                        href="viewownerproperty"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        View / Edit Post
+                      </a>
+                    </li>
                   ) : (
                     <li className="list-disc">
                       <span
-                        className="text-sm"
+                        className="text-sm cursor-pointer text-orange-200 hover:text-orange-500 hover:underline"
                         onClick={() =>
                           alert("This facility is for owners only")
                         }
@@ -170,7 +172,7 @@ const Navigationbar = ({ isOpen }) => {
                 ) : (
                   <li className="list-disc">
                     <span
-                      className="text-sm"
+                      className="text-sm cursor-pointer text-orange-200 hover:text-orange-500 hover:underline"
                       onClick={() => alert("Please Register First")}
                     >
                       View / Edit Post

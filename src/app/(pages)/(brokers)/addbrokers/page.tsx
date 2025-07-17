@@ -2,7 +2,7 @@
 import AdminHeader from "@/app/components/AdminHeader";
 import { uri } from "@/constant";
 import { useState } from "react";
-import { ToastContainer, toast } from "react-toastify";
+import {  toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import axios from "axios";
 
@@ -66,14 +66,7 @@ const Page = () => {
   return (
     <div className="flex relative lg:top-[12vh]">
       <AdminHeader sidebaropen={sidebaropen} setSidebarOpen={setSidebarOpen} />
-      <ToastContainer
-        position="bottom-right"
-        autoClose={2000}
-        hideProgressBar
-        closeOnClick
-        pauseOnHover
-        draggable
-      />
+     
 
       <div
         className={`w-full min-h-[88vh] bg-gray-200 px-[10%] lg:px-[20%] py-[5vh] mt-[10vh] lg:mt-0 ${

@@ -6,7 +6,7 @@ import axios from "axios";
 import { useSearchParams } from "next/navigation";
 import { uri } from "@/constant";
 import { RupeeIcon, RulerIcon, HomeIcon } from "@/app/Icons";
-import { ToastContainer, toast } from "react-toastify";
+import { toast } from "react-toastify";
 
 const FillHeartIcon = ({ property_id, removeFromWishlist }) => {
   return (
@@ -88,12 +88,7 @@ const PageContent = () => {
   return (
     <div className="bg-gray-100 mt-[8vh] lg:mt-[14vh] lg:pt-[5vh] min-h-screen">
       <Header />
-      <ToastContainer
-        position="top-right"
-        autoClose={3000}
-        hideProgressBar
-        className="z-[9999999]"
-      />
+
       <div className="px-[10%] py-[5vh] flex flex-col gap-4">
         {loading ? (
           <div>Loading...</div>

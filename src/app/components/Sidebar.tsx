@@ -262,7 +262,7 @@ const Sidebar = ({ opensidebar, setOpenSidebar }) => {
         ) : (
           <button
             className="text-lg text-white px-4 py-1.5 my-4 bg-[#FF5D00] rounded-md w-full"
-            onClick={() => setRegisterOpen(true)}
+            onClick={() => { setRegisterOpen(true) ; setOpenSidebar(false)}}
           >
             Sign&nbsp;up
           </button>
