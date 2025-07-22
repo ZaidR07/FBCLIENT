@@ -31,10 +31,10 @@ const PropertyTypes = () => {
 
 
   return (
-    <div className="mt-[6vh] lg:mt-[10vh] px-[4%] overflow-x-auto flex gap-3  pb-2 scrollbar-hide">
-      <div className="flex gap-4 lg:gap-8 w-max">
+    <div className="mt-[6vh] lg:mt-[10vh] px-[4%] overflow-x-auto  flex gap-3  pb-2 scrollbar-hide">
+      <div className="flex gap-4 lg:gap-8 w-full ">
         {/* Card 1 */}
-        <div className="bg-[#CCEFEA] pt-28 relative rounded-lg min-w-[180px] lg:min-w-[400px]">
+        <div className="bg-[#CCEFEA] pt-28 relative rounded-lg min-w-[180px] lg:flex-1">
           <h1 className="absolute top-[6%] left-[8%] text-xl md:text-2xl lg:text-3xl font-bold">
             Residential <br /> Apartments
           </h1>
@@ -51,7 +51,7 @@ const PropertyTypes = () => {
         </div>
 
         {/* Card 2 */}
-        <div className="bg-[#E3FBDA] pt-28 relative rounded-lg min-w-[180px] lg:min-w-[400px]">
+        <div className="bg-[#E3FBDA] pt-28 relative rounded-lg min-w-[180px] lg:flex-1">
           <h1 className="absolute top-[6%] left-[8%] text-xl md:text-2xl lg:text-3xl font-bold">
             Independent  <br /> / Builder Floors
           </h1>
@@ -68,7 +68,7 @@ const PropertyTypes = () => {
         </div>
 
         {/* Card 3 */}
-        <div className="bg-[#FFEFCB] pt-28 relative rounded-lg min-w-[180px] max-w-[180px] lg:min-w-[400px]">
+        <div className="bg-[#FFEFCB] pt-28 relative rounded-lg min-w-[180px] lg:flex-1">
           <h1 className="absolute top-[6%] left-[8%] text-xl md:text-2xl lg:text-3xl font-bold">
             Independent <br /> Bungalow / Villa
           </h1>

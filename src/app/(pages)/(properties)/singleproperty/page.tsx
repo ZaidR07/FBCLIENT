@@ -139,13 +139,12 @@ const PropertyDetails = () => {
         const propertyData = response.data.payload[0];
         setProperty(propertyData);
 
-        let target = "";
-        if (propertyData.postedbytype === 1) target = "broker";
-        else if (propertyData.postedbytype === 2) target = "builder";
-        else target = "owner";
+        
 
-        const postedbyresponse = await axios.get(`${uri}getsingle${target}`, {
-          params: { id: propertyData.postedby_id },
+    
+
+        const postedbyresponse = await axios.get(`${uri}getposterdata`, {
+          params: { id: propertyData.postedby },
         });
 
         if (postedbyresponse.data.payload) {
@@ -155,7 +154,7 @@ const PropertyDetails = () => {
         const brokerpropertiesresponse = await axios.get(
           `${uri}getbrokerproperties`,
           {
-            params: { id: propertyData.postedby_id },
+            params: { id: propertyData.postedby },
           }
         );
 
@@ -439,7 +438,7 @@ const PropertyDetails = () => {
                   href={`https://wa.me/${poster?.mobile1 || ""}`}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="w-full text-[#00c749] bg-green-200  rounded-md flex items-center justify-center gap-2"
+                  className="flex gap-4 items-center"
                 >
                   <WhatsAppIcon />
                   {`${poster?.brokername || "Unknown"}  `}

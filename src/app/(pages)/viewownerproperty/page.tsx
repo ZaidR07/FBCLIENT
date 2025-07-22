@@ -7,6 +7,7 @@ import { useCallback, useEffect } from "react";
 import { uri } from "@/constant";
 import { RupeeIcon, HomeIcon, RulerIcon } from "@/app/Icons";
 import Cookies from "js-cookie";
+import { useRouter } from "next/navigation";
 
 
 const page = () => {
@@ -44,6 +45,8 @@ const page = () => {
   const [user, setUser] = useState(null); // State for user
 
   const userCookie = Cookies.get("user"); // Using js-cookie
+
+  const router = useRouter();
 
   const getUserCookie = () => {
     if (userCookie) {
@@ -96,19 +99,19 @@ const page = () => {
   return (
     <div className="">
       <Header />
-      {/* Properties List */}
-      <section className=" px-[5%] w-[50%] mt-[14vh] py-5 flex flex-col gap-4">
-        <div></div>
+      {/* Properties List */}:
+      <section className=" px-[5%] w-full mt-[14vh] py-5 flex flex-col lg:grid lg:grid-cols-2 2xl:grid-cols-3   gap-4 " >
+        
         {Array.isArray(propertieslist) && propertieslist.length > 0 ? (
           propertieslist.map((item, key) => (
             <div
-              className="w-full border-2  border-gray-300 shadow-md rounded-xl flex items-center gap-[4%] justify-between px-[2.5%] pb-4 pt-3 bg-white"
+              className="w-full lg:flex-1 border-2  border-gray-300 shadow-md rounded-xl flex items-center gap-[4%] justify-between px-[2.5%] pb-4 pt-3 bg-white"
               key={key}
             >
-              <div className="w-[35%] h-full bg-yellow-300 rounded-xl">
+              <div className="w-[35%] h-full rounded-xl">
                 <img
                   src={item.images[0]}
-                  className="h-[15vh] lg:h-[40vh] w-[100%]   object-coverr"
+                  className="h-auto w-[100%]   object-coverr"
                   alt=""
                 />
               </div>
@@ -171,11 +174,11 @@ const page = () => {
                   )}
                 </div>
                 <div className="flex gap-4 md:gap-6">
-                  <button className="mt-2 px-3 py-1 lg:py-2 bg-[#FF5D00] text-white rounded text-sm lg:max-w-[40%]">
-                    View Details
+                  <button onClick={() => router.push(`/singleproperty?id=${item.property_id}`)}  className="mt-2 px-3 py-1 lg:py-2 bg-[#FF5D00] text-white rounded text-sm lg:max-w-[40%]">
+                    View Post
                   </button>
-                  <button className="mt-2 px-3 py-1 lg:py-2 bg-[#FF5D00] text-white rounded text-sm lg:max-w-[40%]">
-                    Edit Details
+                  <button onClick={() => router.push(`/editproperty?id=${item.property_id}`)} className="mt-2 px-3 py-1 lg:py-2 bg-[#FF5D00] text-white rounded text-sm lg:max-w-[40%]">
+                    Edit Post
                   </button>
                 </div>
               </div>
