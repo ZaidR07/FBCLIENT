@@ -56,8 +56,8 @@ const Footer = () => {
   const router = useRouter();
   return (
     <div className="bg-[#FF5D00] text-white pb-4 pt-[4vh]">
-      <div className="w-full px-[5%] grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-        <section className="border-b border-white/30 pb-3 mb-3 lg:border-none lg:pb-0 lg:mb-0">
+      <div className="w-full px-[5%] grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-10 gap-6">
+        <section className="border-b border-white/30 pb-3 mb-3 lg:border-none lg:pb-0 lg:mb-0 lg:col-span-3 lg:order-1">
           <h1 className="text-lg lg:text-2xl text-[#fff] mb-2">Quick Links</h1>
           <ul className="hover:cursor-pointer text-sm lg:text-lg lg:mt-1 space-y-2 leading-6">
             {/* Existing + New */}
@@ -72,7 +72,7 @@ const Footer = () => {
             <li onClick={() => router.push("/buyproperties?view=PG")}>Find PG</li>
           </ul>
         </section>
-        <section className="border-b border-white/30 pb-3 mb-3 lg:border-none lg:pb-0 lg:mb-0">
+        <section className="border-b border-white/30 pb-3 mb-3 lg:border-none lg:pb-0 lg:mb-0 lg:col-span-3 lg:order-2">
           <h1 className="text-lg lg:text-2xl text-[#fff] mb-2">Company</h1>
           <ul className="hover:cursor-pointer flex flex-col text-sm lg:text-lg lg:mt-1 space-y-2 leading-6">
             <li onClick={() => router.push("/about")}>About Us</li>
@@ -86,57 +86,63 @@ const Footer = () => {
             <li onClick={() => router.push("/about")}>Team Info</li>
           </ul>
         </section>
-        <section>
-          {/* Hide header on mobile, show on lg */}
+        <section className="lg:col-span-4 lg:order-3">
+          {/* Header visible on desktop */}
           <h1 className="hidden lg:block text-lg lg:text-2xl text-[#fff] mb-2">Social Media</h1>
-          {/* Mobile: horizontal icon row; Desktop: vertical list with labels */}
-          <ul className="hover:cursor-pointer flex gap-5 lg:block lg:gap-0 text-sm lg:text-lg lg:mt-1 lg:space-y-2 leading-6">
+          {/* Icons horizontal at all sizes */}
+          <ul className="hover:cursor-pointer flex gap-5 items-center leading-6 lg:mt-2 justify-start">
             <li className="flex items-center justify-center">
               <div className="p-3 md:p-2 rounded-full bg-white/10">
                 <WhatsappIcon />
               </div>
-              <span className="hidden lg:inline ml-2">Whatsapp</span>
+              <span className="hidden ml-2">Whatsapp</span>
             </li>
             <li className="flex items-center justify-center">
               <div className="p-3 md:p-2 rounded-full bg-white/10">
                 <InstagramIcon />
               </div>
-              <span className="hidden lg:inline ml-2">Instagram</span>
+              <span className="hidden ml-2">Instagram</span>
             </li>
             <li className="flex items-center justify-center">
               <div className="p-3 md:p-2 rounded-full bg-white/10">
                 <FacebookIcon />
               </div>
-              <span className="hidden lg:inline ml-2">Facebook</span>
+              <span className="hidden ml-2">Facebook</span>
             </li>
             <li className="flex items-center justify-center">
               <div className="p-3 md:p-2 rounded-full bg-white/10">
                 <YoutubeIcon />
               </div>
-              <span className="hidden lg:inline ml-2">Youtube</span>
+              <span className="hidden ml-2">Youtube</span>
             </li>
           </ul>
         </section>
       </div>
-      <section className="px-[5%] mt-6">
-        <h1 className="text-xl lg:text-2xl border-b-2  inline-block mb-2">
-          Company Moto
-        </h1>
+      {/* Company Moto (mobile/tablet) */}
+      <section className="px-[5%] mt-6 lg:hidden">
+        <h1 className="text-xl border-b-2 inline-block mb-2">Company Moto</h1>
         <br />
-
-        <span className="text-sm sm:text-base lg:text-lg leading-6">
-          Lorem ipsum dolor sit amet consectetur adipisicing elit. Rem odit quas
-          dicta debitis perferendis nam, ex iure error fugit. Laborum, at?
-          Adipisci nesciunt cupiditate, dolorem dolores qui porro repellat,
-          incidunt veritatis impedit, voluptates soluta vitae labore explicabo
-          deleniti. Sequi rerum labore totam, doloremque ducimus, quo eaque est
-          nostrum dignissimos, asperiores maiores tempora qui itaque vero
+        <span className="text-sm sm:text-base leading-6">
+          Lorem ipsum dolor sit amet consectetur adipisicing elit. Rem odit quas dicta debitis perferendis nam,
+          ex iure error fugit. Laborum, at? Adipisci nesciunt cupiditate, dolorem dolores qui porro repellat,
+          incidunt veritatis impedit, voluptates soluta vitae labore explicabo deleniti. Sequi rerum labore totam,
+          doloremque ducimus, quo eaque est nostrum dignissimos, asperiores maiores tempora qui itaque vero
           cupiditate beatae animi ullam eveniet.
         </span>
       </section>
-      <div className="w-[90%] mx-[5%] h-[1px] bg-[#fff] mt-6 md:mt-8 lg:mt-10">
-
-      </div>
+      <div className="w-[90%] mx-[5%] h-[1px] bg-[#fff] mt-6 md:mt-8 lg:hidden"></div>
+      {/* Company Moto (desktop only, bottom) */}
+      <section className="hidden lg:block px-[5%] mt-6">
+        <h1 className="text-2xl border-b-2 inline-block mb-2">Company Moto</h1>
+        <br />
+        <span className="text-lg leading-7 opacity-90">
+          Lorem ipsum dolor sit amet consectetur adipisicing elit. Rem odit quas dicta debitis perferendis nam,
+          ex iure error fugit. Laborum, at? Adipisci nesciunt cupiditate, dolorem dolores qui porro repellat,
+          incidunt veritatis impedit, voluptates soluta vitae labore explicabo deleniti. Sequi rerum labore totam,
+          doloremque ducimus, quo eaque est nostrum dignissimos, asperiores maiores tempora qui itaque vero
+          cupiditate beatae animi ullam eveniet.
+        </span>
+      </section>
       <section className="mt-6 md:mt-8 lg:mt-10">
         <a
           href="http://trexinfotech.in"
