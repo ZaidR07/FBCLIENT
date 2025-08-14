@@ -17,6 +17,7 @@ import FeaturedBrokers from "./components/FeaturedBrokers";
 import Cookies from "js-cookie";
 import Vendors from "./components/Vendors";
 import LocationBox from "./components/LocationBox";
+import MobileAppDownload from "./components/MobileAppDownload";
 
 
 import { setlocation } from "@/slices/locationSlice";
@@ -193,6 +194,7 @@ const Page = () => {
 
       <Register registeropen={registeropen} setRegisterOpen={setRegisterOpen} />
       <FeaturedBrokers />
+      <MobileAppDownload />
       <Footer />
     </>
   );

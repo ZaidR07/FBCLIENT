@@ -9,21 +9,19 @@ import { useRouter } from "next/navigation"; // Removed useSearchParams
 const Page = () => {
   const [vendorlist, setVendorlist] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [categoryId, setCategoryId] = useState(null); // Store query param manually
+
 
   const router = useRouter();
 
-  // Get query param using vanilla JS
-  useEffect(() => {
-    const params = new URLSearchParams(window.location.search);
-    const id = params.get("id");
-    setCategoryId(id);
-  }, []);
-
   const loaddata = useCallback(async () => {
     try {
+      const params = new URLSearchParams(window.location.search);
+      const id = params.get("id");
+
       setLoading(true);
-      const response = await axios.get(`${uri}getvendors`);
+      const response = await axios.get(`${uri}getvendors`, {
+        params: { categoryId: id },
+      });
       const data = response.data.payload;
       setVendorlist(data);
     } catch (error) {

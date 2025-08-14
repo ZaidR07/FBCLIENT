@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 
-const vendorData = [
+export const vendorData = [
   { id: 1, emoji: "🛋️", label: "Home Interior" },
   { id: 2, image: "/kitchen.png", label: "Modular Kitchen" },
   { id: 3, emoji: "🚿", label: "Plumbing" },
