@@ -8,76 +8,77 @@ import Header from "@/app/components/Header";
 
 const pricingData = {
   standard: {
-    builder: {
-      price: 29,
-      credits: 100,
-      features: [
-        "Basic project templates",
-        "5 team members",
-        "Basic support",
-        "Project analytics",
-      ],
-    },
-    dealer: {
-      price: 49,
-      credits: 200,
-      features: [
-        "Advanced templates",
-        "10 team members",
-        "Priority support",
-        "Advanced analytics",
-      ],
+    months: {
+      2: {
+        price: 199,
+        credits: 199,
+        features: [
+          "Photo and video content",
+          "Google + Facebook + Instagram Ads",
+          "WhatsApp group access",
+          "Priority support",
+        ],
+      },
+      6: {
+        price: 499,
+        credits: 499,
+        features: [
+          "Photo and video content",
+          "Google + Facebook + Instagram Ads",
+          "WhatsApp group access",
+          "Priority support",
+        ],
+      },
+      12: {
+        price: 999,
+        credits: 999,
+        features: [
+          "Photo and video content",
+          "Google + Facebook + Instagram Ads",
+          "WhatsApp group access",
+          "Priority support",
+        ],
+      },
     },
   },
   premium: {
-    builder: {
-      price: 59,
-      credits: 250,
-      features: [
-        "Premium templates",
-        "15 team members",
-        "24/7 support",
-        "Custom analytics",
-        "API access",
-      ],
-    },
-    dealer: {
-      price: 89,
-      credits: 500,
-      features: [
-        "All premium templates",
-        "Unlimited team members",
-        "24/7 priority support",
-        "Custom analytics dashboard",
-        "Advanced API access",
-      ],
-    },
-  },
-  gold: {
-    builder: {
-      price: 99,
-      credits: 500,
-      features: [
-        "All premium features",
-        "Unlimited team members",
-        "White-label option",
-        "Custom development",
-        "Dedicated support manager",
-      ],
-    },
-    dealer: {
-      price: 149,
-      credits: 1000,
-      features: [
-        "All premium features",
-        "White-label solution",
-        "Custom development priority",
-        "Strategic account manager",
-        "Custom integrations",
-      ],
+    months: {
+      2: {
+        price: 299,
+        credits: 299,
+        features: [
+          "Premium photo and video content",
+          "Advanced Google + Facebook + Instagram Ads",
+          "Premium WhatsApp group access",
+          "Extended support",
+          
+        ],
+      },
+      6: {
+        price: 599,
+        credits: 599,
+        features: [
+          "Premium photo and video content",
+          "Advanced Google + Facebook + Instagram Ads",
+          "Premium WhatsApp group access",
+          "Extended support",
+          
+        ],
+      },
+      12: {
+        price: 999,
+        credits: 999,
+        features: [
+          "Premium photo and video content",
+          "Advanced Google + Facebook + Instagram Ads",
+          "Premium WhatsApp group access",
+          "Extended support",
+          
+        ],
+      },
     },
   },
-};
+} as const;
 
 const Page = () => {
   const [currentTier, setCurrentTier] = useState("standard");
@@ -96,39 +97,20 @@ const Page = () => {
 
         <PricingTabs onTabChange={setCurrentTier} />
 
-        <div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto mt-8">
-          <PriceCard
-            title="Builder Subscription"
-            price={
-              pricingData[currentTier as keyof typeof pricingData].builder.price
-            }
-            features={
-              pricingData[currentTier as keyof typeof pricingData].builder
-                .features
-            }
-            credits={
-              pricingData[currentTier as keyof typeof pricingData].builder
-                .credits
-            }
-            tier={currentTier}
-            type="builder"
-          />
-          <PriceCard
-            title="Dealer Subscription"
-            price={
-              pricingData[currentTier as keyof typeof pricingData].dealer.price
-            }
-            features={
-              pricingData[currentTier as keyof typeof pricingData].dealer
-                .features
-            }
-            credits={
-              pricingData[currentTier as keyof typeof pricingData].dealer
-                .credits
-            }
-            tier={currentTier}
-            type="dealer"
-          />
+        <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto mt-8">
+          {Object.entries(pricingData[currentTier as keyof typeof pricingData].months).map(
+            ([months, data]) => (
+              <PriceCard
+                key={`${currentTier}-${months}`}
+                title={`${currentTier === "standard" ? "Standard" : "Premium"} - ${months} Months`}
+                price={data.price}
+                features={data.features}
+                credits={data.credits}
+                tier={currentTier}
+                type={currentTier === "premium" ? "dealer" : "builder"}
+              />
+            )
+          )}
         </div>
       </div>
     </div>

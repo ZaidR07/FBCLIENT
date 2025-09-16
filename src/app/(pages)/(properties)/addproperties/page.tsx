@@ -267,12 +267,12 @@ const Page = () => {
   }, []);
 
   return (
-    <div className="flex relative lg:top-[12vh]">
+    <div className="flex bg-gray-100 min-h-[88vh] lg:mt-[12vh]">
       <AdminHeader sidebaropen={sidebaropen} setSidebarOpen={setSidebarOpen} />
 
       <div
-        className={`w-full min-h-[90vh] bg-gray-200 px-[6%] py-[5vh] ${
-          sidebaropen ? "lg:w-[77%]" : "lg:w-[90%]"
+        className={`w-full px-[6%] py-[5vh] ${
+          sidebaropen ? "lg:ml-[23%]" : "lg:ml-[12%]"
         }`}
       >
         <h1 className="text-2xl text-center mb-5 text-[#FF5D00]">

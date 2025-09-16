@@ -5,6 +5,7 @@ import { uri } from "@/constant";
 import axios from "axios";
 import { HomeIcon, RulerIcon, RupeeIcon } from "@/app/Icons";
 import { priceconverter } from "@/utils/priceconverter";
+import Cookies from "js-cookie";
 
 import DesktopNav from "@/app/components/DesktopNav";
 import MobileNav from "@/app/components/MobileNav";
@@ -73,6 +74,7 @@ const PropertyDetails = () => {
   });
   const router = useRouter();
 
+
   const [property, setProperty] = useState({
     images: [],
     highlights: [],
@@ -126,9 +128,39 @@ const PropertyDetails = () => {
     },
   ]);
 
+  const user = Cookies.get("user");
+
+  const Separateemail = (user) => {
+    if (!user) return null;
+    
+    // Split the cookie value by '^' to extract email
+    const userData = user.split('^');
+    if (userData.length > 0) {
+      const emailMatch = userData[0].match(/^(.+?)(\.[0-9]+)?$/);
+      return emailMatch ? emailMatch[1] : userData[0];
+    }
+    
+    // Fallback to original regex method
+    const emailMatch = user.match(/^(.+?)(\.[0-9]+)?$/);
+    return emailMatch ? emailMatch[1] : user;
+  };
+  
+
+
   const colours = ["#CCEFEA", "#E3FBDA", "#FFEFCB"];
 
+  // Ref to track if data has been loaded
+  const hasLoaded = useRef(false);
+
   const loaddata = useCallback(async () => {
+    // Prevent double execution
+    if (hasLoaded.current) {
+      console.log("loaddata: Already loaded, skipping");
+      return;
+    }
+    
+    console.log("loaddata: Starting data load for property_id:", property_id);
+    
     try {
       setLoading(true);
       const response = await axios.get(`${uri}getspecificproperty`, {
@@ -138,10 +170,40 @@ const PropertyDetails = () => {
       if (response.data.payload) {
         const propertyData = response.data.payload[0];
         setProperty(propertyData);
-
         
+        console.log("loaddata: Property data loaded, generating lead for:", { 
+          broker_id: propertyData.postedby, 
+          property_id: propertyData.property_id 
+        });
 
-    
+        const userEmail = Separateemail(user);
+        
+        // Only generate lead if we have valid user data and property_id
+        if (userEmail && propertyData.postedby && propertyData.property_id) {
+          try {
+            console.log("loaddata: Calling generatelead API with:", { 
+              broker_id: propertyData.postedby, 
+              email: userEmail, 
+              property_id: propertyData.property_id 
+            });
+            
+            const response = await axios.post(`${uri}generatelead`, {
+              broker_id: propertyData.postedby,
+              email: userEmail,
+              property_id: propertyData.property_id,
+            });
+            
+            if (response.status === 200) {
+              console.log("Lead generated successfully");
+            } else if (response.status === 400) {
+              console.log("Lead already exists or invalid data");
+            }
+          } catch (leadError) {
+            console.error("Error generating lead:", leadError);
+          }
+        } else {
+          console.log("Missing required data for lead generation");
+        }
 
         const postedbyresponse = await axios.get(`${uri}getposterdata`, {
           params: { id: propertyData.postedby },
@@ -165,16 +227,28 @@ const PropertyDetails = () => {
         //@ts-ignore
         setProperty([]);
       }
+      
+      // Mark as loaded
+      hasLoaded.current = true;
+      console.log("loaddata: Completed loading for property_id:", property_id);
     } catch (error) {
       console.error("Error loading property data", error);
     } finally {
       setLoading(false);
     }
-  }, [property_id]);
+  }, [property_id, user]);
 
   useEffect(() => {
+    // Reset the loaded flag when property_id changes
+    hasLoaded.current = false;
+    console.log("useEffect: property_id changed to:", property_id);
     loaddata();
-  }, [loaddata]);
+    
+    // Cleanup function to reset the flag when component unmounts
+    return () => {
+      hasLoaded.current = false;
+    };
+  }, [loaddata, property_id]);
 
   // Open Image Viewer
   const openImageViewer = (index) => {

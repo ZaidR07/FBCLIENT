@@ -1,7 +1,7 @@
 
 import { CustomButton } from "./ui/CustomButton";
 import { CustomCard , CustomCardHeader , CustomCardContent , CustomCardFooter } from "./ui/CustomCard";
-import { Package, BadgeDollarSign, FileCheck } from "lucide-react";
+import { Package, CreditCard, FileCheck, Star } from "lucide-react";
 
 interface PriceCardProps {
   title: string;
@@ -19,22 +19,24 @@ export function PriceCard({ title, price, features, credits, tier, type }: Price
     }`}>
       <CustomCardHeader className="text-center">
         <div className="flex justify-center mb-4">
-          {type === "builder" ? (
+          {tier === "premium" ? (
+            <Star className="w-12 h-12 text-[#FFD700]" fill="#FFD700" />
+          ) : type === "builder" ? (
             <Package className="w-12 h-12 text-[#FF5D00]" />
           ) : (
-            <BadgeDollarSign className="w-12 h-12 text-[#FF5D00]" />
+            <CreditCard className="w-12 h-12 text-[#FF5D00]" />
           )}
         </div>
         <h3 className="text-2xl font-bold">{title}</h3>
         <p className="text-4xl font-bold mt-4">
-          ${price}
+          ₹{price}
           <span className="text-sm font-normal text-muted-foreground">/mo</span>
         </p>
       </CustomCardHeader>
       <CustomCardContent className="mt-4">
         <div className="space-y-4">
           <div className="flex items-center gap-2 text-[#FF5D00] font-semibold">
-            <BadgeDollarSign className="w-5 h-5" />
+            <CreditCard className="w-5 h-5" />
             {credits} Credits Included
           </div>
           {features.map((feature, index) => (

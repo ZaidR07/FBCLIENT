@@ -65,29 +65,35 @@ const Page = () => {
   if (!isClient) return null; // Avoids rendering until hydration completes
 
   return (
-    <div className="lg:mt-[12vh] lg:flex">
+    <div className="lg:mt-[12vh] lg:flex bg-gray-100 min-h-[88vh]">
       <AdminHeader sidebaropen={sidebaropen} setSidebarOpen={setSidebarOpen} />
 
       <div
-        className={`min-h-[88vh] w-full mt-[10vh] lg:mt-[0vh] px-[5%] py-[5vh] bg-gray-200 ${
-          sidebaropen ? "lg:w-[77%]" : "lg:w-[90%]"
+        className={`w-full mt-[10vh] lg:mt-[0vh] px-[5%] py-[4vh] ${
+          sidebaropen ? "lg:ml-[23%]" : "lg:ml-[12%]"
         }`}
       >
-        <input
-          type="search"
-          name=""
-          id=""
-          className="border-2 border-[#FF5D00] mb-[3vh] rounded-2xl px-3 py-1 w-[100%] "
-          placeholder="search.."
-          onChange={(e) => filtersearch(e.target.value)}
-        />
-        <DataTable
-          paginationPerPage={10}
-          columns={columns}
-          data={displayvendorslist}
-          pagination
-          customStyles={customStyles}
-        />
+        <div className="flex items-center justify-between mb-4">
+          <h1 className="text-2xl font-bold text-gray-800">View Vendors</h1>
+          <span className="text-sm text-gray-500">Manage vendors</span>
+        </div>
+        <div className="bg-white rounded-2xl shadow-xl p-4">
+          <input
+            type="search"
+            className="border border-gray-300 focus:outline-none focus:ring-2 focus:ring-orange-400 mb-4 rounded-xl px-4 py-2 w-full"
+            placeholder="Search vendors by any field..."
+            onChange={(e) => filtersearch(e.target.value)}
+          />
+          <div className="overflow-x-auto">
+            <DataTable
+              paginationPerPage={10}
+              columns={columns}
+              data={displayvendorslist}
+              pagination
+              customStyles={customStyles}
+            />
+          </div>
+        </div>
       </div>
     </div>
   );

@@ -1,7 +1,7 @@
 "use client";
 import { useState, useRef } from "react";
 
-const AddPropertiesPhotos = ({ formdata, onImagesChange }) => {
+const AddPropertiesPhotos = ({ newImages, setNewImages, existingImages, onExistingImagesChange, removedImages, setRemovedImages }) => {
   const [previewUrls, setPreviewUrls] = useState([]);
   const fileInputRef = useRef(null);
 
@@ -16,9 +16,8 @@ const AddPropertiesPhotos = ({ formdata, onImagesChange }) => {
     // @ts-ignore
     const newPreviews = files.map(file => URL.createObjectURL(file));
 
-    // Update images in parent component
-    const newImages = [...formdata.images, ...files];
-    onImagesChange(newImages);
+    // Update new images in parent component
+    setNewImages(prev => [...prev, ...files]);
 
     // Update preview URLs
     setPreviewUrls(prev => [...prev, ...newPreviews]);
@@ -50,13 +49,59 @@ const AddPropertiesPhotos = ({ formdata, onImagesChange }) => {
 
         {/* Image Previews */}
         <div className="mt-4 grid grid-cols-3 gap-2">
+          {/* Existing images */}
+          {existingImages && existingImages.map((src, index) => (
+            <div key={`existing-${index}`} className="relative">
+              <img
+                src={src}
+                alt="Existing"
+                className="w-24 h-24 object-cover rounded-md"
+              />
+              <button
+                type="button"
+                onClick={() => {
+                  // Add to removed images list
+                  if (setRemovedImages && existingImages && existingImages[index]) {
+                    setRemovedImages(prev => [...prev, existingImages[index]]);
+                  }
+                  
+                  // Notify parent to remove from existing images
+                  if (onExistingImagesChange) {
+                    onExistingImagesChange(index);
+                  }
+                }}
+                className="absolute top-0 right-0 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs"
+              >
+                ✕
+              </button>
+            </div>
+          ))}
+          {/* New image previews */}
           {previewUrls.map((src, index) => (
-            <div key={index} className="relative">
+            <div key={`new-${index}`} className="relative">
               <img
                 src={src}
                 alt="Preview"
                 className="w-24 h-24 object-cover rounded-md"
               />
+              <button
+                type="button"
+                onClick={() => {
+                  // Remove from new images
+                  const updatedNewImages = newImages.filter((_, i) => i !== index);
+                  setNewImages(updatedNewImages);
+                  
+                  // Remove preview URL
+                  const updatedPreviewUrls = previewUrls.filter((_, i) => i !== index);
+                  setPreviewUrls(updatedPreviewUrls);
+                  
+                  // Revoke the object URL to free memory
+                  URL.revokeObjectURL(src);
+                }}
+                className="absolute top-0 right-0 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs"
+              >
+                ✕
+              </button>
             </div>
           ))}
         </div>
@@ -67,7 +112,7 @@ const AddPropertiesPhotos = ({ formdata, onImagesChange }) => {
           className="mt-6 bg-green-600 text-white px-4 py-2 rounded-md"
           onClick={triggerFileInput}
         >
-          {formdata.images.length > 0 ? 'Add More Images' : 'Add Images'}
+          {existingImages && existingImages.length + newImages.length > 0 ? 'Add More Images' : 'Add Images'}
         </button>
       </section>
     </div>

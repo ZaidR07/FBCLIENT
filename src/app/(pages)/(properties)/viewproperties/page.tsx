@@ -23,10 +23,25 @@ const columns = [
 
 const customStyles = {
   headRow: {
-    style: { backgroundColor: "#f87123", fontWeight: "bold" },
+    style: {
+      backgroundColor: "#f87123",
+      fontWeight: "bold",
+      color: "#fff",
+      borderRadius: "0.5rem 0.5rem 0 0",
+    },
+  },
+  headCells: {
+    style: {
+      paddingTop: "14px",
+      paddingBottom: "14px",
+      fontSize: "0.9rem",
+    },
   },
   rows: {
-    style: { minHeight: "48px" },
+    style: { minHeight: "56px", fontSize: "0.95rem" },
+  },
+  cells: {
+    style: { paddingTop: "12px", paddingBottom: "12px" },
   },
 };
 
@@ -65,28 +80,32 @@ const Page = () => {
   if (!isClient) return null; // Avoids rendering until hydration completes
 
   return (
-    <div className="lg:flex relative lg:top-[12vh] bg-[#fff]">
+    <div className="lg:flex lg:mt-[12vh] bg-gray-100 min-h-[88vh]">
       <AdminHeader sidebaropen={sidebaropen} setSidebarOpen={setSidebarOpen} />
       <div
-        className={`min-h-screen  px-[5%] py-[5vh] bg-gray-200 ${
-          sidebaropen ? "lg:w-[77%]" : "lg:w-[90%]"
-        } `}
+        className={`w-full  px-[5%] py-[4vh] ${sidebaropen ? "lg:ml-[23%]" : "lg:ml-[12%]"} `}
       >
-        <input
-          type="search"
-          name=""
-          id=""
-          className="border-2 border-[#FF5D00] mb-[3vh] rounded-2xl px-3 py-1 w-[100%] "
-          placeholder="search.."
-          onChange={(e) => filtersearch(e.target.value)}
-        />
-        <DataTable
-          paginationPerPage={10}
-          columns={columns}
-          data={displaybrokerlist}
-          pagination
-          customStyles={customStyles}
-        />
+        <div className="flex items-center justify-between mb-4">
+          <h1 className="text-2xl font-bold text-gray-800">View Properties</h1>
+          <span className="text-sm text-gray-500">Manage properties</span>
+        </div>
+        <div className="bg-white rounded-2xl shadow-xl p-4">
+          <input
+            type="search"
+            className="border border-gray-300 focus:outline-none focus:ring-2 focus:ring-orange-400 mb-4 rounded-xl px-4 py-2 w-full"
+            placeholder="Search properties by any field..."
+            onChange={(e) => filtersearch(e.target.value)}
+          />
+          <div className="overflow-x-auto">
+            <DataTable
+              paginationPerPage={10}
+              columns={columns}
+              data={displaybrokerlist}
+              pagination
+              customStyles={customStyles}
+            />
+          </div>
+        </div>
       </div>
     </div>
   );

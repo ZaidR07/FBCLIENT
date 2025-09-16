@@ -53,9 +53,14 @@ const EditPropertyPage = () => {
     highlights: [],
     location: "",
     line: "",
-    images: [],
+    images: [], // This will store existing image URLs
     for: "Sale",
   });
+
+  // State to track new images (files)
+  const [newImages, setNewImages] = useState([]);
+  // State to track removed images (URLs)
+  const [removedImages, setRemovedImages] = useState([]);
 
   const [variables, setVariables] = useState({
     bhklist: [],
@@ -202,12 +207,32 @@ const EditPropertyPage = () => {
   };
 
   // Handle images
-  const handleImagesChange = (newImages) => {
+  const handleImagesChange = (updatedImages) => {
     setFormdata((prevData) => ({
       ...prevData,
-      images: newImages,
+      images: updatedImages,
     }));
   };
+  
+  // Remove an image from the existing images
+  const removeImage = (index) => {
+    setFormdata((prevData) => ({
+      ...prevData,
+      images: prevData.images.filter((_, i) => i !== index),
+    }));
+  };
+  
+  // Remove a new image from the new images
+  const removeNewImage = (index) => {
+    setNewImages((prev) => prev.filter((_, i) => i !== index));
+    
+    // Also remove the preview URL
+    // @ts-ignore
+    setPreviewUrls((prev) => prev.filter((_, i) => i !== index));
+  };
+  
+  // Add a state for preview URLs
+  const [previewUrls, setPreviewUrls] = useState([]);
 
   // Handle building suggestions
   const getbuildings = async () => {
@@ -250,17 +275,29 @@ const EditPropertyPage = () => {
 
     try {
       const formData = new FormData();
+      
+      // Append all form fields except images
       for (const key in formdata) {
-        if (key === "images") {
-          formdata.images.forEach((file, index) => {
-            formData.append(`images`, file);
-          });
-        } else if (Array.isArray(formdata[key])) {
-          formData.append(key, JSON.stringify(formdata[key]));
-        } else {
-          formData.append(key, formdata[key]);
+        if (key !== "images" && key !== "newImages") {
+          if (Array.isArray(formdata[key])) {
+            formData.append(key, JSON.stringify(formdata[key]));
+          } else {
+            formData.append(key, formdata[key]);
+          }
         }
       }
+      
+      // Append existing images (URLs) as a JSON string
+      formData.append("images", JSON.stringify(formdata.images));
+      
+      // Append new image files
+      newImages.forEach((file) => {
+        formData.append("new_images", file);
+      });
+      
+      // Append removed images (URLs) as a JSON string
+      formData.append("removed_images", JSON.stringify(removedImages));
+      
       formData.append("property_id", propertyId);
 
       const response = await axios.post(`${uri}updateproperty`, formData, {
@@ -779,10 +816,18 @@ const EditPropertyPage = () => {
 
           {/* Photos */}
           <AddPropertiesPhotos
-            formdata={formdata}
-            onImagesChange={handleImagesChange}
-            originalImages={originalImages}
-            isEditMode={true}
+            newImages={newImages}
+            setNewImages={setNewImages}
+            existingImages={formdata.images}
+            removedImages={removedImages}
+            setRemovedImages={setRemovedImages}
+            onExistingImagesChange={(index) => {
+              // Remove image from formdata.images
+              setFormdata(prevData => ({
+                ...prevData,
+                images: prevData.images.filter((_, i) => i !== index)
+              }));
+            }}
           />
 
           {/* Submit Button */}
