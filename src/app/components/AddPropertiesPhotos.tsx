@@ -1,9 +1,26 @@
 "use client";
 import { useState, useRef } from "react";
 
-const AddPropertiesPhotos = ({ newImages, setNewImages, existingImages, onExistingImagesChange, removedImages, setRemovedImages }) => {
+const AddPropertiesPhotos = (props: any) => {
+  const {
+    newImages,
+    setNewImages,
+    existingImages,
+    onExistingImagesChange,
+    removedImages,
+    setRemovedImages,
+    formdata,
+    onImagesChange,
+  } = props;
+
   const [previewUrls, setPreviewUrls] = useState([]);
   const fileInputRef = useRef(null);
+
+  // Support controlled (via newImages/setNewImages) and uncontrolled modes
+  const isControlled = typeof setNewImages === "function";
+  const [localNewImages, setLocalNewImages] = useState<any[]>([]);
+  const currentNewImages = isControlled ? (newImages || []) : localNewImages;
+  const setCurrentNewImages = isControlled ? setNewImages : setLocalNewImages;
 
   const handleFileChange = (event) => {
     event.preventDefault();
@@ -17,7 +34,14 @@ const AddPropertiesPhotos = ({ newImages, setNewImages, existingImages, onExisti
     const newPreviews = files.map(file => URL.createObjectURL(file));
 
     // Update new images in parent component
-    setNewImages(prev => [...prev, ...files]);
+    setCurrentNewImages((prev: any[]) => {
+      const updated = [...(prev || []), ...files];
+      // If consumer provided onImagesChange (legacy API), notify with updated list
+      if (typeof onImagesChange === "function") {
+        onImagesChange(updated);
+      }
+      return updated;
+    });
 
     // Update preview URLs
     setPreviewUrls(prev => [...prev, ...newPreviews]);
@@ -88,8 +112,11 @@ const AddPropertiesPhotos = ({ newImages, setNewImages, existingImages, onExisti
                 type="button"
                 onClick={() => {
                   // Remove from new images
-                  const updatedNewImages = newImages.filter((_, i) => i !== index);
-                  setNewImages(updatedNewImages);
+                  const updatedNewImages = (currentNewImages || []).filter((_, i) => i !== index);
+                  setCurrentNewImages(updatedNewImages);
+                  if (typeof onImagesChange === "function") {
+                    onImagesChange(updatedNewImages);
+                  }
                   
                   // Remove preview URL
                   const updatedPreviewUrls = previewUrls.filter((_, i) => i !== index);
@@ -112,7 +139,7 @@ const AddPropertiesPhotos = ({ newImages, setNewImages, existingImages, onExisti
           className="mt-6 bg-green-600 text-white px-4 py-2 rounded-md"
           onClick={triggerFileInput}
         >
-          {existingImages && existingImages.length + newImages.length > 0 ? 'Add More Images' : 'Add Images'}
+          {((existingImages?.length || 0) + ((currentNewImages?.length || 0))) > 0 ? 'Add More Images' : 'Add Images'}
         </button>
       </section>
     </div>

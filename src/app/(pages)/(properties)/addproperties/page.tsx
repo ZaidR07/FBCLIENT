@@ -764,7 +764,7 @@ const Page = () => {
               </div>
             </div>
           )}
-
+          //@ts-ign
           <AddPropertiesPhotos
             formdata={formdata}
             onImagesChange={handleImagesChange}
