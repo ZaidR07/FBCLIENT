@@ -82,7 +82,7 @@ const Footer = () => {
             <li onClick={() => router.push("/request-info")}>Request Info</li>
             <li onClick={() => router.push("/feedback")}>Feedback</li>
             <li onClick={() => router.push("/report-problem")}>Report a Problem</li>
-            <li onClick={() => router.push("/safety-guides")}>Safety Guides</li>
+            <li onClick={() => router.push("/privacy-policy")}>Privacy Policy</li>
             <li onClick={() => router.push("/about")}>Team Info</li>
           </ul>
         </section>

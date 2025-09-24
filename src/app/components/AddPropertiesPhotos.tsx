@@ -29,13 +29,35 @@ const AddPropertiesPhotos = (props: any) => {
     const files = Array.from(event.target.files);
     if (!files.length) return;
 
+    // Validate files
+    const maxFileSize = 5 * 1024 * 1024; // 5MB
+    const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp'];
+    
+    const validFiles = [];
+    const invalidFiles = [];
+    
+    files.forEach((file: File) => {
+      if (!allowedTypes.includes(file.type)) {
+        invalidFiles.push(`${file.name}: Invalid file type. Only JPEG, PNG, and WebP allowed.`);
+      } else if (file.size > maxFileSize) {
+        invalidFiles.push(`${file.name}: File too large. Maximum size is 5MB.`);
+      } else {
+        validFiles.push(file);
+      }
+    });
+
+    if (invalidFiles.length > 0) {
+      alert(`Some files were rejected:\n${invalidFiles.join('\n')}`);
+    }
+
+    if (validFiles.length === 0) return;
+
     // Create preview URLs
-    // @ts-ignore
-    const newPreviews = files.map(file => URL.createObjectURL(file));
+    const newPreviews = validFiles.map(file => URL.createObjectURL(file));
 
     // Update new images in parent component
     setCurrentNewImages((prev: any[]) => {
-      const updated = [...(prev || []), ...files];
+      const updated = [...(prev || []), ...validFiles];
       // If consumer provided onImagesChange (legacy API), notify with updated list
       if (typeof onImagesChange === "function") {
         onImagesChange(updated);
