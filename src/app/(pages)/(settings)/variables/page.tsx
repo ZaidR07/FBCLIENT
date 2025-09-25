@@ -212,8 +212,8 @@ const Page = () => {
       <AdminHeader sidebaropen={sidebaropen} setSidebarOpen={setSidebarOpen} />
     
       <div
-        className={`px-[5%] py-[5vh] mt-[10vh] lg:mt-0 ${
-          sidebaropen ? "lg:w-[77%]" : "lg:w-[90%]"
+        className={`px-[5%] py-[5vh] mt-[10vh] lg:mt-0 w-full ${
+          sidebaropen ? "lg:ml-[23%]" : "lg:ml-[12%]"
         }`}
       >
         <form

@@ -83,7 +83,6 @@ const Footer = () => {
             <li onClick={() => router.push("/feedback")}>Feedback</li>
             <li onClick={() => router.push("/report-problem")}>Report a Problem</li>
             <li onClick={() => router.push("/privacy-policy")}>Privacy Policy</li>
-            <li onClick={() => router.push("/about")}>Team Info</li>
           </ul>
         </section>
         <section className="lg:col-span-4 lg:order-3">

@@ -57,8 +57,8 @@ const Page = () => {
       <AdminHeader sidebaropen={sidebaropen} setSidebarOpen={setSidebarOpen} />
       
 
-      <section className={` py-4 bg-white shadow-lg rounded-lg  mx-auto mt-6 px-[5%] ${
-          sidebaropen ? "lg:w-[77%]" : "lg:w-[90%]"
+      <section className={` py-4 bg-white shadow-lg rounded-lg  mx-auto mt-6 px-[5%] w-full ${
+          sidebaropen ? "lg:ml-[23%]" : "lg:ml-[12%]"
         }`}>
         <h2 className="text-xl text-[#FF5D00] text-center font-semibold mb-4">
           Carousel Images
