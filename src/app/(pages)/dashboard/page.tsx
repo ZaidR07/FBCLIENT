@@ -1,7 +1,6 @@
 "use client";
 
 import AdminHeader from "@/app/components/AdminHeader";
-import { uri } from "@/constant";
 import axios from "axios";
 import { useEffect, useState } from "react";
 
@@ -16,7 +15,7 @@ const Page = () => {
 
   const fetchdata = async () => {
     try {
-      const response = await axios.get(`${uri}getdashboardnumbers`, {
+      const response = await axios.get(`${process.env.NEXT_PUBLIC_APP_URI}/getdashboardnumbers`, {
         withCredentials: true,
       });
 

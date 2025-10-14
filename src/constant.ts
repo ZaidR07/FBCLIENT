@@ -1,2 +1,2 @@
-export const uri = "http://localhost:4000/api/"
-// export const uri = "https://fbserver-omega.vercel.app/api/"
+// Environment variables should be accessed directly via process.env in Next.js
+// Example: process.env.NEXT_PUBLIC_APP_URI

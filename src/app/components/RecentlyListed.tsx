@@ -1,4 +1,3 @@
-import { uri } from "@/constant";
 import axios from "axios";
 import { useEffect, useState, useRef } from "react";
 import { priceconverter } from "@/utils/priceconverter";
@@ -17,7 +16,7 @@ const RecentlyListed = () => {
 
   useEffect(() => {
     const handleload = async () => {
-      const response = await axios.get(`${uri}getproperties`);
+      const response = await axios.get(`${process.env.NEXT_PUBLIC_APP_URI}/getproperties`);
       setPropertiesList(response.data.payload);
     };
     handleload();

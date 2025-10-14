@@ -4,7 +4,6 @@ import Header from "@/app/components/Header";
 import React, { useEffect, useState, useCallback, Suspense } from "react";
 import axios from "axios";
 import { useSearchParams } from "next/navigation";
-import { uri } from "@/constant";
 import { RupeeIcon, RulerIcon, HomeIcon } from "@/app/Icons";
 import { toast } from "react-toastify";
 
@@ -35,7 +34,7 @@ const PageContent = () => {
 
     try {
       setLoading(true);
-      const response = await axios.get(`${uri}getwishlist`, {
+      const response = await axios.get(`${process.env.NEXT_PUBLIC_APP_URI}/getwishlist`, {
         params: { email: email },
       });
 
@@ -66,7 +65,7 @@ const PageContent = () => {
         alert("something Went Wrong");
         return;
       }
-      const response = await axios.post(`${uri}removewishlist`, {
+      const response = await axios.post(`${process.env.NEXT_PUBLIC_APP_URI}/removewishlist`, {
         property_id: property_id,
         email: email,
       });

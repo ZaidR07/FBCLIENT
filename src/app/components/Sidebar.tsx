@@ -1,7 +1,6 @@
 "use client";
 import { useCallback, useEffect, useState } from "react";
 import axios from "axios";
-import { uri } from "@/constant";
 import Cookies from "js-cookie";
 import Profile from "./Profile";
 import Register from "./Register";
@@ -91,11 +90,11 @@ const Sidebar = ({ opensidebar, setOpenSidebar }) => {
 
   const loaddata = useCallback(async () => {
     try {
-      const response = await axios.get(`${uri}getspecificvariable`, {
+      const response = await axios.get(`${process.env.NEXT_PUBLIC_APP_URI}/getspecificvariable`, {
         params: { category: "propertytypelist" },
       });
 
-      const response2 = await axios.get(`${uri}getspecificvariable`, {
+      const response2 = await axios.get(`${process.env.NEXT_PUBLIC_APP_URI}/getspecificvariable`, {
         params: { category: "locationlist" },
       });
 

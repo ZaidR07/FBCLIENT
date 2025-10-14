@@ -3,7 +3,6 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import axios from "axios";
-import { uri } from "@/constant";
 import Cookies from "js-cookie";
 
 const Navigationbar = ({ isOpen }) => {
@@ -32,7 +31,7 @@ const Navigationbar = ({ isOpen }) => {
 
   const handleload = async () => {
     try {
-      const response = await axios.get(`${uri}getvariables`);
+      const response = await axios.get(`${process.env.NEXT_PUBLIC_APP_URI}/getvariables`);
       if (response.status === 200) {
         setVariables(response.data.payload);
       }

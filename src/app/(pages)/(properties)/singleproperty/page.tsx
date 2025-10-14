@@ -1,7 +1,6 @@
 "use client";
 import { useSearchParams, useRouter } from "next/navigation";
 import { useEffect, useState, useCallback, Suspense , useRef } from "react";
-import { uri } from "@/constant";
 import axios from "axios";
 import { HomeIcon, RulerIcon, RupeeIcon } from "@/app/Icons";
 import { priceconverter } from "@/utils/priceconverter";
@@ -10,6 +9,7 @@ import Cookies from "js-cookie";
 import DesktopNav from "@/app/components/DesktopNav";
 import MobileNav from "@/app/components/MobileNav";
 import { AngleLeft, AngleRight } from "@/app/Icons";
+import { ImageViewer } from "@/app/components/shared";
 
 const WhatsAppIcon = () => {
   return (
@@ -163,7 +163,7 @@ const PropertyDetails = () => {
     
     try {
       setLoading(true);
-      const response = await axios.get(`${uri}getspecificproperty`, {
+      const response = await axios.get(`${process.env.NEXT_PUBLIC_APP_URI}/getspecificproperty`, {
         params: { property_id },
       });
 
@@ -187,7 +187,7 @@ const PropertyDetails = () => {
               property_id: propertyData.property_id 
             });
             
-            const response = await axios.post(`${uri}generatelead`, {
+            const response = await axios.post(`${process.env.NEXT_PUBLIC_APP_URI}/generatelead`, {
               broker_id: propertyData.postedby,
               email: userEmail,
               property_id: propertyData.property_id,
@@ -205,7 +205,7 @@ const PropertyDetails = () => {
           console.log("Missing required data for lead generation");
         }
 
-        const postedbyresponse = await axios.get(`${uri}getposterdata`, {
+        const postedbyresponse = await axios.get(`${process.env.NEXT_PUBLIC_APP_URI}/getposterdata`, {
           params: { id: propertyData.postedby },
         });
 
@@ -214,7 +214,7 @@ const PropertyDetails = () => {
         }
 
         const brokerpropertiesresponse = await axios.get(
-          `${uri}getbrokerproperties`,
+          `${process.env.NEXT_PUBLIC_APP_URI}/getbrokerproperties`,
           {
             params: { id: propertyData.postedby },
           }
@@ -557,42 +557,14 @@ const PropertyDetails = () => {
       )}
 
       {/* Image Viewer Modal */}
-      {imageViewer.open && (
-        <div
-          className="fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center z-50"
-          onClick={closeImageViewer}
-        >
-          <button
-            className="absolute top-5 right-5 text-white text-3xl"
-            onClick={closeImageViewer}
-          >
-            ✖
-          </button>
-          <button
-            className="absolute left-5 text-white text-3xl"
-            onClick={(e) => {
-              e.stopPropagation();
-              prevImage();
-            }}
-          >
-            ◀
-          </button>
-          <img
-            src={images[imageViewer.index]}
-            alt="Selected Image"
-            className="max-h-[90vh] max-w-[90vw] object-contain"
-          />
-          <button
-            className="absolute right-5 text-white text-3xl"
-            onClick={(e) => {
-              e.stopPropagation();
-              nextImage();
-            }}
-          >
-            ▶
-          </button>
-        </div>
-      )}
+      <ImageViewer
+        isOpen={imageViewer.open}
+        images={images}
+        currentIndex={imageViewer.index}
+        onClose={closeImageViewer}
+        onNext={nextImage}
+        onPrev={prevImage}
+      />
     </div>
   );
 };

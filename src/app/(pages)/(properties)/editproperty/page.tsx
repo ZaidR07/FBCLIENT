@@ -1,11 +1,9 @@
 //@ts-nocheck
 "use client";
 
-import { uri } from "@/constant";
 import { useEffect, useState, useRef } from "react";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import axios from "axios";
 import Cookies from "js-cookie";
 import { useRouter, useSearchParams } from "next/navigation";
 import Select from "react-select";
@@ -13,6 +11,21 @@ import AddPropertiesPhotos from "@/app/components/AddPropertiesPhotos";
 import { useSelector, useDispatch } from "react-redux";
 import { setlocation } from "@/slices/locationSlice";
 import LocationBox from "@/app/components/LocationBox";
+import {
+  LocationField,
+  HighlightsField,
+  AmenitiesField,
+  SelectField,
+  AreaField,
+  BedroomsField,
+  PropertyTypeField,
+} from "@/app/components/properties";
+import {
+  useGetVariables,
+  useGetBuildings,
+  useGetSpecificProperty,
+  useUpdateProperty,
+} from "@/hooks/properties";
 
 const EditPropertyPage = () => {
   const router = useRouter();
@@ -30,6 +43,12 @@ const EditPropertyPage = () => {
 
   const [user, setUser] = useState(null);
   const userCookie = Cookies.get("user");
+
+  // React Query Hooks
+  const { data: variables = {} } = useGetVariables();
+  const { data: buildings = [] } = useGetBuildings(locationstate);
+  const { data: propertyData, isLoading: isLoadingProperty } = useGetSpecificProperty(propertyId || "");
+  const updatePropertyMutation = useUpdateProperty();
 
   // Initialize form data with all fields
   const [formdata, setFormdata] = useState({
@@ -53,7 +72,7 @@ const EditPropertyPage = () => {
     highlights: [],
     location: "",
     line: "",
-    images: [], // This will store existing image URLs
+    images: [],
     for: "Sale",
   });
 
@@ -62,92 +81,62 @@ const EditPropertyPage = () => {
   // State to track removed images (URLs)
   const [removedImages, setRemovedImages] = useState([]);
 
-  const [variables, setVariables] = useState({
-    bhklist: [],
-    propertytypelist: [],
-    furnishingstatuslist: [],
-    amenitieslist: [],
-    constructionstatuslist: [],
-    linelist: [],
-    locationlist: [],
-  });
-
   const [highlightInput, setHighlightInput] = useState("");
   const [currentpropertytype, setCurrentPropertytype] = useState(1);
   const [originalImages, setOriginalImages] = useState([]);
 
-  // Fetch property data for editing
+  // Load property data from React Query
   useEffect(() => {
-    const fetchPropertyData = async () => {
-      if (!propertyId) {
-        toast.error("No property ID provided");
-        setIsLoading(false);
-        router.push("/");
-        return;
+    if (!propertyId) {
+      toast.error("No property ID provided");
+      router.push("/");
+      return;
+    }
+
+    if (propertyData) {
+      const amenities = propertyData.amenities
+        ? Array.isArray(propertyData.amenities)
+          ? propertyData.amenities
+          : propertyData.amenities.split(",")
+        : [];
+      const highlights = propertyData.highlights
+        ? Array.isArray(propertyData.highlights)
+          ? propertyData.highlights
+          : propertyData.highlights.split(",")
+        : [];
+      setOriginalImages(propertyData.images || []);
+
+      const updatedFormData = {
+        Societyname: propertyData.Societyname || "",
+        floor: propertyData.floor || "",
+        bedrooms: propertyData.bedrooms || "",
+        area: propertyData.area || "",
+        areaunits: propertyData.areaunits || "",
+        buildingfloors: propertyData.buildingfloors || "",
+        address: propertyData.address || "",
+        amenities: amenities,
+        facing: propertyData.facing || "",
+        propertyage: propertyData.propertyage || "",
+        balconies: propertyData.balconies || "",
+        bathrooms: propertyData.bathrooms || "",
+        price: propertyData.price || "",
+        postedby: propertyData.postedby || user || "",
+        type: propertyData.type || "",
+        constructionstatus: propertyData.constructionstatus || "",
+        furnishing: propertyData.furnishing || "",
+        highlights: highlights,
+        location: propertyData.location || "",
+        line: propertyData.line || "",
+        images: propertyData.images || [],
+        for: propertyData.for || "Sale",
+      };
+      setFormdata(updatedFormData);
+
+      if (propertyData.location) {
+        dispatch(setlocation(propertyData.location));
       }
-      try {
-        setIsLoading(true);
-        const response = await axios.get(`${uri}getspecificproperty`, {
-          params: { property_id: propertyId },
-        });
-        if (response.status === 200) {
-          const propertyData = response.data.payload[0]; // Access first item in payload array
-          console.log("Property Data:", propertyData); // Debug log
-          const amenities = propertyData.amenities
-            ? Array.isArray(propertyData.amenities)
-              ? propertyData.amenities
-              : propertyData.amenities.split(",")
-            : [];
-          const highlights = propertyData.highlights
-            ? Array.isArray(propertyData.highlights)
-              ? propertyData.highlights
-              : propertyData.highlights.split(",")
-            : [];
-          setOriginalImages(propertyData.images || []);
-
-          // Set all form fields
-          const updatedFormData = {
-            Societyname: propertyData.Societyname || "",
-            floor: propertyData.floor || "",
-            bedrooms: propertyData.bedrooms || "",
-            area: propertyData.area || "",
-            areaunits: propertyData.areaunits || "",
-            buildingfloors: propertyData.buildingfloors || "",
-            address: propertyData.address || "",
-            amenities: amenities,
-            facing: propertyData.facing || "",
-            propertyage: propertyData.propertyage || "",
-            balconies: propertyData.balconies || "",
-            bathrooms: propertyData.bathrooms || "",
-            price: propertyData.price || "",
-            postedby: propertyData.postedby || user || "",
-            type: propertyData.type || "",
-            constructionstatus: propertyData.constructionstatus || "",
-            furnishing: propertyData.furnishing || "",
-            highlights: highlights,
-            location: propertyData.location || "",
-            line: propertyData.line || "",
-            images: propertyData.images || [],
-            for: propertyData.for || "Sale",
-          };
-          setFormdata(updatedFormData);
-          console.log("Updated Form Data:", updatedFormData); // Debug log
-
-          if (propertyData.location) {
-            dispatch(setlocation(propertyData.location));
-          }
-        }
-      } catch (error) {
-        toast.error("Failed to load property data");
-        console.error("Error fetching property:", error);
-        router.push("/");
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    fetchPropertyData();
-  }, [propertyId, user, dispatch, router]);
+    }
+  }, [propertyData, user, dispatch, router, propertyId]);
 
   // Get user from cookie
   useEffect(() => {
@@ -162,22 +151,12 @@ const EditPropertyPage = () => {
     }
   }, [userCookie]);
 
-  // Load variables
-  const handleload = async () => {
-    try {
-      const response = await axios.get(`${uri}getvariables`);
-      if (response.status === 200) {
-        setVariables(response.data.payload);
-      }
-    } catch (error) {
-      toast.error("Failed to load variables");
-      console.error(error);
-    }
-  };
-
+  // Update suggestions when buildings data changes
   useEffect(() => {
-    handleload();
-  }, []);
+    if (buildings && buildings.length > 0) {
+      setSuggestions(buildings);
+    }
+  }, [buildings]);
 
   // Handle form field changes
   const handleChange = (e) => {
@@ -234,28 +213,6 @@ const EditPropertyPage = () => {
   // Add a state for preview URLs
   const [previewUrls, setPreviewUrls] = useState([]);
 
-  // Handle building suggestions
-  const getbuildings = async () => {
-    try {
-      if (locationstate !== "") {
-        const response = await axios.get(`${uri}getbuildings`, {
-          params: { location: locationstate },
-        });
-        if (response.status !== 200) {
-          toast.error("Error loading buildings");
-          return;
-        }
-        setSuggestions(response.data.payload);
-      }
-    } catch (error) {
-      toast.error("Failed to load buildings");
-      console.error(error);
-    }
-  };
-
-  useEffect(() => {
-    getbuildings();
-  }, [locationstate]);
 
   // Handle suggestion selection
   const handleSuggestionClick = (suggestion) => {
@@ -300,16 +257,11 @@ const EditPropertyPage = () => {
       
       formData.append("property_id", propertyId);
 
-      const response = await axios.post(`${uri}updateproperty`, formData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      });
-
-      toast.success(response.data.message);
+      await updatePropertyMutation.mutateAsync(formData);
+      toast.success("Property updated successfully!");
       router.push(`/singleproperty?id=${propertyId}`);
-    } catch (error) {
-      toast.error(error.response?.data?.message || "Failed to update property. Please try again.");
+    } catch (error: any) {
+      toast.error(error?.response?.data?.message || "Failed to update property. Please try again.");
       console.error(error);
     } finally {
       setIsLoading(false);
@@ -330,7 +282,7 @@ const EditPropertyPage = () => {
   };
 
   // Render loading state or form
-  if (isLoading) {
+  if (isLoadingProperty || isLoading) {
     return (
       <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
         <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-orange-500"></div>

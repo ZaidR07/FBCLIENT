@@ -3,7 +3,6 @@
 import axios from "axios";
 import { motion, AnimatePresence } from "framer-motion";
 import { useState, useEffect } from "react";
-import { uri } from "@/constant";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Cookies from "js-cookie";
@@ -73,7 +72,7 @@ const Register = ({ registeropen, setRegisterOpen }) => {
 
     try {
       const response = await axios.post(
-        `${uri}Registeruser`,
+        `${process.env.NEXT_PUBLIC_APP_URI}/Registeruser`,
         { payload: formdata },
         { withCredentials: true }
       );
@@ -98,7 +97,7 @@ const Register = ({ registeropen, setRegisterOpen }) => {
 
     try {
       const response = await axios.post(
-        `${uri}login`,
+        `${process.env.NEXT_PUBLIC_APP_URI}/login`,
         { payload: loginformdata },
         { withCredentials: true }
       );
@@ -125,7 +124,7 @@ const Register = ({ registeropen, setRegisterOpen }) => {
     setIsSendingOtp(true);
 
     try {
-      const sendOtpResponse = await axios.post(`${uri}sendloginotp`, {
+      const sendOtpResponse = await axios.post(`${process.env.NEXT_PUBLIC_APP_URI}/sendloginotp`, {
         email: loginformdata.email,
         usertype: loginformdata.usertype,
       });

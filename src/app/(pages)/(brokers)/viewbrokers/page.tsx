@@ -2,7 +2,6 @@
 import { useState, useEffect } from "react";
 import AdminHeader from "@/app/components/AdminHeader";
 import DataTable from "react-data-table-component";
-import { uri } from "@/constant";
 import axios from "axios";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -52,7 +51,7 @@ const Page = () => {
   const [validityOption, setValidityOption] = useState<string>("2m"); // 2m, 6m, 1y
 
   const fetchbrokerslist = async () => {
-    const response = await axios.get(`${uri}getbrokers`);
+    const response = await axios.get(`${process.env.NEXT_PUBLIC_APP_URI}/getbrokers`);
     setDisplayBrokerslist(response.data.payload);
     setBrokerslist(response.data.payload);
   };
@@ -109,7 +108,7 @@ const Page = () => {
       else if (validityOption === "6m") validityDate.setMonth(validityDate.getMonth() + 6);
       else if (validityOption === "1y") validityDate.setFullYear(validityDate.getFullYear() + 1);
 
-      const response = await axios.post(`${uri}updatebrokercredits`, {
+      const response = await axios.post(`${process.env.NEXT_PUBLIC_APP_URI}/updatebrokercredits`, {
         broker_id: selectedBrokerId,
         credits: creditsNum,
         validity: validityDate.toISOString(),

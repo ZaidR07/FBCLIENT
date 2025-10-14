@@ -1,6 +1,5 @@
 "use client";
 
-import { uri } from "@/constant";
 import { useEffect, useState, useRef } from "react";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -9,10 +8,18 @@ import Cookies from "js-cookie";
 
 import Select from "react-select";
 import AddPropertiesPhotos from "@/app/components/AddPropertiesPhotos";
-import { useSelector, useDispatch } from "react-redux"; // ✅ correct
+import { useSelector, useDispatch } from "react-redux";
 import { motion } from "framer-motion";
 import { setlocation } from "@/slices/locationSlice";
 import LocationBox from "@/app/components/LocationBox";
+import {
+  LocationField,
+  HighlightsField,
+  AmenitiesField,
+  PropertyBasicDetailsSection,
+  PropertyBuildingSection,
+  PropertyPricingSection,
+} from "@/app/components/properties";
 
 const Page = () => {
   const [forValue, setForValue] = useState("");
@@ -92,7 +99,7 @@ const Page = () => {
   });
 
   const handleload = async () => {
-    const response = await axios.get(`${uri}getvariables`);
+    const response = await axios.get(`${process.env.NEXT_PUBLIC_APP_URI}/getvariables`);
     if (response.status == 200) {
       setVariables(response.data.payload);
     }
@@ -136,7 +143,7 @@ const Page = () => {
   const getbuildings = async () => {
     try {
       if (locationstate !== "") {
-        const response = await axios.get(`${uri}getbuildings`, {
+        const response = await axios.get(`${process.env.NEXT_PUBLIC_APP_URI}/getbuildings`, {
           params: { location: locationstate },
         });
         if (response.status !== 200) {
@@ -237,7 +244,7 @@ const Page = () => {
 
       formData.append("for", forValue);
 
-      const response = await axios.post(`${uri}addproperties`, formData, {
+      const response = await axios.post(`${process.env.NEXT_PUBLIC_APP_URI}/addproperties`, formData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },

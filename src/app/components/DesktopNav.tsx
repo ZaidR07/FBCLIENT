@@ -4,7 +4,6 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 
 import axios from "axios";
-import { uri } from "@/constant";
 import Cookies from "js-cookie";
 
 import { ChevronDown } from "lucide-react";
@@ -93,11 +92,11 @@ const DesktopNav = () => {
       setLoading(true);
       setError(null);
 
-      const response = await axios.get(`${uri}getspecificvariable`, {
+      const response = await axios.get(`${process.env.NEXT_PUBLIC_APP_URI}/getspecificvariable`, {
         params: { category: "propertytypelist" },
       });
 
-      const response2 = await axios.get(`${uri}getspecificvariable`, {
+      const response2 = await axios.get(`${process.env.NEXT_PUBLIC_APP_URI}/getspecificvariable`, {
         params: { category: "locationlist" },
       });
 

@@ -2,10 +2,15 @@
 import { useState, useEffect } from "react";
 import AdminHeader from "@/app/components/AdminHeader";
 import DataTable from "react-data-table-component";
-import { uri } from "@/constant";
-import axios from "axios";
-import {  toast } from "react-toastify";
+import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { CreditModal, BrokerUpdateDrawer } from "@/app/components/brokers";
+import {
+  useGetBrokers,
+  useUpdateBroker,
+  useDeleteBroker,
+  useUpdateBrokerCredits,
+} from "@/hooks/brokers";
 
 const TrashIcon = () => (
   <svg
@@ -31,7 +36,6 @@ const PenIcon = () => (
 
 const Page = () => {
   const [isClient, setIsClient] = useState(false);
-  const [brokerslist, setBrokerslist] = useState([]);
   const [displaybrokerlist, setDisplayBrokerslist] = useState([]);
   const [updatecliked, setUpdateClicked] = useState(false);
   const [sidebaropen, setSidebarOpen] = useState(false);
@@ -51,6 +55,12 @@ const Page = () => {
     mobile2: "",
     address: "",
   });
+
+  // React Query Hooks
+  const { data: brokerslist = [], isLoading, refetch } = useGetBrokers();
+  const updateBrokerMutation = useUpdateBroker();
+  const deleteBrokerMutation = useDeleteBroker();
+  const updateCreditsMutation = useUpdateBrokerCredits();
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -91,117 +101,57 @@ const Page = () => {
       else if (validityOption === "6m") validityDate.setMonth(validityDate.getMonth() + 6);
       else if (validityOption === "1y") validityDate.setFullYear(validityDate.getFullYear() + 1);
 
-      const response = await axios.post(`${uri}updatebrokercredits`, {
+      await updateCreditsMutation.mutateAsync({
         broker_id: selectedBrokerId,
         credits: creditsNum,
         validity: validityDate.toISOString(),
       });
 
-      if (response.status === 200) {
-        toast.success("Credits updated successfully");
-        // Optionally update UI locally with validity date 2 months from now
-        setDisplayBrokerslist((prev: any) =>
-          prev.map((b: any) =>
-            b.broker_id === selectedBrokerId
-              ? { ...b, credits: { credits: creditsNum, validity: validityDate } }
-              : b
-          )
-        );
-        setBrokerslist((prev: any) =>
-          prev.map((b: any) =>
-            b.broker_id === selectedBrokerId
-              ? { ...b, credits: { credits: creditsNum, validity: validityDate } }
-              : b
-          )
-        );
-        closeCreditModal();
-      } else {
-        toast.error(response.data?.message || "Failed to update credits");
-      }
+      toast.success("Credits updated successfully");
+      closeCreditModal();
     } catch (error: any) {
       toast.error(error?.response?.data?.message || "Something Went Wrong");
     }
   };
 
-  const removeElement = (id) => {
-    const filteredlist = displaybrokerlist.filter(
-      (item) => item.broker_id != id
-    );
-
-    setDisplayBrokerslist(filteredlist);
-    setBrokerslist(filteredlist);
-  };
-
   const HandleDelete = async (id) => {
     try {
-      const response = await axios.post(`${uri}deletebroker`, {
-        id: id,
-      });
-      if (response.status != 200) {
-        toast.error(response.data.message);
-        return;
-      }
-      if (response.status == 200) {
-        toast.success(response.data.message);
-        removeElement(response.data.broker_id);
-      }
-    } catch (error) {
-      toast.error("Something Went Wrong");
+      await deleteBrokerMutation.mutateAsync(id);
+      toast.success("Broker deleted successfully");
+    } catch (error: any) {
+      toast.error(error?.response?.data?.message || "Something Went Wrong");
     }
-  };
-
-  const updateElement = (id) => {
-    const filtered = displaybrokerlist.filter((item) => item.broker_id != id);
-
-    setDisplayBrokerslist([...filtered, formdata]);
-    setBrokerslist([...filtered, formdata]);
   };
 
   const UpdateRequest = async (e) => {
     e.preventDefault();
 
     try {
-      const response = await axios.post(`${uri}updatebroker`, {
-        formdata: formdata,
+      await updateBrokerMutation.mutateAsync({ formdata });
+      toast.success("Broker updated successfully");
+      setFormdata({
+        broker_id: "",
+        brokername: "",
+        companyname: "",
+        emailid: "",
+        mobile1: "",
+        mobile2: "",
+        address: "",
       });
-
-      if (response.status != 200) {
-        toast.error(response.data.message);
-        return;
-      }
-      if (response.status == 200) {
-        toast.success(response.data.message);
-        updateElement(response.data.broker.broker_id);
-        setFormdata({
-          broker_id: "",
-          brokername: "",
-          companyname: "",
-          emailid: "",
-          mobile1: "",
-          mobile2: "",
-          address: "",
-        });
-        setUpdateClicked(false);
-      }
-    } catch (error) {
-      toast.error("Something Went Wrong");
+      setUpdateClicked(false);
+    } catch (error: any) {
+      toast.error(error?.response?.data?.message || "Something Went Wrong");
     }
   };
 
-  // Fetch Brokers List
-  const fetchbrokerslist = async () => {
-    try {
-      const response = await axios.get(`${uri}getbrokers`);
-      setBrokerslist(response.data.payload);
-      setDisplayBrokerslist(response.data.payload);
-    } catch (error) {
-      console.error("Error fetching brokers list:", error);
-    }
-  };
 
   // Search Filter
   const filtersearch = (data) => {
     const searchTerm = data.toLowerCase();
+    if (!searchTerm) {
+      setDisplayBrokerslist(brokerslist);
+      return;
+    }
     setDisplayBrokerslist(
       brokerslist.filter((item) =>
         Object.values(item).some((value) =>
@@ -210,6 +160,13 @@ const Page = () => {
       )
     );
   };
+
+  // Update display list when brokerslist changes
+  useEffect(() => {
+    if (brokerslist.length > 0) {
+      setDisplayBrokerslist(brokerslist);
+    }
+  }, [brokerslist]);
 
   const CloseIcon = () => {
     return (
@@ -228,7 +185,6 @@ const Page = () => {
 
   useEffect(() => {
     setIsClient(true);
-    fetchbrokerslist();
   }, []);
 
   // Table Columns Definition
@@ -363,158 +319,27 @@ const Page = () => {
       </div>
 
       
-      {/* // Update Drawer */}
-      {updatecliked && (
-        <div className="fixed top-[10vh] right-0 h-[90vh] bg-[#FF5D00] w-[70vw] shadow-2xl px-[10%] pb-[4vh] pt-2 z-10 font-semibold">
-          <CloseIcon />
-
-          <form
-            className="space-y-6 mt-10 text-[#FFF] "
-            onSubmit={UpdateRequest}
-          >
-            <div>
-              <h1 className="text-center text-2xl text-[#FFF] font-bold mb-4 ">
-                Update Broker
-              </h1>
-              <label className="w-full" htmlFor="">
-                Broker Name
-              </label>
-              <input
-                name="brokername"
-                value={formdata.brokername}
-                onChange={handleChange}
-                className="bg-transparent border-b-2 border-[#FFF] text-white font-light w-full"
-              />
-            </div>
-            <div>
-              <label className="" htmlFor="">
-                Company Name
-              </label>
-              <input
-                name="companyname"
-                value={formdata.companyname}
-                onChange={handleChange}
-                className="bg-transparent border-b-2 border-[#FFF] text-white font-light w-full"
-              />
-            </div>
-            <div>
-              <label className="" htmlFor="">
-                Email ID
-              </label>
-              <input
-                name="emailid"
-                value={formdata.emailid}
-                onChange={handleChange}
-                className="bg-transparent border-b-2 border-[#FFF] text-white font-light w-full"
-              />
-            </div>
-            <div>
-              <label className="" htmlFor="">
-                Primary Mobile
-              </label>
-              <input
-                name="mobile1"
-                value={formdata.mobile1}
-                onChange={handleChange}
-                className="bg-transparent border-b-2 border-[#FFF] text-white font-light w-full"
-              />
-            </div>
-            <div>
-              <label className="" htmlFor="">
-                Secondary Mobile
-              </label>
-              <input
-                name="mobile2"
-                value={formdata.mobile2}
-                onChange={handleChange}
-                className="bg-transparent border-b-2 border-[#FFF] text-white font-light"
-              />
-            </div>
-            <div>
-              <label className="" htmlFor="">
-                Secondary Mobile
-              </label>
-              <input
-                name="address"
-                value={formdata.address}
-                onChange={handleChange}
-                className="bg-transparent border-b-2 border-[#FFF] text-white font-light"
-              />{" "}
-            </div>
-
-            <input
-              type="submit"
-              value="Update"
-              className="px-4 py-2 border-2 border-white rounded-xl"
-            />
-          </form>
-        </div>
-      )}
+      {/* Update Drawer */}
+      <BrokerUpdateDrawer
+        isOpen={updatecliked}
+        formdata={formdata}
+        onClose={() => setUpdateClicked(false)}
+        onChange={handleChange}
+        onSubmit={UpdateRequest}
+      />
 
       {/* Credit Modal */}
-      {showCreditModal && (
-        <div className="fixed inset-0 z-20 flex items-center justify-center bg-black bg-opacity-50">
-          <div className="bg-white rounded-lg shadow-xl w-[90%] max-w-md p-6 relative">
-            <button
-              className="absolute top-2 right-3 text-gray-500 hover:text-gray-700"
-              onClick={closeCreditModal}
-            >
-              ✕
-            </button>
-            <h2 className="text-xl font-semibold mb-4">Give Credits</h2>
-            <div className="space-y-4">
-              <div>
-                <label className="block text-sm font-medium mb-1">Broker ID</label>
-                <input
-                  value={selectedBrokerId}
-                  disabled
-                  className="w-full border rounded px-3 py-2 bg-gray-100"
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium mb-1">Number of Credits</label>
-                <input
-                  type="number"
-                  min={1}
-                  value={creditCount}
-                  onChange={(e) => setCreditCount(e.target.value)}
-                  className="w-full border rounded px-3 py-2"
-                  placeholder="e.g. 199"
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium mb-1">Validity</label>
-                <select
-                  className="w-full border rounded px-3 py-2"
-                  value={validityOption}
-                  onChange={(e) => setValidityOption(e.target.value)}
-                >
-                  <option value="2m">2 Months</option>
-                  <option value="6m">6 Months</option>
-                  <option value="1y">1 Year</option>
-                </select>
-                <p className="text-xs text-gray-500 mt-1">
-                  Expires on: {(() => { const d = new Date(); if (validityOption === "2m") d.setMonth(d.getMonth() + 2); else if (validityOption === "6m") d.setMonth(d.getMonth() + 6); else d.setFullYear(d.getFullYear() + 1); return d.toLocaleDateString(); })()}
-                </p>
-              </div>
-              <div className="flex justify-end gap-2 pt-2">
-                <button
-                  className="px-4 py-2 rounded border"
-                  onClick={closeCreditModal}
-                >
-                  Cancel
-                </button>
-                <button
-                  className="px-4 py-2 rounded bg-[#FF5D00] text-white"
-                  onClick={handleGiveCredit}
-                >
-                  Save
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
+      <CreditModal
+        isOpen={showCreditModal}
+        brokerId={selectedBrokerId}
+        creditCount={creditCount}
+        validityOption={validityOption}
+        onClose={closeCreditModal}
+        onCreditCountChange={setCreditCount}
+        onValidityChange={setValidityOption}
+        onSave={handleGiveCredit}
+        isSending={false}
+      />
     </div>
   );
 };

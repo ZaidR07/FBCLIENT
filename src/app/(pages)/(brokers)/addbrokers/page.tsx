@@ -1,6 +1,5 @@
 "use client";
 import AdminHeader from "@/app/components/AdminHeader";
-import { uri } from "@/constant";
 import { useState } from "react";
 import {  toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -45,7 +44,7 @@ const Page = () => {
     });
 
     try {
-      const response = await axios.post(`${uri}addbroker`, formDataToSend, {
+      const response = await axios.post(`${process.env.NEXT_PUBLIC_APP_URI}addbroker`, formDataToSend, {
         headers: {
           "Content-Type": "multipart/form-data",
         },

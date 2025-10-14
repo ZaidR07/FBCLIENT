@@ -2,7 +2,6 @@
 import { useState, useEffect } from "react";
 import AdminHeader from "@/app/components/AdminHeader";
 import DataTable from "react-data-table-component";
-import { uri } from "@/constant";
 import axios from "axios";
 
 const columns = [
@@ -37,7 +36,7 @@ const Page = () => {
   const [sidebaropen, setSidebarOpen] = useState(false);
 
   const fetchbrokerslist = async () => {
-    const response = await axios.get(`${uri}getvendors`);
+    const response = await axios.get(`${process.env.NEXT_PUBLIC_APP_URI}/getvendors`);
     setDisplayVendorslist(response.data.payload);
     setVendorslist(response.data.payload);
   };

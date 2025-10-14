@@ -1,0 +1,83 @@
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import axios from 'axios';
+
+const API_URL = process.env.NEXT_PUBLIC_APP_URI;
+
+// Types
+export interface Vendor {
+  vendor_id: string;
+  vendorname: string;
+  companyname: string;
+  emailid: string;
+  mobile1: string;
+  mobile2: string;
+  address: string;
+  servicetype: string;
+  location?: string;
+  pincode?: string;
+}
+
+// API Functions
+const fetchVendors = async (): Promise<Vendor[]> => {
+  const { data } = await axios.get(`${API_URL}/getvendors`);
+  return data.payload;
+};
+
+const addVendor = async (vendorData: FormData): Promise<any> => {
+  const { data } = await axios.post(`${API_URL}/addvendor`, vendorData, {
+    headers: { 'Content-Type': 'multipart/form-data' },
+  });
+  return data;
+};
+
+const updateVendor = async (vendorData: any): Promise<any> => {
+  const { data } = await axios.post(`${API_URL}/updatevendor`, vendorData);
+  return data;
+};
+
+const deleteVendor = async (vendorId: string): Promise<any> => {
+  const { data } = await axios.post(`${API_URL}/deletevendor`, { id: vendorId });
+  return data;
+};
+
+// Hooks
+export const useGetVendors = () => {
+  return useQuery({
+    queryKey: ['vendors'],
+    queryFn: fetchVendors,
+    staleTime: 5 * 60 * 1000,
+  });
+};
+
+export const useAddVendor = () => {
+  const queryClient = useQueryClient();
+  
+  return useMutation({
+    mutationFn: addVendor,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['vendors'] });
+    },
+  });
+};
+
+export const useUpdateVendor = () => {
+  const queryClient = useQueryClient();
+  
+  return useMutation({
+    mutationFn: updateVendor,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['vendors'] });
+    },
+  });
+};
+
+export const useDeleteVendor = () => {
+  const queryClient = useQueryClient();
+  
+  return useMutation({
+    mutationFn: deleteVendor,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['vendors'] });
+    },
+  });
+};

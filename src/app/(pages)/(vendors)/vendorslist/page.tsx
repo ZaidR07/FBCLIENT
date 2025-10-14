@@ -2,7 +2,6 @@
 
 import Header from "@/app/components/Header";
 import { useState, useCallback, useEffect } from "react";
-import { uri } from "@/constant";
 import axios from "axios";
 import { useRouter } from "next/navigation"; // Removed useSearchParams
 
@@ -19,7 +18,7 @@ const Page = () => {
       const id = params.get("id");
 
       setLoading(true);
-      const response = await axios.get(`${uri}getvendors`, {
+      const response = await axios.get(`${process.env.NEXT_PUBLIC_APP_URI}/getvendors`, {
         params: { categoryId: id },
       });
       const data = response.data.payload;
