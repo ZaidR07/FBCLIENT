@@ -61,7 +61,7 @@ const Footer = () => {
           <h1 className="text-lg lg:text-2xl text-[#fff] mb-2">Quick Links</h1>
           <ul className="hover:cursor-pointer text-sm lg:text-lg lg:mt-1 space-y-2 leading-6">
             {/* Existing + New */}
-            <li onClick={() => router.push("/")}>FB-Rentals</li>
+            <li onClick={() => router.push("/")}>Listy4u</li>
             <li onClick={() => router.push("/#mobile-app")}>Mobile App</li>
             <li onClick={() => router.push("/plans")}>Our Services</li>
             <li onClick={() => router.push("/postproperty")}>Post Your Property</li>

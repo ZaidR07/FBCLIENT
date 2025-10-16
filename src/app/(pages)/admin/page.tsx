@@ -168,7 +168,7 @@ const Page = () => {
                     name="email"
                     value={form.email}
                     onChange={handleChange}
-                    placeholder="admin@fb-rentals.com"
+                    placeholder="admin@listy4u.com"
                     className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#FF5D00] focus:border-[#FF5D00] transition-colors duration-200 bg-gray-50 focus:bg-white"
                     required
                   />
@@ -283,7 +283,7 @@ const Page = () => {
                   type="email"
                   value={resetEmail}
                   onChange={(e) => { setResetEmail(e.target.value); setError(""); setInfo(""); }}
-                  placeholder="admin@fb-rentals.com"
+                  placeholder="admin@listy4u.com"
                   className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#FF5D00] focus:border-[#FF5D00] transition-colors duration-200 bg-gray-50 focus:bg-white"
                 />
               </div>
