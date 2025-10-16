@@ -1,6 +1,6 @@
 "use client";
 
-import axios from "axios";
+import axiosInstance from "@/lib/axios";
 import { motion, AnimatePresence } from "framer-motion";
 import { useState, useEffect } from "react";
 import { toast } from "react-toastify";
@@ -71,10 +71,9 @@ const Register = ({ registeropen, setRegisterOpen }) => {
     setIsSubmitting(true);
 
     try {
-      const response = await axios.post(
-        `${process.env.NEXT_PUBLIC_APP_URI}/Registeruser`,
-        { payload: formdata },
-        { withCredentials: true }
+      const response = await axiosInstance.post(
+        '/api/Registeruser',
+        { payload: formdata }
       );
 
       toast.success(response.data.message);
@@ -96,10 +95,9 @@ const Register = ({ registeropen, setRegisterOpen }) => {
     setIsLoggingIn(true);
 
     try {
-      const response = await axios.post(
-        `${process.env.NEXT_PUBLIC_APP_URI}/login`,
-        { payload: loginformdata },
-        { withCredentials: true }
+      const response = await axiosInstance.post(
+        '/api/login',
+        { payload: loginformdata }
       );
 
       toast.success(response.data.message);
@@ -124,7 +122,7 @@ const Register = ({ registeropen, setRegisterOpen }) => {
     setIsSendingOtp(true);
 
     try {
-      const sendOtpResponse = await axios.post(`${process.env.NEXT_PUBLIC_APP_URI}/sendloginotp`, {
+      const sendOtpResponse = await axiosInstance.post('/api/sendloginotp', {
         email: loginformdata.email,
         usertype: loginformdata.usertype,
       });

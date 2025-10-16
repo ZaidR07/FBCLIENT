@@ -1,7 +1,5 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import axios from 'axios';
-
-const API_URL = process.env.NEXT_PUBLIC_APP_URI;
+import axiosInstance from '@/lib/axios';
 
 // Types
 export interface Vendor {
@@ -19,24 +17,24 @@ export interface Vendor {
 
 // API Functions
 const fetchVendors = async (): Promise<Vendor[]> => {
-  const { data } = await axios.get(`${API_URL}/getvendors`);
+  const { data } = await axiosInstance.get('/api/getvendors');
   return data.payload;
 };
 
 const addVendor = async (vendorData: FormData): Promise<any> => {
-  const { data } = await axios.post(`${API_URL}/addvendor`, vendorData, {
+  const { data } = await axiosInstance.post('/api/addvendor', vendorData, {
     headers: { 'Content-Type': 'multipart/form-data' },
   });
   return data;
 };
 
 const updateVendor = async (vendorData: any): Promise<any> => {
-  const { data } = await axios.post(`${API_URL}/updatevendor`, vendorData);
+  const { data } = await axiosInstance.post('/api/updatevendor', vendorData);
   return data;
 };
 
 const deleteVendor = async (vendorId: string): Promise<any> => {
-  const { data } = await axios.post(`${API_URL}/deletevendor`, { id: vendorId });
+  const { data } = await axiosInstance.post('/api/deletevendor', { id: vendorId });
   return data;
 };
 

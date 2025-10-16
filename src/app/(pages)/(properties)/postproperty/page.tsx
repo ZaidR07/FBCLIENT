@@ -3,8 +3,9 @@
 import { useEffect, useState, useRef } from "react";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import axios from "axios";
+import axiosInstance from "@/lib/axios";
 import Cookies from "js-cookie";
+import { useRouter, useSearchParams } from "next/navigation";
 
 import Select from "react-select";
 import AddPropertiesPhotos from "@/app/components/AddPropertiesPhotos";
@@ -22,6 +23,10 @@ import {
 } from "@/app/components/properties";
 
 const Page = () => {
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const who = searchParams.get("who");
+  
   const [forValue, setForValue] = useState("");
   const [forbox, setForbox] = useState(true);
 
@@ -38,14 +43,41 @@ const Page = () => {
   const dispatch = useDispatch();
 
   const [user, setUser] = useState(null); // State for user
+  const [broker, setBroker] = useState(null); // State for broker
 
   const userCookie = Cookies.get("user"); // Using js-cookie
+  const brokerCookie = Cookies.get("broker"); // Broker JWT cookie
+
+  // Check broker authentication
+  useEffect(() => {
+    if (who === "broker") {
+      // Verify broker cookie exists
+      if (!brokerCookie) {
+        toast.error("Please login as dealer to post properties");
+        router.push("/");
+        return;
+      }
+      
+      // Verify broker token with backend
+      const verifyBroker = async () => {
+        try {
+          const response = await axiosInstance.get('/api/verifybrokercookie');
+          if (response.status === 200) {
+            setBroker(response.data.broker);
+          }
+        } catch (error) {
+          toast.error("Invalid broker session. Please login again.");
+          router.push("/");
+        }
+      };
+      verifyBroker();
+    }
+  }, [who, brokerCookie, router]);
 
   const getUserCookie = () => {
     if (userCookie) {
       try {
         const email = userCookie.split("^");
-
         setUser(email[0]);
       } catch {
         alert("Something Went Wrong");
@@ -83,10 +115,14 @@ const Page = () => {
   });
 
   useEffect(() => {
-    if (user) {
+    if (who === "broker" && broker) {
+      // Set postedby to broker_id for brokers
+      setFormdata((prev) => ({ ...prev, postedby: broker.broker_id }));
+    } else if (user) {
+      // Set postedby to user email for regular users
       setFormdata((prev) => ({ ...prev, postedby: user }));
     }
-  }, [user]);
+  }, [user, broker, who]);
 
   const [variables, setVariables] = useState({
     bhklist: [],
@@ -99,7 +135,7 @@ const Page = () => {
   });
 
   const handleload = async () => {
-    const response = await axios.get(`${process.env.NEXT_PUBLIC_APP_URI}/getvariables`);
+    const response = await axiosInstance.get('/api/getvariables');
     if (response.status == 200) {
       setVariables(response.data.payload);
     }
@@ -143,7 +179,7 @@ const Page = () => {
   const getbuildings = async () => {
     try {
       if (locationstate !== "") {
-        const response = await axios.get(`${process.env.NEXT_PUBLIC_APP_URI}/getbuildings`, {
+        const response = await axiosInstance.get('/api/getbuildings', {
           params: { location: locationstate },
         });
         if (response.status !== 200) {
@@ -244,7 +280,7 @@ const Page = () => {
 
       formData.append("for", forValue);
 
-      const response = await axios.post(`${process.env.NEXT_PUBLIC_APP_URI}/addproperties`, formData, {
+      const response = await axiosInstance.post('/api/addproperties', formData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },

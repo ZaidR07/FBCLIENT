@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from "react";
 import Header from "./components/Header";
 import CarouselComponent from "./components/Carouselcomponent";
-import axios from "axios";
+import axiosInstance from "@/lib/axios";
 import { toast } from "react-toastify";
 import Searchsection from "./components/SearchSection";
 import RecentlyListed from "./components/RecentlyListed";
@@ -71,7 +71,7 @@ const Page = () => {
   const getbuildings = async (location: string) => {
     try {
       if (location) {
-        const response = await axios.get(`${process.env.NEXT_PUBLIC_APP_URI}/getbuildings`, {
+        const response = await axiosInstance.get('/api/getbuildings', {
           params: { location },
         });
 
@@ -106,7 +106,7 @@ const Page = () => {
 
   const handleLoad = async () => {
     try {
-      const response = await axios.get(`${process.env.NEXT_PUBLIC_APP_URI}/getcompanyinfo`);
+      const response = await axiosInstance.get('/api/getcompanyinfo');
       if (response.status !== 200) {
         toast.error("Something Went Wrong!");
         return;

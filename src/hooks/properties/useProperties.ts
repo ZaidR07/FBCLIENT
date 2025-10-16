@@ -1,7 +1,5 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import axios from 'axios';
-
-const API_URL = process.env.NEXT_PUBLIC_APP_URI;
+import axiosInstance from '@/lib/axios';
 
 // Types
 export interface Property {
@@ -35,47 +33,47 @@ export interface Property {
 
 // API Functions
 const fetchProperties = async (): Promise<Property[]> => {
-  const { data } = await axios.get(`${API_URL}/getproperties`);
+  const { data } = await axiosInstance.get('/api/getproperties');
   return data.payload;
 };
 
 const fetchSpecificProperty = async (propertyId: string): Promise<Property> => {
-  const { data } = await axios.get(`${API_URL}/getspecificproperty`, {
+  const { data } = await axiosInstance.get('/api/getspecificproperty', {
     params: { property_id: propertyId },
   });
   return data.payload[0];
 };
 
 const fetchOwnerProperties = async (userEmail: string): Promise<Property[]> => {
-  const { data } = await axios.get(`${API_URL}/getownerproperties`, {
+  const { data } = await axiosInstance.get('/api/getownerproperties', {
     params: { user: userEmail },
   });
   return data.payload;
 };
 
 const fetchBrokerProperties = async (brokerId: string): Promise<Property[]> => {
-  const { data } = await axios.get(`${API_URL}/getbrokerproperties`, {
+  const { data } = await axiosInstance.get('/api/getbrokerproperties', {
     params: { id: brokerId },
   });
   return data.payload;
 };
 
 const addProperty = async (propertyData: FormData): Promise<any> => {
-  const { data } = await axios.post(`${API_URL}/addproperties`, propertyData, {
+  const { data } = await axiosInstance.post('/api/addproperties', propertyData, {
     headers: { 'Content-Type': 'multipart/form-data' },
   });
   return data;
 };
 
 const updateProperty = async (propertyData: FormData): Promise<any> => {
-  const { data } = await axios.post(`${API_URL}/updateproperty`, propertyData, {
+  const { data } = await axiosInstance.post('/api/updateproperty', propertyData, {
     headers: { 'Content-Type': 'multipart/form-data' },
   });
   return data;
 };
 
 const deleteProperty = async (propertyId: string): Promise<any> => {
-  const { data } = await axios.post(`${API_URL}/deleteproperty`, {
+  const { data } = await axiosInstance.post('/api/deleteproperty', {
     property_id: propertyId,
   });
   return data;

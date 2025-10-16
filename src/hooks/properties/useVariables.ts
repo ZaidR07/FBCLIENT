@@ -1,7 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
-import axios from 'axios';
-
-const API_URL = process.env.NEXT_PUBLIC_APP_URI;
+import axiosInstance from '@/lib/axios';
 
 // Types
 export interface Variables {
@@ -18,12 +16,12 @@ export interface Variables {
 
 // API Functions
 const fetchVariables = async (): Promise<Variables> => {
-  const { data } = await axios.get(`${API_URL}/getvariables`);
+  const { data } = await axiosInstance.get('/api/getvariables');
   return data.payload;
 };
 
 const fetchSpecificVariable = async (category: string): Promise<string[]> => {
-  const { data } = await axios.get(`${API_URL}/getspecificvariable`, {
+  const { data } = await axiosInstance.get('/api/getspecificvariable', {
     params: { category },
   });
   return data.payload;

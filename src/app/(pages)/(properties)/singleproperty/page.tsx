@@ -1,7 +1,7 @@
 "use client";
 import { useSearchParams, useRouter } from "next/navigation";
 import { useEffect, useState, useCallback, Suspense , useRef } from "react";
-import axios from "axios";
+import axiosInstance from "@/lib/axios";
 import { HomeIcon, RulerIcon, RupeeIcon } from "@/app/Icons";
 import { priceconverter } from "@/utils/priceconverter";
 import Cookies from "js-cookie";
@@ -163,7 +163,7 @@ const PropertyDetails = () => {
     
     try {
       setLoading(true);
-      const response = await axios.get(`${process.env.NEXT_PUBLIC_APP_URI}/getspecificproperty`, {
+      const response = await axiosInstance.get('/api/getspecificproperty', {
         params: { property_id },
       });
 
@@ -187,7 +187,7 @@ const PropertyDetails = () => {
               property_id: propertyData.property_id 
             });
             
-            const response = await axios.post(`${process.env.NEXT_PUBLIC_APP_URI}/generatelead`, {
+            const response = await axiosInstance.post('/api/generatelead', {
               broker_id: propertyData.postedby,
               email: userEmail,
               property_id: propertyData.property_id,
@@ -205,7 +205,7 @@ const PropertyDetails = () => {
           console.log("Missing required data for lead generation");
         }
 
-        const postedbyresponse = await axios.get(`${process.env.NEXT_PUBLIC_APP_URI}/getposterdata`, {
+        const postedbyresponse = await axiosInstance.get('/api/getposterdata', {
           params: { id: propertyData.postedby },
         });
 
@@ -213,8 +213,8 @@ const PropertyDetails = () => {
           setPoster(postedbyresponse.data.payload); // Store poster info
         }
 
-        const brokerpropertiesresponse = await axios.get(
-          `${process.env.NEXT_PUBLIC_APP_URI}/getbrokerproperties`,
+        const brokerpropertiesresponse = await axiosInstance.get(
+          '/api/getbrokerproperties',
           {
             params: { id: propertyData.postedby },
           }

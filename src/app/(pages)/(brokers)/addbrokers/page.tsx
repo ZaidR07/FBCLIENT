@@ -3,7 +3,7 @@ import AdminHeader from "@/app/components/AdminHeader";
 import { useState } from "react";
 import {  toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import axios from "axios";
+import axiosInstance from "@/lib/axios";
 
 const Page = () => {
   const [formdata, setFormdata] = useState({
@@ -44,7 +44,7 @@ const Page = () => {
     });
 
     try {
-      const response = await axios.post(`${process.env.NEXT_PUBLIC_APP_URI}addbroker`, formDataToSend, {
+      const response = await axiosInstance.post('/api/addbroker', formDataToSend, {
         headers: {
           "Content-Type": "multipart/form-data",
         },
@@ -57,6 +57,22 @@ const Page = () => {
       }
 
       toast.success(response.data.message || "Broker added successfully!");
+      
+      // Reset form after successful submission
+      setFormdata({
+        brokername: "",
+        companyname: "",
+        emailid: "",
+        mobile1: "",
+        mobile2: "",
+        address: "",
+        photo: null,
+      });
+      
+      // Reset file input
+      const fileInput = document.querySelector('input[type="file"]') as HTMLInputElement;
+      if (fileInput) fileInput.value = "";
+      
     } catch (error) {
       toast.error("Failed to add broker. Please try again.");
     }

@@ -2,7 +2,7 @@
 
 import Header from "@/app/components/Header";
 import React, { useState } from "react";
-import axios from "axios";
+import axiosInstance from "@/lib/axios";
 import { useCallback, useEffect } from "react";
 import { RupeeIcon, HomeIcon, RulerIcon } from "@/app/Icons";
 import Cookies from "js-cookie";
@@ -65,7 +65,7 @@ const page = () => {
   const getData = useCallback(async () => {
     try {
       if (userCookie) {
-        const propertyRes = await axios.get(`${process.env.NEXT_PUBLIC_APP_URI}/getownerproperties`, {
+        const propertyRes = await axiosInstance.get('/api/getownerproperties', {
           params: { user: userCookie },
         });
 

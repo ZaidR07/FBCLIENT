@@ -1,7 +1,5 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import axios from 'axios';
-
-const API_URL = process.env.NEXT_PUBLIC_APP_URI;
+import axiosInstance from '@/lib/axios';
 
 // Types
 export interface Broker {
@@ -34,24 +32,24 @@ export interface BrokerFormData {
 
 // API Functions
 const fetchBrokers = async (): Promise<Broker[]> => {
-  const { data } = await axios.get(`${API_URL}/getbrokers`);
+  const { data } = await axiosInstance.get('/api/getbrokers');
   return data.payload;
 };
 
 const addBroker = async (brokerData: FormData): Promise<any> => {
-  const { data } = await axios.post(`${API_URL}/addbroker`, brokerData, {
+  const { data } = await axiosInstance.post('/api/addbroker', brokerData, {
     headers: { 'Content-Type': 'multipart/form-data' },
   });
   return data;
 };
 
 const updateBroker = async (brokerData: { formdata: BrokerFormData }): Promise<any> => {
-  const { data } = await axios.post(`${API_URL}/updatebroker`, brokerData);
+  const { data } = await axiosInstance.post('/api/updatebroker', brokerData);
   return data;
 };
 
 const deleteBroker = async (brokerId: string): Promise<any> => {
-  const { data } = await axios.post(`${API_URL}/deletebroker`, { id: brokerId });
+  const { data } = await axiosInstance.post('/api/deletebroker', { id: brokerId });
   return data;
 };
 
@@ -60,7 +58,7 @@ const updateBrokerCredits = async (payload: {
   credits: number;
   validity: string;
 }): Promise<any> => {
-  const { data } = await axios.post(`${API_URL}/updatebrokercredits`, payload);
+  const { data } = await axiosInstance.post('/api/updatebrokercredits', payload);
   return data;
 };
 

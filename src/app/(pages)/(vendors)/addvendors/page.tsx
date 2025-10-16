@@ -3,7 +3,7 @@ import AdminHeader from "@/app/components/AdminHeader";
 import { useState } from "react";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import axios from "axios";
+import axiosInstance from "@/lib/axios";
 
 
 const Page = () => {
@@ -127,7 +127,7 @@ const Page = () => {
     });
 
     try {
-      const response = await axios.post(`${process.env.NEXT_PUBLIC_APP_URI}/addvendor`, formDataToSend, {
+      const response = await axiosInstance.post('/api/addvendor', formDataToSend, {
         headers: {
           "Content-Type": "multipart/form-data",
         },

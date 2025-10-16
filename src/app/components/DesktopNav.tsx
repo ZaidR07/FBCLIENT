@@ -3,12 +3,13 @@ import Image from "next/image";
 
 import { useRouter } from "next/navigation";
 
-import axios from "axios";
+import axiosInstance from "@/lib/axios";
 import Cookies from "js-cookie";
 
 import { ChevronDown } from "lucide-react";
 import { motion } from "framer-motion";
 import Sidebar from "./Sidebar";
+import DealerLogin from "./DealerLogin";
 import { useSelector, useDispatch } from "react-redux"; // ✅ correct
 import { setlocation } from "@/slices/locationSlice";
 
@@ -82,6 +83,7 @@ const DesktopNav = () => {
   const [opensidebar, setOpenSidebar] = useState();
   const [forownersopen, setForOwnersOpen] = useState(false);
   const [fordealeropen, setFordealerOpen] = useState(false);
+  const [dealerLoginOpen, setDealerLoginOpen] = useState(false);
 
   const locationstate = useSelector((state: any) => state.location.location); // ✅ useSelector
 
@@ -92,11 +94,11 @@ const DesktopNav = () => {
       setLoading(true);
       setError(null);
 
-      const response = await axios.get(`${process.env.NEXT_PUBLIC_APP_URI}/getspecificvariable`, {
+      const response = await axiosInstance.get('/api/getspecificvariable', {
         params: { category: "propertytypelist" },
       });
 
-      const response2 = await axios.get(`${process.env.NEXT_PUBLIC_APP_URI}/getspecificvariable`, {
+      const response2 = await axiosInstance.get('/api/getspecificvariable', {
         params: { category: "locationlist" },
       });
 
@@ -125,8 +127,10 @@ const DesktopNav = () => {
   const [user, setUser] = useState(null); // State for user
   const [usertype, setUserType] = useState(null);
   const [location, setLocation] = useState(null);
+  const [broker, setBroker] = useState(null); // State for broker
 
   const userCookie = Cookies.get("user"); // Using js-cookie
+  const brokerCookie = Cookies.get("broker"); // Check broker cookie
 
   const getUserCookie = () => {
     if (userCookie) {
@@ -138,12 +142,15 @@ const DesktopNav = () => {
         setUser(userCookie); // Fallback if not JSON
       }
     }
+    if (brokerCookie) {
+      setBroker(brokerCookie);
+    }
   };
 
   // Extract user from cookies
   useEffect(() => {
     getUserCookie();
-  }, [userCookie, locationstate]);
+  }, [userCookie, brokerCookie, locationstate]);
 
   return (
     <nav className="relative hidden w-full h-full lg:flex shadow-lg items-center px-[1%]">
@@ -527,17 +534,17 @@ const DesktopNav = () => {
             className="cursor-pointer flex gap-2 lg:text-sm xl:text-base 2xl:text-base"
             onMouseEnter={() => setFordealerOpen(true)}
           >
-            <span>For&nbsp;Dealers&nbsp;/&nbsp;Builders</span>
+            <span>For&nbsp;Dealers</span>
             <AngleDown width={13}/>
             {fordealeropen && (
               <div
                 onMouseLeave={() => setFordealerOpen(false)}
                 className="absolute top-[10vh] ml-8 gap-2 px-4 py-5 bg-[#fff] shadow-inner rounded-lg flex flex-col"
               >
-                {usertype == 3 || usertype == "3" ? (
+                {broker ? (
                   <a
                     className="hover:text-orange-500 hover:underline lg:text-xs  2xl:text-base"
-                    href="postproperty?who=owner"
+                    href="/postproperty?who=broker"
                     target="_blank"
                     rel="noopener noreferrer"
                   >
@@ -545,8 +552,11 @@ const DesktopNav = () => {
                   </a>
                 ) : (
                   <span
-                    className="hover:text-orange-500 hover:underline lg:text-sm  2xl:text-base"
-                    onClick={() => alert("Please  Login as Dealer / Builder")}
+                    className="hover:text-orange-500 hover:underline lg:text-sm  2xl:text-base cursor-pointer"
+                    onClick={() => {
+                      setFordealerOpen(false);
+                      setDealerLoginOpen(true);
+                    }}
                   >
                     Post Property
                   </span>
@@ -582,6 +592,7 @@ const DesktopNav = () => {
         <HamIcon opensidebar={opensidebar} setOpenSidebar={setOpenSidebar} />
       </div>
       <Sidebar opensidebar={opensidebar} setOpenSidebar={setOpenSidebar} />
+      <DealerLogin isOpen={dealerLoginOpen} onClose={() => setDealerLoginOpen(false)} />
     </nav>
   );
 };

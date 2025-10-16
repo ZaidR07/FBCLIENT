@@ -1,7 +1,5 @@
 import { useMutation } from '@tanstack/react-query';
-import axios from 'axios';
-
-const API_URL = process.env.NEXT_PUBLIC_APP_URI;
+import axiosInstance from '@/lib/axios';
 
 // Types
 export interface LoginCredentials {
@@ -25,31 +23,27 @@ export interface AdminLoginData {
 
 // API Functions
 const login = async (credentials: { payload: string }): Promise<any> => {
-  const { data } = await axios.post(`${API_URL}/login`, credentials, {
-    withCredentials: true,
-  });
+  const { data } = await axiosInstance.post('/api/login', credentials);
   return data;
 };
 
 const register = async (userData: { payload: RegisterData }): Promise<any> => {
-  const { data } = await axios.post(`${API_URL}/Registeruser`, userData, {
-    withCredentials: true,
-  });
+  const { data } = await axiosInstance.post('/api/Registeruser', userData);
   return data;
 };
 
 const adminLogin = async (credentials: { payload: string }): Promise<any> => {
-  const { data } = await axios.post(`${API_URL}/adminlogin`, credentials);
+  const { data } = await axiosInstance.post('/api/adminlogin', credentials);
   return data;
 };
 
 const sendLoginOtp = async (payload: { email: string; usertype: string }): Promise<any> => {
-  const { data } = await axios.post(`${API_URL}/sendloginotp`, payload);
+  const { data } = await axiosInstance.post('/api/sendloginotp', payload);
   return data;
 };
 
 const sendResetOtp = async (payload: { email: string }): Promise<any> => {
-  const { data } = await axios.post(`${API_URL}/admin/send-reset-otp`, payload);
+  const { data } = await axiosInstance.post('/api/admin/send-reset-otp', payload);
   return data;
 };
 
@@ -58,7 +52,7 @@ const verifyReset = async (payload: {
   otp: string;
   newPassword: string;
 }): Promise<any> => {
-  const { data } = await axios.post(`${API_URL}/admin/verify-reset`, payload);
+  const { data } = await axiosInstance.post('/api/admin/verify-reset', payload);
   return data;
 };
 

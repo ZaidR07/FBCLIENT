@@ -1,5 +1,5 @@
 import { MedalIcon } from "lucide-react";
-import axios from "axios";
+import axiosInstance from "@/lib/axios";
 import { useState, useEffect, useCallback } from "react";
 const medalColors = ["#FFD700", "#C0C0C0", "#CD7F32", "#4b4a4a", "#4b4a4a"]; // Gold, Silver, Bronze, Black for 4th & 5th
 
@@ -13,7 +13,7 @@ const FeaturedBrokers = () => {
       setLoading(true);
       setError(null);
 
-      const response = await axios.get(`${process.env.NEXT_PUBLIC_APP_URI}/getbrokers`);
+      const response = await axiosInstance.get('/api/getbrokers');
 
       if (response.data.payload.length > 0) {
         setBrokerlist(response.data.payload.slice(0, 5)); // Only top 5 brokers

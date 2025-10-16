@@ -3,7 +3,7 @@ import { encrypt } from "@/utils/security";
 import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import Image from "next/image";
-import axios from "axios";
+import axiosInstance from "@/lib/axios";
 const Page = () => {
   const [form, setForm] = useState({
     email: "",
@@ -41,7 +41,7 @@ const Page = () => {
 
     const encryptedformdata = encrypt(form);
     try {
-      const response = await axios.post(`${process.env.NEXT_PUBLIC_APP_URI}/adminlogin`, {
+      const response = await axiosInstance.post('/api/adminlogin', {
         payload: encryptedformdata
       });
 
@@ -77,7 +77,7 @@ const Page = () => {
         setError("Please enter your admin email");
         return;
       }
-      const res = await axios.post(`${process.env.NEXT_PUBLIC_APP_URI}/admin/send-reset-otp`, { email: resetEmail });
+      const res = await axiosInstance.post('/api/admin/send-reset-otp', { email: resetEmail });
       if (res.status === 200) {
         setInfo("OTP sent to your email. It is valid for 2 minutes.");
         startTimer(120);
@@ -110,7 +110,7 @@ const Page = () => {
         setError("Passwords do not match");
         return;
       }
-      const res = await axios.post(`${process.env.NEXT_PUBLIC_APP_URI}/admin/verify-reset`, {
+      const res = await axiosInstance.post('/api/admin/verify-reset', {
         email: resetEmail,
         otp,
         newPassword,

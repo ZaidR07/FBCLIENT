@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import AdminHeader from "@/app/components/AdminHeader";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import axios from "axios";
+import axiosInstance from "@/lib/axios";
 import { uri } from "@/constant";
 
 const Page = () => {
@@ -34,7 +34,7 @@ const Page = () => {
     images.forEach((image) => formData.append("images", image));
 
     try {
-      const response = await axios.post(`${uri}carouselupload`, formData, {
+      const response = await axiosInstance.post('/api/carouselupload', formData, {
         headers: { "Content-Type": "multipart/form-data" },
       });
 

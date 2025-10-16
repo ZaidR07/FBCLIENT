@@ -1,6 +1,6 @@
 "use client";
 
-import axios from "axios";
+import axiosInstance from "@/lib/axios";
 import { useEffect, useState } from "react";
 
 import "react-toastify/dist/ReactToastify.css";
@@ -55,7 +55,7 @@ const NumberBar = () => {
 
   const loaddata = async () => {
     try {
-      const response = await axios.get(`${process.env.NEXT_PUBLIC_APP_URI}/getdashboardnumbers`);
+      const response = await axiosInstance.get('/api/getdashboardnumbers');
       if (response.status === 200) {
         setData({
           properties: Math.max(response.data.data.properties, 1500),

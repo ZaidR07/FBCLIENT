@@ -2,7 +2,7 @@
 import { useState, useEffect } from "react";
 import AdminHeader from "@/app/components/AdminHeader";
 import DataTable from "react-data-table-component";
-import axios from "axios";
+import axiosInstance from "@/lib/axios";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
@@ -44,8 +44,8 @@ const Page = () => {
 
   const HandleDelete = async (id) => {
     try {
-      const response = await axios.post(`process.env.NEXT_PUBLIC_APP_URIdeleteproperties`, {
-        id: id,
+      const response = await axiosInstance.post('/api/deleteproperties', {
+        property_id: id,
       });
       if (response.status != 200) {
         toast.error(response.data.message);
@@ -63,7 +63,7 @@ const Page = () => {
   // Fetch Brokers List
   const fetchbrokerslist = async () => {
     try {
-      const response = await axios.get(`process.env.NEXT_PUBLIC_APP_URIgetproperties`);
+      const response = await axiosInstance.get('/api/getproperties');
       setBrokerslist(response.data.payload);
       setDisplayBrokerslist(response.data.payload);
     } catch (error) {

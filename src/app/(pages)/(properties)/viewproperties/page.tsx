@@ -2,7 +2,7 @@
 import { useState, useEffect } from "react";
 import AdminHeader from "@/app/components/AdminHeader";
 import DataTable from "react-data-table-component";
-import axios from "axios";
+import axiosInstance from "@/lib/axios";
 
 const columns = [
   { name: "Society Name", selector: (row) => row.Societyname, width: "150px" },
@@ -51,7 +51,7 @@ const Page = () => {
   const [sidebaropen, setSidebarOpen] = useState(false);
 
   const fetchbrokerslist = async () => {
-    const response = await axios.get(`${process.env.NEXT_PUBLIC_APP_URI}/getproperties`);
+    const response = await axiosInstance.get('/api/getproperties');
     setDisplayBrokerslist(response.data.payload);
     setBrokerslist(response.data.payload);
   };

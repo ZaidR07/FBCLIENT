@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import AdminHeader from "@/app/components/AdminHeader";
 import {  toast } from "react-toastify";
-import axios from "axios";
+import axiosInstance from "@/lib/axios";
 const Page = () => {
   const [variables, setVariables] = useState({});
   const [formdata, setFormdata] = useState({
@@ -21,7 +21,7 @@ const Page = () => {
 
   const load = async () => {
     try {
-      const response = await axios.get(`${process.env.NEXT_PUBLIC_APP_URI}/getvariables`);
+      const response = await axiosInstance.get('/api/getvariables');
       if (response.status === 200) {
         setVariables(response.data.payload || {});
       } else {
@@ -60,7 +60,7 @@ const Page = () => {
 
   const handleDeleteVariable = async (name, value) => {
     try {
-      const response = await axios.post(`${process.env.NEXT_PUBLIC_APP_URI}/deletevariable`, {
+      const response = await axiosInstance.post('/api/deletevariable', {
         category: name,
         value,
       });
@@ -81,7 +81,7 @@ const Page = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post(`${process.env.NEXT_PUBLIC_APP_URI}/addvariables`, {
+      const response = await axiosInstance.post('/api/addvariables', {
         payload: formdata,
       });
       if (response.status !== 200) {

@@ -2,7 +2,7 @@
 
 import { Suspense, useState, useEffect, useMemo, useCallback } from "react";
 import Header from "@/app/components/Header";
-import axios from "axios";
+import axiosInstance from "@/lib/axios";
 import { QueryParamsHandler } from "@/app/components/SearchParameters";
 import { useRouter } from "next/navigation";
 import { SearchIcon, AngleDownIcon, FilterIcon } from "@/app/Icons";
@@ -223,8 +223,8 @@ const Page = () => {
   const getData = useCallback(async () => {
     try {
       const [propertyRes, variableRes] = await Promise.all([
-        axios.get(`${process.env.NEXT_PUBLIC_APP_URI}/getproperties`),
-        axios.get(`${process.env.NEXT_PUBLIC_APP_URI}/getvariables`),
+        axiosInstance.get('/api/getproperties'),
+        axiosInstance.get('/api/getvariables'),
       ]);
 
       if (!propertyRes.data.payload || !variableRes.data.payload) {

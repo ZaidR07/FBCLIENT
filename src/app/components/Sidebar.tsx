@@ -1,9 +1,10 @@
 "use client";
 import { useCallback, useEffect, useState } from "react";
-import axios from "axios";
+import axiosInstance from "@/lib/axios";
 import Cookies from "js-cookie";
 import Profile from "./Profile";
 import Register from "./Register";
+import DealerLogin from "./DealerLogin";
 
 const CloseIcon = ({ setOpenSidebar , width }) => {
   return (
@@ -87,14 +88,16 @@ const Sidebar = ({ opensidebar, setOpenSidebar }) => {
   const [firstorder, setFirstOrder] = useState();
   const [secondorder, setSecondOrder] = useState();
   const [registeropen, setRegisterOpen] = useState(false);
+  const [dealerLoginOpen, setDealerLoginOpen] = useState(false);
+  const [broker, setBroker] = useState(null);
 
   const loaddata = useCallback(async () => {
     try {
-      const response = await axios.get(`${process.env.NEXT_PUBLIC_APP_URI}/getspecificvariable`, {
+      const response = await axiosInstance.get('/api/getspecificvariable', {
         params: { category: "propertytypelist" },
       });
 
-      const response2 = await axios.get(`${process.env.NEXT_PUBLIC_APP_URI}/getspecificvariable`, {
+      const response2 = await axiosInstance.get('/api/getspecificvariable', {
         params: { category: "locationlist" },
       });
 
@@ -121,6 +124,7 @@ const Sidebar = ({ opensidebar, setOpenSidebar }) => {
   const [user, setUser] = useState(null); // State for user
 
   const userCookie = Cookies.get("user"); // Using js-cookie
+  const brokerCookie = Cookies.get("broker"); // Check broker cookie
 
   const getUserCookie = () => {
     if (userCookie) {
@@ -130,12 +134,15 @@ const Sidebar = ({ opensidebar, setOpenSidebar }) => {
         setUser(userCookie); // Fallback if not JSON
       }
     }
+    if (brokerCookie) {
+      setBroker(brokerCookie);
+    }
   };
 
   // Extract user from cookies
   useEffect(() => {
     getUserCookie();
-  }, [userCookie]);
+  }, [userCookie, brokerCookie]);
 
   const handleFirstOrderClick = (order) => {
     // If clicking the same item that's already open, close it
@@ -229,12 +236,13 @@ const Sidebar = ({ opensidebar, setOpenSidebar }) => {
       order: 3,
     },
     {
-      nav: "For Builders / Dealers",
+      nav: "For Dealers",
       subnav: [
         {
           label: "Post Properties",
           category: 1,
-          uri: "postproperties?who=buildbroker",
+          requiresBrokerLogin: true,
+          uri: "/postproperty?who=broker",
         },
         {
           label: "Subscription Plans",
@@ -302,6 +310,17 @@ const Sidebar = ({ opensidebar, setOpenSidebar }) => {
                       )}
                       {hasSupersubnav ? (
                         subnav.label
+                      ) : subnav.requiresBrokerLogin && !broker ? (
+                        <span
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setOpenSidebar(false);
+                            setDealerLoginOpen(true);
+                          }}
+                          className="block w-full text-sm xl:text-base cursor-pointer"
+                        >
+                          {subnav.label}
+                        </span>
                       ) : (
                         <a
                           href={`${subnav.uri}`}
@@ -378,6 +397,7 @@ const Sidebar = ({ opensidebar, setOpenSidebar }) => {
           </div>
         </div>
       </div>
+      <DealerLogin isOpen={dealerLoginOpen} onClose={() => setDealerLoginOpen(false)} />
     </>
   );
 };

@@ -1,4 +1,3 @@
-export { AppliedFilters } from './AppliedFilters';
 export { PropertyDropdown } from './PropertyDropdown';
 export { PriceDropdown } from './PriceDropdown';
 export { PropertyCard } from './PropertyCard';

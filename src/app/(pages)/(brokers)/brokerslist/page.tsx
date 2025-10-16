@@ -2,7 +2,7 @@
 
 import Header from "@/app/components/Header";
 import { useState, useCallback, useEffect } from "react";
-import axios from "axios";
+import axiosInstance from "@/lib/axios";
 import { useRouter } from "next/navigation";
 
 const Page = () => {
@@ -24,7 +24,7 @@ const Page = () => {
   const loaddata = useCallback(async () => {
     try {
       setLoading(true);
-      const response = await axios.get(`${process.env.NEXT_PUBLIC_APP_URI}/getbrokers`);
+      const response = await axiosInstance.get('/api/getbrokers');
       if (response.data.payload.length > 0) {
         setBrokerlist(response.data.payload);
         setFilteredBrokers(response.data.payload);
