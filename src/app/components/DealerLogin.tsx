@@ -47,9 +47,10 @@ const DealerLogin = ({ isOpen, onClose }: DealerLoginProps) => {
         onClose();
         
         // Redirect to post property page with who=broker
+        // Add a small delay to ensure cookie is properly set
         setTimeout(() => {
           router.push("/postproperty?who=broker");
-        }, 500);
+        }, 1000);
       }
     } catch (error: any) {
       if (error.response?.data?.message) {

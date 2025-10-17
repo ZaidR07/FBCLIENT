@@ -186,7 +186,7 @@ const PropertiesNav = () => {
     <nav className="w-full shadow-xl bg-[#fff] items-center fixed top-0 z-[999] flex px-[2.5%]">
       <Register registeropen={registeropen} setRegisterOpen={setRegisterOpen} />
       <Image
-        src="/Fb_logo.jpg"
+        src="/logo.jpg"
         width={90}
         height={90}
         alt="logo"

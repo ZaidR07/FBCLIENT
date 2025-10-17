@@ -455,7 +455,7 @@ const DesktopNav = () => {
       </ul>
       <div className="flex lg:w-[6%] w-[8%] mx-[2%]  justify-center ">
         <Image
-          src="/Fb_logo.jpg"
+          src="/logo.jpg"
           width={80}
           height={80}
           alt="logo"

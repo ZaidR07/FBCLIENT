@@ -22,7 +22,7 @@ const nav = [
     name: "Properties",
     width: 40,
     route: "viewproperties",
-    subnav: ["View Properties", "Add Properties", "Remove Properties"],
+    subnav: ["View Properties", "Remove Properties"],
   },
   {
     icon: "user.svg",

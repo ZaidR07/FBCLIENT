@@ -46,33 +46,41 @@ const Page = () => {
   const [broker, setBroker] = useState(null); // State for broker
 
   const userCookie = Cookies.get("user"); // Using js-cookie
-  const brokerCookie = Cookies.get("broker"); // Broker JWT cookie
+  // NOTE: Broker cookie is HttpOnly; it cannot be read from client-side JS. Do not attempt Cookies.get('broker').
 
   // Check broker authentication
   useEffect(() => {
     if (who === "broker") {
-      // Verify broker cookie exists
-      if (!brokerCookie) {
-        toast.error("Please login as dealer to post properties");
-        router.push("/");
-        return;
-      }
-      
-      // Verify broker token with backend
-      const verifyBroker = async () => {
+      console.log("Checking broker authentication");
+      // Directly verify with backend; HttpOnly cookie will be sent automatically via withCredentials
+      const verifyBroker = async (retryCount = 0) => {
         try {
+          console.log("Verifying broker cookie with backend");
           const response = await axiosInstance.get('/api/verifybrokercookie');
           if (response.status === 200) {
+            console.log("Broker verification successful", response.data.broker);
             setBroker(response.data.broker);
           }
-        } catch (error) {
-          toast.error("Invalid broker session. Please login again.");
-          router.push("/");
+        } catch (error: any) {
+          console.error("Broker verification failed", error);
+          // Only redirect if it's definitely an auth error
+          if (error.response?.status === 401 || error.response?.data?.requiresBrokerAuth) {
+            toast.error("Invalid broker session. Please login again.");
+            router.push("/");
+          } else if (retryCount < 3) {
+            // Retry up to 3 times for transient errors
+            console.log(`Retrying broker verification (${retryCount + 1}/3)`);
+            setTimeout(() => verifyBroker(retryCount + 1), 500);
+          } else {
+            // For other errors (network, server issues), don't redirect
+            toast.error("Unable to verify broker session. Please try again.");
+            setBroker(null);
+          }
         }
       };
       verifyBroker();
     }
-  }, [who, brokerCookie, router]);
+  }, [who, router]);
 
   const getUserCookie = () => {
     if (userCookie) {
@@ -259,6 +267,13 @@ const Page = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    
+    // Check if broker is properly authenticated
+    if (who === "broker" && !broker) {
+      toast.error("Broker authentication required. Please login again.");
+      return;
+    }
+    
     setIsLoading(true); // Start loading
 
     try {
