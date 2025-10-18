@@ -53,9 +53,12 @@ const Separateemail = (user) => {
 
 const ExtendedProfile = ({ dropopen, router, user }) => {
   const email = Separateemail(user);
+  const isBroker = !!Cookies.get("broker");
   
   const handleLogout = () => {
     Cookies.remove("user");
+    Cookies.remove("owner");
+    Cookies.remove("broker");
     window.location.reload(); // This will force a full page reload
     // Alternatively, you could use router.refresh() for Next.js 13+ but it might not clear all states
   };
@@ -65,13 +68,15 @@ const ExtendedProfile = ({ dropopen, router, user }) => {
       {dropopen && (
         <div className="absolute top-[8vh] left-2 md:left-4 lg:left-6 xl:left-8 bg-[#fff] shadow-lg rounded-lg px-6 py-4 z-[999]">
           <ul className="space-y-2">
-            <li
-              className="flex cursor-pointer text-lg text-center hover:text-gray-500"
-              onClick={() => router.push(`/wishlist?email=${email}`)}
-            >
-              <HeartIcon />
-              Wishlist
-            </li>
+            {!isBroker && (
+              <li
+                className="flex cursor-pointer text-lg text-center hover:text-gray-500"
+                onClick={() => router.push(`/wishlist?email=${email}`)}
+              >
+                <HeartIcon />
+                Wishlist
+              </li>
+            )}
             <li className="flex cursor-pointer text-lg text-center hover:text-gray-500">
               <SettingsIcon />
               Settings
@@ -99,9 +104,14 @@ const Profile = ({ user }) => {
         onClick={() => setDropOpen(true)}
         className="bg-[#fff] lg:bg-[#ff5d00] flex justify-center items-center cursor-pointer text-white lg:font-semibold rounded-full w-9 h-9 lg:w-12 lg:h-12"
       >
-        <span className="text-[#ff5d00] lg:text-[#fff] text-3xl">
-          {typeof user === "string" && user.length > 0 ? user[0] : "U"}
-        </span>
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 0 24 24"
+          className="text-[#ff5d00] lg:text-[#fff] w-5 h-5 lg:w-7 lg:h-7"
+          fill="currentColor"
+        >
+          <path d="M12 2a5 5 0 1 1 0 10 5 5 0 0 1 0-10zm0 12c-4.418 0-8 2.239-8 5v1a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-1c0-2.761-3.582-5-8-5z" />
+        </svg>
       </div>
       <AngleDown setDropOpen={setDropOpen} />
       <ExtendedProfile dropopen={dropopen} router={router} user={user} />

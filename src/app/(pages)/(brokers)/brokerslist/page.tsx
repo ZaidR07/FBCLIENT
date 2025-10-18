@@ -144,7 +144,7 @@ const Page = () => {
                 </span>
                 <button
                   onClick={() =>
-                    router.push(`/singlebroker?id=${item.brokerId}`)
+                    router.push(`/singlebroker?id=${item.broker_id}`)
                   }
                   className="text-white bg-[#FF5D00] px-4 py-1 rounded-md"
                 >

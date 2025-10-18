@@ -123,19 +123,31 @@ const Sidebar = ({ opensidebar, setOpenSidebar }) => {
 
   const [user, setUser] = useState(null); // State for user
 
-  const userCookie = Cookies.get("user"); // Using js-cookie
+  const userCookie = Cookies.get("user") || Cookies.get("owner"); // Using js-cookie
   const brokerCookie = Cookies.get("broker"); // Check broker cookie
+
+  const decodeUserRole = (): { role?: string } => {
+    try {
+      const token = Cookies.get("user");
+      if (!token) return {};
+      const payload = JSON.parse(atob(token.split(".")[1].replace(/-/g, "+").replace(/_/g, "/")));
+      return { role: payload?.role };
+    } catch {
+      return {};
+    }
+  };
 
   const getUserCookie = () => {
     if (userCookie) {
       try {
-        setUser(JSON.parse(decodeURIComponent(userCookie))); // Parse JSON safely
+        setUser(userCookie); // store token
       } catch {
         setUser(userCookie); // Fallback if not JSON
       }
     }
     if (brokerCookie) {
       setBroker(brokerCookie);
+      setUser(brokerCookie); // Set user state for broker to show profile
     }
   };
 
@@ -247,7 +259,7 @@ const Sidebar = ({ opensidebar, setOpenSidebar }) => {
         {
           label: "Subscription Plans",
           category: 2,
-          uri: "subscription?who=buildbroker",
+          uri: "/plans?who=broker",
         },
       ],
       order: 4,
@@ -310,12 +322,32 @@ const Sidebar = ({ opensidebar, setOpenSidebar }) => {
                       )}
                       {hasSupersubnav ? (
                         subnav.label
+                      ) : (item.nav === "For Owners" && decodeUserRole().role !== "owner") ? (
+                        <span
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            if (broker) {
+                              alert("You are currently logged in as Dealer. Please logout and login as Owner.");
+                              return;
+                            }
+                            setOpenSidebar(false);
+                            setRegisterOpen(true);
+                          }}
+                          className="block w-full text-sm xl:text-base cursor-pointer"
+                        >
+                          {subnav.label}
+                        </span>
                       ) : subnav.requiresBrokerLogin && !broker ? (
                         <span
                           onClick={(e) => {
                             e.stopPropagation();
+                            const ownerCookie = Cookies.get("owner");
+                            if (ownerCookie || userCookie) {
+                              alert("You are currently logged in as Owner/User. Please logout and login as Dealer.");
+                              return;
+                            }
                             setOpenSidebar(false);
-                            setDealerLoginOpen(true);
+                            setRegisterOpen(true);
                           }}
                           className="block w-full text-sm xl:text-base cursor-pointer"
                         >

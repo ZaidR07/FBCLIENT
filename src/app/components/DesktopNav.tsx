@@ -10,6 +10,7 @@ import { ChevronDown } from "lucide-react";
 import { motion } from "framer-motion";
 import Sidebar from "./Sidebar";
 import DealerLogin from "./DealerLogin";
+import Register from "./Register";
 import { useSelector, useDispatch } from "react-redux"; // ✅ correct
 import { setlocation } from "@/slices/locationSlice";
 
@@ -84,6 +85,7 @@ const DesktopNav = () => {
   const [forownersopen, setForOwnersOpen] = useState(false);
   const [fordealeropen, setFordealerOpen] = useState(false);
   const [dealerLoginOpen, setDealerLoginOpen] = useState(false);
+  const [registerOpen, setRegisterOpen] = useState(false);
 
   const locationstate = useSelector((state: any) => state.location.location); // ✅ useSelector
 
@@ -129,17 +131,43 @@ const DesktopNav = () => {
   const [location, setLocation] = useState(null);
   const [broker, setBroker] = useState(null); // State for broker
 
-  const userCookie = Cookies.get("user"); // Using js-cookie
+  const ownerCookie = Cookies.get("owner"); // Using js-cookie
+  const userCookie = Cookies.get("user"); // User cookie
   const brokerCookie = Cookies.get("broker"); // Check broker cookie
 
-  const getUserCookie = () => {
-    if (userCookie) {
-      try {
-        setUser(userCookie);
+  const decodeUserRole = (): { role?: string } => {
+    try {
+      const token = Cookies.get("owner") || Cookies.get("user");
+      if (!token) return {};
+      const payload = JSON.parse(atob(token.split(".")[1].replace(/-/g, "+").replace(/_/g, "/")));
+      return { role: payload?.role };
+    } catch {
+      return {};
+    }
+  };
 
-        setUserType(userCookie.slice(-1)); // Adjust this based on actual cookie structure
+  const handlePostPropertyClick = () => {
+    
+    if (brokerCookie) {
+      router.push("/postproperty?who=broker");
+      return;
+    }
+    if (ownerCookie) {
+      router.push("/postproperty?who=owner");
+      return;
+    }
+    alert("Please login as Owner or Dealer");
+  };
+
+  const getUserCookie = () => {
+    if (ownerCookie) {
+      try {
+        setUser(ownerCookie);
+        const decoded = decodeUserRole();
+        if (decoded.role === "owner") setUserType(2);
+        else setUserType(1);
       } catch {
-        setUser(userCookie); // Fallback if not JSON
+        setUser(ownerCookie); // Fallback if not JSON
       }
     }
     if (brokerCookie) {
@@ -150,7 +178,7 @@ const DesktopNav = () => {
   // Extract user from cookies
   useEffect(() => {
     getUserCookie();
-  }, [userCookie, brokerCookie, locationstate]);
+  }, [ownerCookie, brokerCookie, locationstate]);
 
   return (
     <nav className="relative hidden w-full h-full lg:flex shadow-lg items-center px-[1%]">
@@ -481,7 +509,7 @@ const DesktopNav = () => {
             >
               {usertype == 2 || usertype == "2" ? (
                 <a
-                  className="hover:text-orange-500 hover:underline lg:text-sm xl:text-sm"
+                  className="hover:text-orange-500 hover:underline lg:text-sm xl:text-sm cursor-pointer"
                   href="postproperty?who=owner"
                   target="_blank"
                   rel="noopener noreferrer"
@@ -490,8 +518,15 @@ const DesktopNav = () => {
                 </a>
               ) : (
                 <span
-                  className="lg:text-sm 2xl:text-base"
-                  onClick={() => alert("Please Register or Login as Owner")}
+                  className="lg:text-sm 2xl:text-base cursor-pointer"
+                  onClick={() => { 
+                    if (brokerCookie) {
+                      alert("You are currently logged in as Dealer. Please logout and login as Owner.");
+                      return;
+                    }
+                    setForOwnersOpen(false); 
+                    setRegisterOpen(true); 
+                  }}
                 >
                   Post Property
                 </span>
@@ -501,7 +536,7 @@ const DesktopNav = () => {
               {user ? (
                 usertype == 2 || usertype == "2" ? (
                   <a
-                    className="hover:text-orange-500 hover:underline lg:text-sm 2xl:text-base"
+                    className="hover:text-orange-500 hover:underline lg:text-sm 2xl:text-base cursor-pointer"
                     href="viewownerproperty"
                     target="_blank"
                     rel="noopener noreferrer"
@@ -511,8 +546,15 @@ const DesktopNav = () => {
                 ) : (
                   <>
                     <span
-                      className="lg:text-sm 2xl:text-base"
-                      onClick={() => alert("This facility is for owners only")}
+                      className="lg:text-sm 2xl:text-base cursor-pointer"
+                      onClick={() => { 
+                        if (brokerCookie) {
+                          alert("You are currently logged in as Dealer. Please logout and login as Owner.");
+                          return;
+                        }
+                        setForOwnersOpen(false); 
+                        setRegisterOpen(true); 
+                      }}
                     >
                       View / Edit Post
                     </span>
@@ -520,10 +562,15 @@ const DesktopNav = () => {
                 )
               ) : (
                 <span
-                  className="lg:text-sm 2xl:text-base"
-                  onClick={() =>
-                    alert("Please Register or Login or Login First")
-                  }
+                  className="lg:text-sm 2xl:text-base cursor-pointer"
+                  onClick={() => { 
+                    if (brokerCookie) {
+                      alert("You are currently logged in as Dealer. Please logout and login as Owner.");
+                      return;
+                    }
+                    setForOwnersOpen(false); 
+                    setRegisterOpen(true); 
+                  }}
                 >
                   View / Edit Post
                 </span>
@@ -554,8 +601,12 @@ const DesktopNav = () => {
                   <span
                     className="hover:text-orange-500 hover:underline lg:text-sm  2xl:text-base cursor-pointer"
                     onClick={() => {
+                      if (ownerCookie || userCookie) {
+                        alert("You are currently logged in as Owner/User. Please logout and login as Dealer.");
+                        return;
+                      }
                       setFordealerOpen(false);
-                      setDealerLoginOpen(true);
+                      setRegisterOpen(true);
                     }}
                   >
                     Post Property
@@ -574,24 +625,17 @@ const DesktopNav = () => {
             )}
           </li>
         </ul>
-        {user ? (
-          <a href="postproperty" target="_blank" rel="noopener noreferrer">
-            <button className="lg:px-2 xl:px-3.5 py-2 rounded-md bg-[#fdf3da] text-[#ff5d00] lg:text-xs xl:text-sm 2xl:text-base">
-              Post&nbsp;Property
-            </button>
-          </a>
-        ) : (
-          <button
-            onClick={() => alert("Please Register or Login First")}
-            className="lg:px-2 xl:px-3.5 py-2 rounded-md bg-[#fdf3da] text-[#ff5d00] lg:text-xs xl:text-sm  2xl:text-base"
-          >
-            Post&nbsp;Property
-          </button>
-        )}
+        <button
+          onClick={handlePostPropertyClick}
+          className="lg:px-2 xl:px-3.5 py-2 rounded-md bg-[#fdf3da] text-[#ff5d00] lg:text-xs xl:text-sm  2xl:text-base"
+        >
+          Post&nbsp;Property
+        </button>
 
         <HamIcon opensidebar={opensidebar} setOpenSidebar={setOpenSidebar} />
       </div>
       <Sidebar opensidebar={opensidebar} setOpenSidebar={setOpenSidebar} />
+      <Register registeropen={registerOpen} setRegisterOpen={setRegisterOpen} />
       <DealerLogin isOpen={dealerLoginOpen} onClose={() => setDealerLoginOpen(false)} />
     </nav>
   );

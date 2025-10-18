@@ -161,14 +161,13 @@ const Page = () => {
               />
             </div>
             <div className="md:col-span-2">
-              <label className="block text-sm font-medium mb-1">Broker Photo <span className="text-red-700">*</span></label>
+              <label className="block text-sm font-medium mb-1">Broker Photo</label>
               <input
                 type="file"
                 name="photo"
                 onChange={handleFileChange}
                 accept="image/*"
                 className="w-full border border-gray-300 rounded-xl px-4 py-2 focus:outline-none"
-                required
               />
             </div>
           </div>

@@ -8,6 +8,21 @@ const FeaturedBrokers = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
+  const initials = (name?: string) => {
+    if (!name) return "B";
+    const parts = name.trim().split(/\s+/).slice(0, 2);
+    return parts.map(p => p[0]?.toUpperCase()).join("") || "B";
+  };
+
+  const svgAvatarDataUrl = (name?: string) => {
+    const text = initials(name);
+    const svg = `<svg xmlns='http://www.w3.org/2000/svg' width='128' height='128'>
+      <rect width='100%' height='100%' rx='64' ry='64' fill='#f3f4f6'/>
+      <text x='50%' y='54%' dominant-baseline='middle' text-anchor='middle' font-family='Arial, Helvetica, sans-serif' font-size='48' fill='#374151'>${text}</text>
+    </svg>`;
+    return `data:image/svg+xml;utf8,${encodeURIComponent(svg)}`;
+  };
+
   const loaddata = useCallback(async () => {
     try {
       setLoading(true);
@@ -54,37 +69,51 @@ const FeaturedBrokers = () => {
       ) : error ? (
         <p className="text-center mt-4 text-red-500">{error}</p>
       ) : brokerlist.length > 0 ? (
-        <div className=" flex flex-col lg:ml-[5%] lg:flex-row gap-4 lg:gap-8 px-4 lg:pb-8 ">
+        <div className="w-full px-4 lg:px-8 lg:pb-8">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 lg:gap-6">
           {brokerlist.map((item, index) => (
             <div
               key={index}
-              className="p-4 bg-white  rounded-lg flex  border shadow-md shadow-[#fa9c66]"
+              className="relative p-5 bg-white rounded-2xl border border-orange-200 shadow-md shadow-[#fa9c66]/30 hover:shadow-lg hover:-translate-y-0.5 transition flex flex-col items-center justify-center gap-3 h-56 max-w-full"
             >
-              <div>
+              {/* Medal badge */}
+              <div className="absolute -top-3 -left-3 bg-white rounded-full shadow-sm">
                 <MedalIcon
-                  className="mr-4"
-                  size={50}
+                  size={36}
                   strokeWidth={2}
-                  color={medalColors[index] || "#A9A9A9"} // Default to dark gray if index > 4
+                  color={medalColors[index] || "#A9A9A9"}
                 />
               </div>
-              <div className="flex flex-col items-center ">
-                <div className="ring-2 ring-gray-300 p-1 rounded-full">
-                  <img
-                    className="w-16 h-auto max-h-18 rounded-full"
-                    src={item.image}
-                    alt="broker photo"
-                  />
-                </div>
-                <span className="text-base font-medium block mt-2">
+
+              {/* Avatar */}
+              <div className="w-20 h-20 rounded-full overflow-hidden ring-2 ring-gray-200 bg-white flex items-center justify-center">
+                <img
+                  className="w-full h-full object-cover"
+                  src={item?.image ? item.image : svgAvatarDataUrl(item.brokername)}
+                  alt={item?.brokername ? `${item.brokername} photo` : "broker photo"}
+                  referrerPolicy="no-referrer"
+                  loading="lazy"
+                  decoding="async"
+                  onError={(e) => {
+                    const img = e.currentTarget as HTMLImageElement;
+                    img.onerror = null;
+                    img.src = svgAvatarDataUrl(item.brokername);
+                  }}
+                />
+              </div>
+
+              {/* Text */}
+              <div className="text-center px-2 w-full">
+                <span className="text-base font-medium block truncate leading-tight">
                   {item.brokername}
                 </span>
-                <span className="text-sm text-gray-500 font-medium">
+                <span className="text-sm text-gray-500 font-medium block truncate leading-tight">
                   {item.companyname || "Na"}
                 </span>
               </div>
             </div>
           ))}
+          </div>
         </div>
       ) : (
         <p className="text-center mt-4 text-gray-500">

@@ -128,9 +128,8 @@ const Searchsection = ({ buildings }) => {
       alert("Please enter a search term!");
       return;
     }
-    router.push(
-      `/${propertyType}properties?search=${encodeURIComponent(searchText)}`
-    );
+    const view = propertyType === 'buy' ? 'Sale' : propertyType === 'rent' ? 'Rent' : 'Pg';
+    router.push(`/buyproperties?search=${encodeURIComponent(searchText)}&view=${view}`);
   };
 
   return (

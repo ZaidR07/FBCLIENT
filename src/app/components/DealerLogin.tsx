@@ -39,18 +39,15 @@ const DealerLogin = ({ isOpen, onClose }: DealerLoginProps) => {
 
       if (response.status === 200) {
         toast.success("Login successful! Redirecting...");
-        
-        // Cookie is already set by backend (HTTP-only JWT token)
-        // No need to set client-side cookie
-        
+        if (response.data?.token) {
+          Cookies.set("broker", response.data.token, { expires: 7 });
+        }
         // Close modal
         onClose();
-        
         // Redirect to post property page with who=broker
-        // Add a small delay to ensure cookie is properly set
         setTimeout(() => {
           router.push("/postproperty?who=broker");
-        }, 1000);
+        }, 300);
       }
     } catch (error: any) {
       if (error.response?.data?.message) {

@@ -45,7 +45,7 @@ const Page = () => {
   const HandleDelete = async (id) => {
     try {
       const response = await axiosInstance.post('/api/deleteproperties', {
-        property_id: id,
+        id: id,
       });
       if (response.status != 200) {
         toast.error(response.data.message);
@@ -129,11 +129,11 @@ const Page = () => {
   ];
 
   return (
-    <div className="lg:flex max-w-full relative lg:top-[12vh]">
+    <div className="flex bg-gray-100 min-h-[88vh] lg:mt-[12vh]">
       <AdminHeader sidebaropen={sidebaropen} setSidebarOpen={setSidebarOpen} />
       <div
-        className={` px-4 sm:px-[5%] py-[5vh] ${
-          sidebaropen ? "lg:w-[77%]" : "lg:w-[90%]"
+        className={` w-full px-[5%] py-[5vh] mt-[10vh] lg:mt-0 ${
+          sidebaropen ? "lg:ml-[23%]" : "lg:ml-[12%]"
         }`}
       >
         <input

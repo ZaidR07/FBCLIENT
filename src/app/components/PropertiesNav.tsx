@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useRef } from "react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
@@ -9,6 +9,7 @@ import Cookies from "js-cookie";
 import Profile from "./Profile";
 import Register from "./Register";
 import Sidebar from "./Sidebar";
+import axiosInstance from "@/lib/axios";
 
 const HamIcon = ({ setOpenSidebar, opensidebar }) => {
   return (
@@ -65,6 +66,11 @@ const Searchsection = () => {
   const [isListening, setIsListening] = useState(false);
   const [propertyType, setPropertyType] = useState("buy");
   const [isFocused, setIsFocused] = useState(false);
+  const [suggestions, setSuggestions] = useState<string[]>([]);
+  const [showSuggestions, setShowSuggestions] = useState(false);
+  const [selectedSuggestionIndex, setSelectedSuggestionIndex] = useState(-1);
+  const [suggestionPool, setSuggestionPool] = useState<string[]>([]);
+  const inputRef = useRef<HTMLInputElement | null>(null);
 
   useEffect(() => {
     let interval;
@@ -77,6 +83,68 @@ const Searchsection = () => {
     }
     return () => clearInterval(interval);
   }, [isFocused]);
+
+  // Load suggestions pool once (society names + locations)
+  useEffect(() => {
+    const loadPool = async () => {
+      try {
+        const res = await axiosInstance.get('/api/getproperties');
+        const list = Array.isArray(res.data.payload) ? res.data.payload : [];
+        const names: string[] = list
+          .flatMap((p: any) => [p?.Societyname, p?.location])
+          .filter((v: any) => v != null && v !== "")
+          .map((s: any) => String(s).trim());
+        // unique, trimmed
+        const unique: string[] = Array.from(new Set(names));
+        setSuggestionPool(unique);
+      } catch (_) {
+        setSuggestionPool([]);
+      }
+    };
+    loadPool();
+  }, []);
+
+  // Filter suggestions based on input
+  useEffect(() => {
+    if (searchText.trim() && isFocused) {
+      const lower = searchText.toLowerCase();
+      const filtered = suggestionPool
+        .filter((s) => s.toLowerCase().includes(lower))
+        .slice(0, 10);
+      setSuggestions(filtered);
+      setShowSuggestions(filtered.length > 0);
+      setSelectedSuggestionIndex(-1);
+    } else {
+      setSuggestions([]);
+      setShowSuggestions(false);
+    }
+  }, [searchText, isFocused, suggestionPool]);
+
+  // Select suggestion
+  const handleSuggestionClick = (s: string) => {
+    setSearchText(s);
+    setShowSuggestions(false);
+    setIsFocused(false);
+    inputRef.current?.focus();
+  };
+
+  // Keyboard navigation
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (!showSuggestions) return;
+    if (e.key === 'ArrowDown') {
+      e.preventDefault();
+      setSelectedSuggestionIndex((prev) => prev < suggestions.length - 1 ? prev + 1 : prev);
+    } else if (e.key === 'ArrowUp') {
+      e.preventDefault();
+      setSelectedSuggestionIndex((prev) => prev > 0 ? prev - 1 : -1);
+    } else if (e.key === 'Enter' && selectedSuggestionIndex >= 0) {
+      e.preventDefault();
+      handleSuggestionClick(suggestions[selectedSuggestionIndex]);
+    } else if (e.key === 'Escape') {
+      setShowSuggestions(false);
+      setSelectedSuggestionIndex(-1);
+    }
+  };
 
   // Start voice recognition
   const startListening = () => {
@@ -102,10 +170,10 @@ const Searchsection = () => {
   };
 
   return (
-    <div className=" bg-[#FF5C01]  px-6 lg:h-[10vh]   ml-[5%] w-[70%] rounded-xl  flex items-center gap-4">
+    <div className="bg-gradient-to-r from-[#FF5D00] to-[#FF7A33] px-3 lg:px-6 py-2 lg:py-0 lg:h-[10vh] ml-[3%] lg:ml-[5%] w-[60%] lg:w-[70%] rounded-xl shadow-lg flex items-center gap-2 lg:gap-4">
       {/* Dropdown for Property Type */}
       <select
-        className="p-1 lg:p-2 border lg:border-2 rounded-md outline-none bg-[#fff] text-xs text-[#FF5C01] lg:text-base"
+        className="p-1 lg:p-2 border-2 border-white/20 rounded-lg outline-none bg-white text-xs text-[#FF5D00] lg:text-base font-medium shadow-sm hover:shadow-md transition-shadow cursor-pointer"
         value={propertyType}
         onChange={(e) => setPropertyType(e.target.value)}
       >
@@ -114,37 +182,62 @@ const Searchsection = () => {
         <option value="pg">PG</option>
       </select>
 
-      {/* Animated Input Field */}
-      <motion.input
-        key={isFocused ? "fixed-placeholder" : placeholderIndex} // Prevent animation restart when typing
-        className="outline-none  bg-[#fff] py-1 text-sm lg:text-lg w-full lg:pl-6 text-[#ff5d00] rounded-xl"
-        type="text"
-        value={searchText}
-        onChange={(e) => setSearchText(e.target.value)}
-        placeholder={isFocused ? "" : placeholders[placeholderIndex]} // Show empty placeholder when typing
-        initial={{ opacity: 0, y: 10 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5, ease: "easeOut" }}
-        onFocus={() => setIsFocused(true)} // Stop placeholder animation
-        onBlur={() => setIsFocused(false)} // Resume animation when unfocused
-      />
+      {/* Animated Input Field with Suggestions */}
+      <div className="relative flex-1">
+        <motion.input
+          ref={inputRef}
+          key={isFocused ? "fixed-placeholder" : placeholderIndex}
+          className="outline-none bg-white py-2 lg:py-3 px-3 lg:px-6 text-sm lg:text-base w-full text-gray-700 rounded-lg shadow-sm focus:shadow-md transition-shadow placeholder:text-gray-400"
+          type="text"
+          value={searchText}
+          onChange={(e) => setSearchText(e.target.value)}
+          placeholder={isFocused ? "" : placeholders[placeholderIndex]}
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, ease: "easeOut" }}
+          onFocus={() => setIsFocused(true)}
+          onBlur={() => setIsFocused(false)}
+          onKeyDown={handleKeyDown}
+        />
+        {showSuggestions && (
+          <motion.div
+            className="absolute top-full left-0 w-full bg-white shadow-xl rounded-lg mt-2 max-h-60 overflow-y-auto z-10 border border-gray-100"
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.2 }}
+          >
+            {suggestions.map((s, idx) => (
+              <div
+                key={`${s}-${idx}`}
+                className={`px-4 py-3 text-sm lg:text-base text-gray-700 cursor-pointer hover:bg-orange-50 hover:text-[#FF5D00] transition-colors ${
+                  idx === selectedSuggestionIndex ? "bg-orange-50 text-[#FF5D00]" : ""
+                }`}
+                onMouseDown={() => handleSuggestionClick(s)}
+              >
+                {s}
+              </div>
+            ))}
+          </motion.div>
+        )}
+      </div>
 
       {/* Voice Input Button */}
       <button
         onClick={startListening}
-        className="p-2 lg:p-4 bg-[#fff] rounded-full"
+        className="p-2 lg:p-3 bg-white rounded-full shadow-md hover:shadow-lg hover:scale-105 transition-all duration-200"
+        title="Voice Search"
       >
         <MicroPhone />
       </button>
 
       {/* Search Button */}
       <a
-        href={`/${propertyType}properties?search=${encodeURIComponent(
-          searchText
-        )}`}
+        href={`/buyproperties?search=${encodeURIComponent(searchText)}&view=${
+          propertyType === 'buy' ? 'Sale' : propertyType === 'rent' ? 'Rent' : 'Pg'
+        }`}
         target="_blank"
         rel="noopener noreferrer"
-        className="px-2 lg:px-6 lg:py-2 py-1 bg-[#fff] rounded-md text-xs lg:text-base text-[#FF5C01] text-center"
+        className="px-3 lg:px-6 py-2 lg:py-2.5 bg-white hover:bg-gray-50 rounded-lg text-xs lg:text-base text-[#FF5D00] font-semibold text-center shadow-md hover:shadow-lg transition-all duration-200"
         onClick={(e) => {
           if (!searchText.trim()) {
             e.preventDefault();
@@ -165,44 +258,48 @@ const PropertiesNav = () => {
   const [registeropen, setRegisterOpen] = useState(false);
   const [opensidebar, setOpenSidebar] = useState(false);
 
-  const userCookie = Cookies.get("user"); // Using js-cookie
+  const userCookie = Cookies.get("user") || Cookies.get("owner"); // Using js-cookie
+  const brokerCookie = Cookies.get("broker");
 
   const getUserCookie = () => {
     if (userCookie) {
       try {
-        setUser(JSON.parse(decodeURIComponent(userCookie))); // Parse JSON safely
+        setUser(userCookie); // Store token
       } catch {
         setUser(userCookie); // Fallback if not JSON
       }
+    }
+    if (brokerCookie) {
+      setUser(brokerCookie); // Set user state for broker to show profile
     }
   };
 
   // Extract user from cookies
   useEffect(() => {
     getUserCookie();
-  }, [userCookie]);
+  }, [userCookie, brokerCookie]);
 
   return (
-    <nav className="w-full shadow-xl bg-[#fff] items-center fixed top-0 z-[999] flex px-[2.5%]">
+    <nav className="w-full shadow-lg bg-white items-center fixed top-0 z-[999] flex px-[2%] lg:px-[2.5%] py-2 lg:py-0 border-b border-gray-100">
       <Register registeropen={registeropen} setRegisterOpen={setRegisterOpen} />
       <Image
         src="/logo.jpg"
         width={90}
         height={90}
         alt="logo"
-        className=""
+        className="cursor-pointer hover:opacity-80 transition-opacity"
         onClick={() => router.push("/")}
       />
       <Searchsection />
-      <div className="ml-[5%]">
+      <div className="ml-[3%] lg:ml-[5%]">
         {user ? (
           <Profile user={user} />
         ) : (
           <button
-            className="text-lg text-white px-6 py-2 bg-[#FF5D00] rounded-md"
+            className="text-sm lg:text-lg text-white px-4 lg:px-6 py-2 bg-gradient-to-r from-[#FF5D00] to-[#FF7A33] hover:from-[#FF7A33] hover:to-[#FF5D00] rounded-lg shadow-md hover:shadow-lg transition-all duration-300 font-medium"
             onClick={() => setRegisterOpen(true)}
           >
-            Sign up
+            Sign&nbsp;up
           </button>
         )}
       </div>

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useSearchParams } from "next/navigation";
 import { PriceCard } from "@/app/components/PriceCard";
 import { PricingTabs } from "@/app/components/PricingTabs";
 import Head from "next/head";
@@ -82,35 +83,45 @@ const pricingData = {
 
 const Page = () => {
   const [currentTier, setCurrentTier] = useState("standard");
+  const params = useSearchParams();
+  const who = (params.get("who") || "").toLowerCase();
+  const isBroker = who === "broker";
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-white to-[#fff4e6]">
       <Header />
-      <div className="container mt-[8vh] lg:mt-[10vh] mx-auto px-4 py-16">
-        <div className="text-center mb-12">
-          <h1 className="text-4xl font-bold mb-4">Choose Your Plan</h1>
-          <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-            Select the perfect subscription plan for your needs. Switch between
-            tiers to find the best match for your business.
-          </p>
-        </div>
+      <div className="mt-[8vh] lg:mt-[10vh]">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 lg:py-16">
+          <div className="text-center mb-8 lg:mb-12">
+            <h1 className="text-3xl lg:text-4xl font-bold mb-3 lg:mb-4">
+              {isBroker ? "Broker Subscription Plans" : "Choose Your Plan"}
+            </h1>
+            <p className="text-base lg:text-lg text-gray-600 max-w-2xl mx-auto">
+              {isBroker
+                ? "Flexible plans tailored for real estate brokers. Get credits and visibility to close more deals."
+                : "Select the perfect subscription plan for your needs. Switch between tiers to find the best match for your business."}
+            </p>
+          </div>
 
-        <PricingTabs onTabChange={setCurrentTier} />
+          <div className="max-w-5xl mx-auto">
+            <PricingTabs onTabChange={setCurrentTier} />
+          </div>
 
-        <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto mt-8">
-          {Object.entries(pricingData[currentTier as keyof typeof pricingData].months).map(
-            ([months, data]) => (
-              <PriceCard
-                key={`${currentTier}-${months}`}
-                title={`${currentTier === "standard" ? "Standard" : "Premium"} - ${months} Months`}
-                price={data.price}
-                features={data.features}
-                credits={data.credits}
-                tier={currentTier}
-                type={currentTier === "premium" ? "dealer" : "builder"}
-              />
-            )
-          )}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8 max-w-7xl mx-auto mt-8">
+            {Object.entries(pricingData[currentTier as keyof typeof pricingData].months).map(
+              ([months, data]) => (
+                <PriceCard
+                  key={`${currentTier}-${months}`}
+                  title={`${currentTier === "standard" ? "Standard" : "Premium"} - ${months} Months`}
+                  price={data.price}
+                  features={data.features}
+                  credits={data.credits}
+                  tier={currentTier}
+                  type={isBroker ? "dealer" : "builder"}
+                />
+              )
+            )}
+          </div>
         </div>
       </div>
     </div>

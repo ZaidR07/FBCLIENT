@@ -45,9 +45,9 @@ const BrokerIcon = (props) => {
 
 const NumberBar = () => {
   const [data, setData] = useState({
-    users: 3000,
-    properties: 1500,
-    brokers: 167,
+    users: 0,
+    properties: 0,
+    brokers: 0,
   });
 
   const [ iconwidth , setIconwidth ] = useState(32)
@@ -57,10 +57,11 @@ const NumberBar = () => {
     try {
       const response = await axiosInstance.get('/api/getdashboardnumbers');
       if (response.status === 200) {
+        const stats = response.data?.data || {};
         setData({
-          properties: Math.max(response.data.data.properties, 1500),
-          users: 3000,
-          brokers: 167,
+          properties: Number(stats.properties) || 0,
+          users: Number(stats.happy_users) || 0, // users + owners
+          brokers: Number(stats.brokers) || 0,
         });
       }
     } catch (error) {

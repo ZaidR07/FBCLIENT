@@ -193,21 +193,20 @@ const Page = () => {
       name: "ID",
       selector: (row) => row.broker_id,
       minWidth: "60px",
-      maxWidth: "60px",
+      maxWidth: "100px",
     },
     {
       name: "Name",
       selector: (row) => row.brokername,
       sortable: true,
       minWidth: "80px",
-      maxWidth: "100px",
+      maxWidth: "150px",
     },
     {
       name: "Company",
       selector: (row) => row.companyname,
       minWidth: "60px",
-      maxWidth: "100px",
-      marginLeft: "0px",
+      maxWidth: "150px",
     },
     {
       name: "",
@@ -226,6 +225,19 @@ const Page = () => {
       minWidth: "50px",
     },
 
+    
+
+    {
+      name: "",
+      cell: (row) => (
+        <button onClick={() => HandleDelete(row.broker_id)}>
+          <TrashIcon />
+        </button>
+      ),
+      ignoreRowClick: true,
+      button: true,
+      minWidth: "50px",
+    },
     {
       name: "",
       cell: (row) => (
@@ -239,19 +251,7 @@ const Page = () => {
       ignoreRowClick: true,
       button: true,
       minWidth: "110px",
-    },
-
-    {
-      name: "",
-      cell: (row) => (
-        <button onClick={() => HandleDelete(row.broker_id)}>
-          <TrashIcon />
-        </button>
-      ),
-      ignoreRowClick: true,
-      button: true,
-      minWidth: "50px",
-    },
+    }
   ];
 
   return (
@@ -262,22 +262,33 @@ const Page = () => {
           sidebaropen ? "lg:ml-[23%]" : "lg:ml-[12%]"
         }`}
       >
-        <div className="flex items-center justify-between mb-4">
-          <h1 className="text-2xl font-bold text-gray-800">Update / Remove Brokers</h1>
-          <span className="text-sm text-gray-500">Manage and edit broker records</span>
+        <div className="flex items-start sm:items-center justify-between mb-4 gap-4">
+          <div>
+            <h1 className="text-2xl font-bold text-gray-800">Update / Remove Brokers</h1>
+            <span className="text-sm text-gray-500">Manage and edit broker records</span>
+          </div>
+          <div className="flex items-center gap-3 ml-auto">
+            <span className="inline-flex items-center gap-2 text-xs font-medium bg-orange-50 text-orange-600 px-3 py-1.5 rounded-full border border-orange-200">
+              Total Brokers
+              <span className="inline-flex items-center justify-center bg-orange-500 text-white rounded-full w-6 h-6 text-[11px]">
+                {displaybrokerlist.length}
+              </span>
+            </span>
+            <input
+              type="search"
+              className="border border-gray-300 focus:outline-none focus:ring-2 focus:ring-orange-400 rounded-xl px-4 py-2 w-[52vw] sm:w-[320px] text-sm"
+              placeholder="Search brokers..."
+              onChange={(e) => filtersearch(e.target.value)}
+            />
+          </div>
         </div>
         <div className="bg-white rounded-2xl shadow-xl p-4 overflow-x-auto">
-          <input
-            type="search"
-            className="border border-gray-300 focus:outline-none focus:ring-2 focus:ring-orange-400 mb-4 rounded-xl px-4 py-2 w-full sm:max-w-[50%] block ml-auto text-sm sm:text-base"
-            placeholder="Search brokers..."
-            onChange={(e) => filtersearch(e.target.value)}
-          />
-          <p className="text-sm font-semibold mb-2">Total Brokers: {displaybrokerlist.length}</p>
           <DataTable
             paginationPerPage={10}
             columns={columns}
             data={displaybrokerlist}
+            highlightOnHover
+            striped
             pagination
             paginationTotalRows={displaybrokerlist.length}
             customStyles={{
@@ -290,6 +301,8 @@ const Page = () => {
                   textAlign: "left",
                   paddingTop: "14px",
                   paddingBottom: "14px",
+                  borderTopLeftRadius: "12px",
+                  borderTopRightRadius: "12px",
                 },
               },
               headCells: {
@@ -305,6 +318,7 @@ const Page = () => {
                   fontSize: "13px",
                   paddingTop: "6px",
                   paddingBottom: "6px",
+                  transition: "background-color 0.15s ease-in-out",
                 },
               },
               cells: {
@@ -313,12 +327,16 @@ const Page = () => {
                   textAlign: "left",
                 },
               },
+              pagination: {
+                style: {
+                  borderTop: "1px solid #eee",
+                },
+              },
             }}
           />
         </div>
       </div>
 
-      
       {/* Update Drawer */}
       <BrokerUpdateDrawer
         isOpen={updatecliked}
