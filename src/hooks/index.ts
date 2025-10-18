@@ -6,3 +6,6 @@ export * from './properties';
 
 // Shared hooks
 export * from './shared';
+
+// Feedback hooks
+export * from './feedback/useFeedback';

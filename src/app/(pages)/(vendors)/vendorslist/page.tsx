@@ -64,12 +64,12 @@ const Page = () => {
                   className="w-[100px] h-[100px] rounded-full ring-2 object-cover"
                   alt="vendor"
                 />
-                <span className="text-lg">{item.vendorrname}</span>
+                <span className="text-lg">{item.vendorname}</span>
                 <span className="text-sm text-gray-400">
                   {item.companyname}
                 </span>
                 <button
-                  onClick={() => router.push(`/singlevendor?id=${item.id}`)}
+                  onClick={() => router.push(`/singlevendor?id=${item.vendor_id}`)}
                   className="text-white bg-[#FF5D00] px-4 py-1 rounded-md"
                 >
                   View Details

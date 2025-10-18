@@ -13,6 +13,7 @@ import PropertyTypes from "./components/PropertyTypes";
 import { useRouter } from "next/navigation";
 import Register from "./components/Register";
 import FeaturedBrokers from "./components/FeaturedBrokers";
+import Testimonials from "./components/Testimonials";
 import Cookies from "js-cookie";
 import Vendors from "./components/Vendors";
 import LocationBox from "./components/LocationBox";
@@ -193,6 +194,7 @@ const Page = () => {
 
       <Register registeropen={registeropen} setRegisterOpen={setRegisterOpen} />
       <FeaturedBrokers />
+      <Testimonials />
       <MobileAppDownload />
       <Footer />
     </>

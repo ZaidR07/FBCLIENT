@@ -42,10 +42,11 @@ const Page = () => {
 
   const dispatch = useDispatch();
 
-  const [user, setUser] = useState(null); // State for user
+  const [user, setUser] = useState(null); // State for user (email)
+  const [userId, setUserId] = useState(null); // State for user_id or owner_id
   const [broker, setBroker] = useState(null); // State for broker
 
-  const userCookie = Cookies.get("user"); // Using js-cookie
+  const userCookie = Cookies.get("user") || Cookies.get("owner"); // Using js-cookie
   // NOTE: Broker cookie is HttpOnly; it cannot be read from client-side JS. Do not attempt Cookies.get('broker').
 
   // Check broker authentication
@@ -85,10 +86,20 @@ const Page = () => {
   const getUserCookie = () => {
     if (userCookie) {
       try {
-        const email = userCookie.split("^");
-        setUser(email[0]);
-      } catch {
-        alert("Something Went Wrong");
+        // Decode JWT token to extract user/owner information
+        const payload = JSON.parse(atob(userCookie.split(".")[1].replace(/-/g, "+").replace(/_/g, "/")));
+        setUser(payload.email); // Set email
+        setUserId(payload.id); // Set user_id or owner_id from token
+        console.log("User authenticated:", { email: payload.email, id: payload.id, role: payload.role });
+      } catch (error) {
+        console.error("Error decoding user token:", error);
+        // Fallback to old format if JWT decode fails
+        try {
+          const email = userCookie.split("^");
+          setUser(email[0]);
+        } catch {
+          alert("Something Went Wrong");
+        }
       }
     }
   };
@@ -112,7 +123,7 @@ const Page = () => {
     balconies: "",
     bathrooms: "",
     price: "",
-    postedby: user,
+    postedby: "", // Will be set to broker_id, owner_id, or user_id
     type: "", // Select field for property type
     constructionstatus: "",
     furnishing: "",
@@ -126,11 +137,13 @@ const Page = () => {
     if (who === "broker" && broker) {
       // Set postedby to broker_id for brokers
       setFormdata((prev) => ({ ...prev, postedby: broker.broker_id }));
-    } else if (user) {
-      // Set postedby to user email for regular users
-      setFormdata((prev) => ({ ...prev, postedby: user }));
+      console.log("Setting postedby to broker_id:", broker.broker_id);
+    } else if (userId) {
+      // Set postedby to owner_id or user_id from JWT token
+      setFormdata((prev) => ({ ...prev, postedby: userId }));
+      console.log("Setting postedby to user/owner ID:", userId);
     }
-  }, [user, broker, who]);
+  }, [userId, broker, who]);
 
   const [variables, setVariables] = useState({
     bhklist: [],
@@ -304,6 +317,7 @@ const Page = () => {
       toast.success(response.data.message);
 
       // Reset form after successful submission
+      const currentPostedBy = who === "broker" && broker ? broker.broker_id : userId;
       setFormdata({
         Societyname: "",
         floor: "",
@@ -318,7 +332,7 @@ const Page = () => {
         balconies: "",
         bathrooms: "",
         price: "",
-        postedby: user, // Keep the user
+        postedby: currentPostedBy, // Keep the broker_id, owner_id, or user_id
         type: "",
         constructionstatus: "",
         furnishing: "",

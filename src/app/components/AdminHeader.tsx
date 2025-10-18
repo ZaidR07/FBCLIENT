@@ -32,6 +32,18 @@ const nav = [
     subnav: ["View Vendors", "Add Vendors", "Update/Remove Brokers"],
   },
   {
+    icon: "user.svg",
+    name: "Feedbacks",
+    width: 40,
+    route: "feedbacks",
+  },
+  {
+    icon: "user.svg",
+    name: "Complaints",
+    width: 40,
+    route: "complaints",
+  },
+  {
     icon: "settings.svg",
     name: "Settings",
     width: 50,

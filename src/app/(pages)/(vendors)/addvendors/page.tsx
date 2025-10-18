@@ -87,10 +87,10 @@ const Page = () => {
   const [sidebaropen, setSidebarOpen] = useState(false);
 
   const handleChange = (e) => {
-    const { name, id } = e.target;
+    const { name, value } = e.target;
     setFormdata((prevData) => ({
       ...prevData,
-      [name]: id,
+      [name]: value,
     }));
   };
 
@@ -102,16 +102,14 @@ const Page = () => {
   };
 
   const handleCategorychange = (e) => {
-    const { name, id } = e.target;
+    const { name, value } = e.target;
 
-    if (id != "0") {
+    if (value !== "0") {
       setFormdata((prevData) => ({
         ...prevData,
-        [name]: id,
+        [name]: value,
       }));
     }
-
-    return
   };
 
   const handleSubmit = async (e) => {
@@ -143,127 +141,134 @@ const Page = () => {
   };
 
   return (
-    <div className="flex relative lg:top-[12vh]">
+    <div className="min-h-screen bg-gray-50">
       <AdminHeader sidebaropen={sidebaropen} setSidebarOpen={setSidebarOpen} />
       
-
       <div
-        className={`w-full min-h-[88vh] bg-gray-200 px-[10%] lg:px-[20%] py-[5vh] mt-[10vh] lg:mt-0 ${
-          sidebaropen ? "lg:w-[77%]" : "lg:w-[90%]"
-        }`}
+        className={`${
+          sidebaropen ? "lg:ml-[23%]" : "lg:ml-[12%]"
+        } transition-all duration-500 pt-[12vh] px-4 lg:px-8 pb-8`}
       >
-        <h1 className="text-2xl text-center mb-5 text-[#FF5D00]">Add Vendor</h1>
+        <div className="max-w-3xl mx-auto">
+        <h1 className="text-3xl font-bold text-center mb-6 text-gray-800">Add Vendor</h1>
         <form
-          className="p-6 lg:p-8 bg-white rounded-2xl"
+          className="p-6 lg:p-8 bg-white rounded-2xl shadow-lg"
           onSubmit={handleSubmit}
         >
-          <div className="mb-4">
-            <label>
-              Vendor Name <span className="text-red-700">*</span>
+          <div className="mb-6">
+            <label className="block text-sm font-semibold text-gray-700 mb-2">
+              Vendor Name <span className="text-red-500">*</span>
             </label>
             <input
               name="vendorname"
               value={formdata.vendorname}
               onChange={handleChange}
               type="text"
-              className="border-b-2 border-black w-full"
+              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent outline-none transition"
+              placeholder="Enter vendor name"
               required
             />
           </div>
-          <div className="mb-4">
-            <label>
-              Category <span className="text-red-700">*</span>
+          <div className="mb-6">
+            <label className="block text-sm font-semibold text-gray-700 mb-2">
+              Category <span className="text-red-500">*</span>
             </label>
             <select
               name="category"
-              className="border-b-2 mt-4 border-black w-full"
+              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent outline-none transition"
               onChange={handleCategorychange}
+              required
             >
-              <option value="0">select a category</option>
+              <option value="0">Select a category</option>
               {categories?.map((item) => (
-                <option value={item.id}>{item.label}</option>
+                <option key={item.id} value={item.id}>{item.label}</option>
               ))}
             </select>
           </div>
-          <div className="mb-4">
-            <label>Company Name</label>
+          <div className="mb-6">
+            <label className="block text-sm font-semibold text-gray-700 mb-2">Company Name</label>
             <input
               name="companyname"
               value={formdata.companyname}
               onChange={handleChange}
               type="text"
-              className="border-b-2 border-black w-full"
+              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent outline-none transition"
+              placeholder="Enter company name"
             />
           </div>
-          <div className="mb-4">
-            <label>
-              Email Id <span className="text-red-700">*</span>
+          <div className="mb-6">
+            <label className="block text-sm font-semibold text-gray-700 mb-2">
+              Email Id <span className="text-red-500">*</span>
             </label>
             <input
               name="emailid"
               value={formdata.emailid}
               onChange={handleChange}
               type="email"
-              className="border-b-2 border-black w-full"
+              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent outline-none transition"
+              placeholder="vendor@example.com"
               required
             />
           </div>
-          <div className="mb-4">
-            <label>
-              Mobile Number 1 <span className="text-red-700">*</span>
+          <div className="mb-6">
+            <label className="block text-sm font-semibold text-gray-700 mb-2">
+              Mobile Number 1 <span className="text-red-500">*</span>
             </label>
             <input
               name="mobile1"
               value={formdata.mobile1}
               onChange={handleChange}
               type="tel"
-              className="border-b-2 border-black w-full"
+              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent outline-none transition"
+              placeholder="+91 9876543210"
               required
             />
           </div>
-          <div className="mb-4">
-            <label>Mobile Number 2</label>
+          <div className="mb-6">
+            <label className="block text-sm font-semibold text-gray-700 mb-2">Mobile Number 2</label>
             <input
               name="mobile2"
               value={formdata.mobile2}
               onChange={handleChange}
               type="tel"
-              className="border-b-2 border-black w-full"
+              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent outline-none transition"
+              placeholder="+91 9876543210"
             />
           </div>
-          <div className="mb-4">
-            <label>
-              Short Address <span className="text-red-700">*</span>
+          <div className="mb-6">
+            <label className="block text-sm font-semibold text-gray-700 mb-2">
+              Short Address <span className="text-red-500">*</span>
             </label>
             <input
               name="address"
               value={formdata.address}
               onChange={handleChange}
               type="text"
-              className="border-b-2 border-black w-full"
+              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent outline-none transition"
+              placeholder="Enter address"
               required
             />
           </div>
-          <div className="mb-4">
-            <label>
-              Vendor Photo <span className="text-red-700">*</span>
+          <div className="mb-6">
+            <label className="block text-sm font-semibold text-gray-700 mb-2">
+              Vendor Photo
             </label>
             <input
               type="file"
               name="photo"
               onChange={handleFileChange}
               accept="image/*"
-              className="border-b-2 border-black w-full"
-              required
+              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent outline-none transition file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-orange-50 file:text-orange-700 hover:file:bg-orange-100"
             />
           </div>
           <button
             type="submit"
-            className="bg-[#FF5D00] text-white px-4 py-2 rounded-md"
+            className="w-full bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white font-semibold py-3 px-6 rounded-lg shadow-lg transition-all duration-300"
           >
-            Add
+            Add Vendor
           </button>
         </form>
+        </div>
       </div>
     </div>
   );
