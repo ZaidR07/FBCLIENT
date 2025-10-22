@@ -10,7 +10,7 @@ import Header from "@/app/components/Header";
 const pricingData = {
   standard: {
     months: {
-      2: {
+      3: {
         price: 199,
         credits: 199,
         features: [
@@ -44,7 +44,7 @@ const pricingData = {
   },
   premium: {
     months: {
-      2: {
+      3: {
         price: 299,
         credits: 299,
         features: [

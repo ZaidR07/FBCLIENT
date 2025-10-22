@@ -79,7 +79,6 @@ const Footer = () => {
             <li onClick={() => router.push("/contact")}>Contact Us</li>
             <li onClick={() => router.push("/careers")}>Careers with Us</li>
             <li onClick={() => router.push("/terms")}>Terms & Conditions</li>
-            <li onClick={() => router.push("/request-info")}>Request Info</li>
             <li onClick={() => router.push("/feedback")}>Feedback</li>
             <li onClick={() => router.push("/report-problem")}>Report a Problem</li>
             <li onClick={() => router.push("/privacy-policy")}>Privacy Policy</li>
