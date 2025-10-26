@@ -16,6 +16,11 @@ const Page = () => {
     furnishingstatuslist: [],
     linelist: [],
     locationlist: [],
+    availableforlist: [],
+    reraapprovedlist: [],
+    sharinglist: [],
+    pgserviceslist: [],
+    totalcapacitylist: [],
   });
   const [sidebaropen, setSidebarOpen] = useState(false);
 
@@ -99,6 +104,11 @@ const Page = () => {
         furnishingstatuslist: [],
         linelist: [],
         locationlist: [],
+        availableforlist: [],
+        reraapprovedlist: [],
+        sharinglist: [],
+        pgserviceslist: [],
+        totalcapacitylist: [],
       });
       load()
     } catch (error) {
@@ -244,6 +254,31 @@ const Page = () => {
             "Furnishing Type",
             "furnishingstatuslist",
             "Enter Furnishing Type"
+          )}
+          {renderInputSection(
+            "Available For",
+            "availableforlist",
+            "Enter Available For"
+          )}
+          {renderInputSection(
+            "RERA Approved",
+            "reraapprovedlist",
+            "Enter RERA Approved"
+          )}
+          {renderInputSection(
+            "Sharing",
+            "sharinglist",
+            "Enter Sharing"
+          )}
+          {renderInputSection(
+            "PG Services",
+            "pgserviceslist",
+            "Enter PG Service"
+          )}
+          {renderInputSection(
+            "Total Capacity",
+            "totalcapacitylist",
+            "Enter Total Capacity"
           )}
            {renderInputSection(
             "Posted By",

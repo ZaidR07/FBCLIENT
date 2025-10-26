@@ -12,6 +12,11 @@ export interface Variables {
   locationlist: string[];
   postedbylist?: string[];
   purchasetypelist?: string[];
+  availableforlist?: string[];
+  reraapprovedlist?: string[];
+  sharinglist?: string[];
+  pgserviceslist?: string[];
+  totalcapacitylist?: string[];
 }
 
 // API Functions

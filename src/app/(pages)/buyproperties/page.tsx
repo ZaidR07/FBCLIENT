@@ -32,6 +32,13 @@ const Page = () => {
   const [purchasetypevalues, setPurchaseTypeValues] = useState([]);
   const [bathroomvalues, setBathroomValues] = useState([]);
   const [balconyvalues, setBalconyValues] = useState([]);
+  const [photosOnly, setPhotosOnly] = useState(false);
+  const [propertyAge, setPropertyAge] = useState("");
+  const [availableForValues, setAvailableForValues] = useState([]);
+  const [reraApprovedValues, setReraApprovedValues] = useState([]);
+  const [pgServicesValues, setPgServicesValues] = useState([]);
+  const [sharingValues, setSharingValues] = useState([]);
+  const [totalCapacityValues, setTotalCapacityValues] = useState([]);
 
   const [range, setRange] = useState([100, 10000]); // Default min-max values
   const [priceRange, setPriceRange] = useState([0, 1000000000]); // Price range state
@@ -51,8 +58,6 @@ const Page = () => {
     postedbylist: [],
   });
 
-  const bathrooms = ["1", "2", "3", "4", "5"];
-  const balconies = ["1", "2", "3", "4", "5"];
 
   const [appliedFilters, setAppliedFilters] = useState([]);
 
@@ -120,6 +125,34 @@ const Page = () => {
       });
     }
 
+    if (photosOnly) {
+      filters.push({ type: "photosOnly", label: "Photos", value: "With photos" });
+    }
+
+    if (propertyAge) {
+      filters.push({ type: "propertyAge", label: "Age", value: propertyAge });
+    }
+
+    if (availableForValues.length > 0) {
+      filters.push({ type: "availableFor", label: "Available For", value: availableForValues.join(", ") });
+    }
+
+    if (reraApprovedValues.length > 0) {
+      filters.push({ type: "reraApproved", label: "RERA", value: reraApprovedValues.join(", ") });
+    }
+
+    if (pgServicesValues.length > 0) {
+      filters.push({ type: "pgServices", label: "PG Services", value: pgServicesValues.join(", ") });
+    }
+
+    if (sharingValues.length > 0) {
+      filters.push({ type: "sharing", label: "Sharing", value: sharingValues.join(", ") });
+    }
+
+    if (totalCapacityValues.length > 0) {
+      filters.push({ type: "totalCapacity", label: "Total Capacity", value: totalCapacityValues.join(", ") });
+    }
+
     if (priceRange[0] !== 0 || priceRange[1] !== 1000000000) {
       filters.push({
         type: "price",
@@ -139,6 +172,8 @@ const Page = () => {
     postedbyValues,
     balconyvalues,
     bathroomvalues,
+    photosOnly,
+    propertyAge,
   ]);
 
   // Function to handle removing a filter
@@ -170,6 +205,27 @@ const Page = () => {
         break;
       case "price":
         setPriceRange([0, 1000000000]);
+        break;
+      case "photosOnly":
+        setPhotosOnly(false);
+        break;
+      case "propertyAge":
+        setPropertyAge("");
+        break;
+      case "availableFor":
+        setAvailableForValues([]);
+        break;
+      case "reraApproved":
+        setReraApprovedValues([]);
+        break;
+      case "pgServices":
+        setPgServicesValues([]);
+        break;
+      case "sharing":
+        setSharingValues([]);
+        break;
+      case "totalCapacity":
+        setTotalCapacityValues([]);
         break;
       default:
         break;
@@ -347,6 +403,76 @@ const Page = () => {
       );
     }
 
+    // Properties with photos
+    if (photosOnly) {
+      newlist = newlist.filter(
+        (item) => Array.isArray(item.images) && item.images.some((img) => !!img)
+      );
+    }
+
+    // Property Age (soft string comparison)
+    if (propertyAge) {
+      const sel = propertyAge.toLowerCase();
+      newlist = newlist.filter((item) => {
+        const val = (item.propertyage || "").toLowerCase().replace(/\s+/g, "");
+        if (!val) return false;
+        if (sel === "0-1") return val.includes("0-1");
+        if (sel === "1-5") return val.includes("1-5");
+        if (sel === "5-10") return val.includes("5-10");
+        if (sel === "10+") return val.includes("10+") || val.startsWith("10+") || (val.startsWith("10") && val.includes("+"));
+        return false;
+      });
+    }
+
+    // Available For (Rent)
+    if (availableForValues.length > 0) {
+      newlist = newlist.filter((item) => {
+        const raw = item.availablefor;
+        if (!raw) return false;
+        const arr = Array.isArray(raw)
+          ? raw
+          : String(raw).split(",").map((s) => s.trim());
+        const arrLower = arr.map((s) => s.toLowerCase());
+        return availableForValues.some((v) => arrLower.includes(String(v).toLowerCase()));
+      });
+    }
+
+    // RERA Approved (Buy)
+    if (reraApprovedValues.length > 0) {
+      newlist = newlist.filter((item) => {
+        const val = (item.reraapproved || "").toString().toLowerCase();
+        return reraApprovedValues.some((v) => val.includes(String(v).toLowerCase()));
+      });
+    }
+
+    // PG Services (ALL selected must be present)
+    if (pgServicesValues.length > 0) {
+      newlist = newlist.filter((item) => {
+        const raw = item.pgservices || [];
+        const arr = Array.isArray(raw)
+          ? raw
+          : String(raw).split(",").map((s) => s.trim());
+        const arrLower = arr.map((s) => s.toLowerCase());
+        return pgServicesValues.every((v) => arrLower.includes(String(v).toLowerCase()));
+      });
+    }
+
+    // Sharing (any)
+    if (sharingValues.length > 0) {
+      newlist = newlist.filter((item) => {
+        const val = (item.sharing || "").toString().toLowerCase();
+        return sharingValues.some((v) => val.includes(String(v).toLowerCase()));
+      });
+    }
+
+    // Total Capacity (any)
+    if (totalCapacityValues.length > 0) {
+      newlist = newlist.filter((item) => {
+        const val = (item.totalcapacity || "").toString().toLowerCase();
+        return totalCapacityValues.some((v) => val.includes(String(v).toLowerCase()));
+      });
+    }
+
     setPropertiesList(newlist);
   };
 
@@ -362,6 +488,13 @@ const Page = () => {
     postedbyValues,
     bathroomvalues,
     balconyvalues,
+    photosOnly,
+    propertyAge,
+    availableForValues,
+    reraApprovedValues,
+    pgServicesValues,
+    sharingValues,
+    totalCapacityValues,
   ]);
 
   const handleReset = () => {
@@ -373,6 +506,13 @@ const Page = () => {
     setPriceRange([0, 10000000000]);
     setPropertiesList(originalpropertiesList);
     setFurnishingStatusValues([]);
+    setPhotosOnly(false);
+    setPropertyAge("");
+    setAvailableForValues([]);
+    setReraApprovedValues([]);
+    setPgServicesValues([]);
+    setSharingValues([]);
+    setTotalCapacityValues([]);
   };
 
   return (
@@ -408,7 +548,7 @@ const Page = () => {
         </nav>
 
         {/* Filter & Sort Buttons */}
-        <div className="mt-[2vh]   flex justify-between px-5">
+        <div className="mt-[2vh] lg:mt-[5vh]   flex justify-between px-5">
           <button
             onClick={() => setFilterOpen(!filteropen)}
             className="lg:hidden border-[#f3701f] border-2 py-2 px-4 flex gap-2 rounded-xl"
@@ -422,6 +562,7 @@ const Page = () => {
           isOpen={filteropen}
           appliedFilters={appliedFilters}
           variables={variables}
+          view={view}
           constructionstatusvalues={constructionstatusvalues}
           purchasetypevalues={purchasetypevalues}
           bathroomvalues={bathroomvalues}
@@ -430,6 +571,7 @@ const Page = () => {
           amenitiesvalues={amenitiesvalues}
           furnishingstatusValues={furnishingstatusValues}
           range={range}
+          priceRange={priceRange}
           propertiesList={propertiesList}
           onRemoveFilter={handleRemoveFilter}
           onConstructionStatusChange={setConstructionStatusValues}
@@ -439,6 +581,21 @@ const Page = () => {
           onPostedByChange={setPostedByValues}
           onAmenitiesChange={setAmenitiesValues}
           onFurnishingChange={setFurnishingStatusValues}
+          photosOnly={photosOnly}
+          onPhotosOnlyChange={setPhotosOnly}
+          propertyAge={propertyAge}
+          onPropertyAgeChange={setPropertyAge}
+          onPriceRangeChange={setPriceRange}
+          availableForValues={availableForValues}
+          onAvailableForChange={setAvailableForValues}
+          reraApprovedValues={reraApprovedValues}
+          onReraApprovedChange={setReraApprovedValues}
+          pgServicesValues={pgServicesValues}
+          onPgServicesChange={setPgServicesValues}
+          sharingValues={sharingValues}
+          onSharingChange={setSharingValues}
+          totalCapacityValues={totalCapacityValues}
+          onTotalCapacityChange={setTotalCapacityValues}
           onRangeChange={setRange}
           onReset={handleReset}
           onClose={() => setFilterOpen(false)}
@@ -467,7 +624,7 @@ const Page = () => {
           )}
         </section>
         {/* Properties List */}
-        <section className=" px-[5%] lg:ml-[30%] py-5 flex flex-col gap-4">
+        <section className=" px-[5%] lg:ml-[32%] py-5 flex flex-col gap-4">
           <div></div>
           {Array.isArray(propertiesList) && propertiesList.length > 0 ? (
             propertiesList.map((item, key) => (

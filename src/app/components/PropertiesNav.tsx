@@ -170,10 +170,10 @@ const Searchsection = () => {
   };
 
   return (
-    <div className="bg-gradient-to-r from-[#FF5D00] to-[#FF7A33] px-3 lg:px-6 py-2 lg:py-0 lg:h-[10vh] ml-[3%] lg:ml-[5%] w-[60%] lg:w-[70%] rounded-xl shadow-lg flex items-center gap-2 lg:gap-4">
+    <div className="bg-gradient-to-r from-[#FF5D00] to-[#FF7A33] px-3 lg:px-4 py-2 lg:py-0 lg:h-[10vh] ml-0 lg:ml-4 w-[62%] lg:w-[68%] rounded-full shadow-lg flex items-center gap-2 lg:gap-3">
       {/* Dropdown for Property Type */}
       <select
-        className="p-1 lg:p-2 border-2 border-white/20 rounded-lg outline-none bg-white text-xs text-[#FF5D00] lg:text-base font-medium shadow-sm hover:shadow-md transition-shadow cursor-pointer"
+        className="h-9 lg:h-11 px-2 lg:px-3 border-2 border-white/20 rounded-lg outline-none bg-white text-xs text-[#FF5D00] lg:text-sm font-medium shadow-sm hover:shadow-md transition-shadow cursor-pointer"
         value={propertyType}
         onChange={(e) => setPropertyType(e.target.value)}
       >
@@ -187,7 +187,7 @@ const Searchsection = () => {
         <motion.input
           ref={inputRef}
           key={isFocused ? "fixed-placeholder" : placeholderIndex}
-          className="outline-none bg-white py-2 lg:py-3 px-3 lg:px-6 text-sm lg:text-base w-full text-gray-700 rounded-lg shadow-sm focus:shadow-md transition-shadow placeholder:text-gray-400"
+          className="outline-none bg-white h-9 lg:h-11 px-3 lg:px-5 text-sm lg:text-base w-full text-gray-700 rounded-lg shadow-sm focus:shadow-md transition-shadow placeholder:text-gray-400"
           type="text"
           value={searchText}
           onChange={(e) => setSearchText(e.target.value)}
@@ -224,7 +224,7 @@ const Searchsection = () => {
       {/* Voice Input Button */}
       <button
         onClick={startListening}
-        className="p-2 lg:p-3 bg-white rounded-full shadow-md hover:shadow-lg hover:scale-105 transition-all duration-200"
+        className="h-9 w-9 lg:h-11 lg:w-11 flex items-center justify-center bg-white rounded-full shadow-md hover:shadow-lg hover:scale-105 transition-all duration-200"
         title="Voice Search"
       >
         <MicroPhone />
@@ -237,7 +237,7 @@ const Searchsection = () => {
         }`}
         target="_blank"
         rel="noopener noreferrer"
-        className="px-3 lg:px-6 py-2 lg:py-2.5 bg-white hover:bg-gray-50 rounded-lg text-xs lg:text-base text-[#FF5D00] font-semibold text-center shadow-md hover:shadow-lg transition-all duration-200"
+        className="px-3 lg:px-5 h-9 lg:h-11 flex items-center bg-white hover:bg-gray-50 rounded-lg text-xs lg:text-sm text-[#FF5D00] font-semibold text-center shadow-md hover:shadow-lg transition-all duration-200"
         onClick={(e) => {
           if (!searchText.trim()) {
             e.preventDefault();
@@ -280,7 +280,7 @@ const PropertiesNav = () => {
   }, [userCookie, brokerCookie]);
 
   return (
-    <nav className="w-full shadow-lg bg-white items-center fixed top-0 z-[999] flex px-[2%] lg:px-[2.5%] py-2 lg:py-0 border-b border-gray-100">
+    <nav className="w-full justify-between shadow-lg bg-white items-center fixed top-0 z-[999] flex px-[2%] lg:px-[2.5%] py-2 lg:py-0 border-b border-gray-100">
       <Register registeropen={registeropen} setRegisterOpen={setRegisterOpen} />
       <Image
         src="/logo.jpg"
@@ -291,18 +291,7 @@ const PropertiesNav = () => {
         onClick={() => router.push("/")}
       />
       <Searchsection />
-      <div className="ml-[3%] lg:ml-[5%]">
-        {user ? (
-          <Profile user={user} />
-        ) : (
-          <button
-            className="text-sm lg:text-lg text-white px-4 lg:px-6 py-2 bg-gradient-to-r from-[#FF5D00] to-[#FF7A33] hover:from-[#FF7A33] hover:to-[#FF5D00] rounded-lg shadow-md hover:shadow-lg transition-all duration-300 font-medium"
-            onClick={() => setRegisterOpen(true)}
-          >
-            Sign&nbsp;up
-          </button>
-        )}
-      </div>
+      
       <div>
         <HamIcon opensidebar={opensidebar} setOpenSidebar={setOpenSidebar} />
       </div>

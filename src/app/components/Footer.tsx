@@ -121,11 +121,7 @@ const Footer = () => {
         <h1 className="text-xl border-b-2 inline-block mb-2">Company Moto</h1>
         <br />
         <span className="text-sm sm:text-base leading-6">
-          Lorem ipsum dolor sit amet consectetur adipisicing elit. Rem odit quas dicta debitis perferendis nam,
-          ex iure error fugit. Laborum, at? Adipisci nesciunt cupiditate, dolorem dolores qui porro repellat,
-          incidunt veritatis impedit, voluptates soluta vitae labore explicabo deleniti. Sequi rerum labore totam,
-          doloremque ducimus, quo eaque est nostrum dignissimos, asperiores maiores tempora qui itaque vero
-          cupiditate beatae animi ullam eveniet.
+          Listy4u — Connecting Homes, Services & People. Find properties, book trusted home services, and make every step of home living simple, fast, and reliable.
         </span>
       </section>
       <div className="w-[90%] mx-[5%] h-[1px] bg-[#fff] mt-6 md:mt-8 lg:hidden"></div>
@@ -134,11 +130,7 @@ const Footer = () => {
         <h1 className="text-2xl border-b-2 inline-block mb-2">Company Moto</h1>
         <br />
         <span className="text-lg leading-7 opacity-90">
-          Lorem ipsum dolor sit amet consectetur adipisicing elit. Rem odit quas dicta debitis perferendis nam,
-          ex iure error fugit. Laborum, at? Adipisci nesciunt cupiditate, dolorem dolores qui porro repellat,
-          incidunt veritatis impedit, voluptates soluta vitae labore explicabo deleniti. Sequi rerum labore totam,
-          doloremque ducimus, quo eaque est nostrum dignissimos, asperiores maiores tempora qui itaque vero
-          cupiditate beatae animi ullam eveniet.
+          Listy4u — Connecting Homes, Services & People. Find properties, book trusted home services, and make every step of home living simple, fast, and reliable.
         </span>
       </section>
       <section className="mt-6 md:mt-8 lg:mt-10">

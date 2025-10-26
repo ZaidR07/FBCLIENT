@@ -131,6 +131,11 @@ const Page = () => {
     location: "",
     line: "",
     images: [],
+    availablefor: "",
+    reraapproved: [],
+    pgservices: [],
+    sharing: "",
+    totalcapacity: "",
   });
 
   useEffect(() => {
@@ -153,6 +158,11 @@ const Page = () => {
     constructionstatuslist: [],
     linelist: [],
     locationlist: [],
+    availableforlist: [],
+    reraapprovedlist: [],
+    pgserviceslist: [],
+    sharinglist: [],
+    totalcapacitylist: [],
   });
 
   const handleload = async () => {
@@ -340,6 +350,11 @@ const Page = () => {
         location: "",
         line: "",
         images: [],
+        availablefor: "",
+        reraapproved: [],
+        pgservices: [],
+        sharing: "",
+        totalcapacity: "",
       });
       setHighlightInput("");
       setCurrentPropertytype(1);
@@ -590,6 +605,39 @@ const Page = () => {
             </select>
           </div>
 
+          {forValue !== "PG" && (
+            <div className="mb-4">
+              <label>Property Age (Yrs)</label>
+              <input
+                name="propertyage"
+                value={formdata.propertyage}
+                onChange={handleChange}
+                type="number"
+                className="border-b-2 border-black w-full"
+              />
+            </div>
+          )}
+
+          {forValue == "Rent" && (
+            <div className="mb-4">
+              <label>
+                Available for <span className="text-red-700">*</span>
+              </label>
+              <select
+                name="availablefor"
+                value={formdata.availablefor}
+                onChange={handleChange}
+                className="border-b-2 border-black w-full mt-2 py-1"
+                required
+              >
+                <option value="">Select</option>
+                {variables.availableforlist && variables.availableforlist.map((item, index) => (
+                  <option key={index} value={item}>{item}</option>
+                ))}
+              </select>
+            </div>
+          )}
+
           {forValue == "Sale" && currentpropertytype != 3 && (
             <>
               {/* // Facing */}
@@ -630,16 +678,93 @@ const Page = () => {
                     ))}
                 </select>
               </div>
-              {/* // Property Age */}
+
+              {/* RERA Approved (Buy) */}
               <div className="mb-4">
-                <label>Property Age (Yrs)</label>
-                <input
-                  name="propertyage"
-                  value={formdata.propertyage}
+                <label>RERA Approved</label>
+                <div className="flex flex-wrap gap-4 mt-2">
+                  {(variables.reraapprovedlist || []).map((item, index) => {
+                    const checked = (formdata.reraapproved || []).includes(item);
+                    return (
+                      <label key={index} className="flex items-center gap-2">
+                        <input
+                          type="checkbox"
+                          checked={checked}
+                          onChange={() => {
+                            setFormdata((prev) => ({
+                              ...prev,
+                              reraapproved: checked
+                                ? prev.reraapproved.filter((v) => v !== item)
+                                : [...(prev.reraapproved || []), item],
+                            }));
+                          }}
+                        />
+                        <span>{item}</span>
+                      </label>
+                    );
+                  })}
+                </div>
+              </div>
+          </>
+          )}
+
+          {/* PG specific fields */}
+          {forValue == "PG" && (
+            <>
+              <div className="mb-4">
+                <label>PG Services</label>
+                <div className="flex flex-wrap gap-4 mt-2">
+                  {(variables.pgserviceslist || []).map((item, index) => {
+                    const checked = (formdata.pgservices || []).includes(item);
+                    return (
+                      <label key={index} className="flex items-center gap-2">
+                        <input
+                          type="checkbox"
+                          checked={checked}
+                          onChange={() => {
+                            setFormdata((prev) => ({
+                              ...prev,
+                              pgservices: checked
+                                ? prev.pgservices.filter((v) => v !== item)
+                                : [...(prev.pgservices || []), item],
+                            }));
+                          }}
+                        />
+                        <span>{item}</span>
+                      </label>
+                    );
+                  })}
+                </div>
+              </div>
+
+              <div className="mb-4">
+                <label>Sharing Option</label>
+                <select
+                  name="sharing"
+                  value={formdata.sharing}
                   onChange={handleChange}
-                  type="number"
-                  className="border-b-2 border-black w-full"
-                />
+                  className="border-b-2 border-black w-full mt-2 py-1"
+                >
+                  <option value="">Select</option>
+                  {(variables.sharinglist || []).map((item, index) => (
+                    <option key={index} value={item}>{item}</option>
+                  ))}
+                </select>
+              </div>
+
+              <div className="mb-4">
+                <label>Total Capacity</label>
+                <select
+                  name="totalcapacity"
+                  value={formdata.totalcapacity}
+                  onChange={handleChange}
+                  className="border-b-2 border-black w-full mt-2 py-1"
+                >
+                  <option value="">Select</option>
+                  {(variables.totalcapacitylist || []).map((item, index) => (
+                    <option key={index} value={item}>{item}</option>
+                  ))}
+                </select>
               </div>
             </>
           )}
