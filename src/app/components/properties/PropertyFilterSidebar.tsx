@@ -46,7 +46,7 @@ interface FilterSidebarProps {
 }
 
 const bathrooms = ["1", "2", "3", "4", "5"];
-const balconies = ["1", "2", "3", "4", "5"];
+const balconies = ["0", "1", "2", "3", "4", "5"];
 
 export const PropertyFilterSidebar = ({
   isOpen,
@@ -90,19 +90,6 @@ export const PropertyFilterSidebar = ({
   onReset,
   onClose,
 }: FilterSidebarProps) => {
-  const budgetOptions: number[] = [
-    500000, 1000000, 2000000, 3000000, 4000000,
-    5000000, 7500000, 10000000, 15000000, 20000000,
-    30000000, 50000000, 100000000
-  ];
-  const toLabel = (v: number | null, isMin: boolean) => {
-    if (v === null) return isMin ? "No min" : "No max";
-    const lakh = 100000;
-    const crore = 10000000;
-    if (v % crore === 0) return `${v / crore} Cr`;
-    if (v % lakh === 0) return `${v / lakh} L`; 
-    return `${v}`;
-  };
   return (
     <div
       className={`w-[90%] lg:w-[32%] max-h-[55vh] lg:max-h-[70vh] bg-[#fff] fixed rounded-2xl mt-[12vh] lg:mt-[5vh] z-30 lg:z-0 pl-[8%] pr-4 lg:px-[2%] py-5 border-2 border-[#f3701f] lg:border-gray-300 transition-transform duration-500 ease-in-out overflow-y-scroll 
@@ -214,13 +201,13 @@ export const PropertyFilterSidebar = ({
           <input
             type="number"
             value={range[0]}
-            className="border p-2 w-16 text-center"
+            className="border p-2  2xl:w-28 xl:w-24 lg:w-20 w-12 text-center"
             onChange={(e) => onRangeChange([Number(e.target.value), range[1]])}
           />
           <input
             type="number"
             value={range[1]}
-            className="border p-2 w-16 text-center"
+            className="border p-2 2xl:w-28 xl:w-24 lg:w-20 w-12 text-center"
             onChange={(e) => onRangeChange([range[0], Number(e.target.value)])}
           />
           <span>
@@ -487,7 +474,7 @@ export const PropertyFilterSidebar = ({
       )}
 
       {/* RERA Approved (Buy) */}
-      {view === 'Buy' && (
+      {view === 'Sale' && (
         <div>
           <div className="mt-4 flex gap-3">
             <span className="font-semibold text-lg">RERA Approved</span>
@@ -555,41 +542,7 @@ export const PropertyFilterSidebar = ({
       </div>
       )}
 
-      {/* Budget */}
-      <div>
-        <div className="mt-4 flex gap-3 items-center">
-          <span className="font-semibold text-lg">Budget</span>
-          <AngleDownIcon width={20} fill="#000" />
-        </div>
-        <div className="mt-2 grid grid-cols-2 gap-3">
-          <select
-            className="border rounded-full px-3 py-2 text-sm"
-            value={priceRange[0] === 0 ? "" : String(priceRange[0])}
-            onChange={(e) => {
-              const min = e.target.value === "" ? 0 : parseInt(e.target.value, 10);
-              onPriceRangeChange([min, priceRange[1]]);
-            }}
-          >
-            <option value="">No min</option>
-            {budgetOptions.map((v) => (
-              <option key={`min-${v}`} value={v}>{toLabel(v, true)}</option>
-            ))}
-          </select>
-          <select
-            className="border rounded-full px-3 py-2 text-sm"
-            value={priceRange[1] === 1000000000 ? "" : String(priceRange[1])}
-            onChange={(e) => {
-              const max = e.target.value === "" ? 1000000000 : parseInt(e.target.value, 10);
-              onPriceRangeChange([priceRange[0], max]);
-            }}
-          >
-            <option value="">No max</option>
-            {budgetOptions.map((v) => (
-              <option key={`max-${v}`} value={v}>{toLabel(v, false)}</option>
-            ))}
-          </select>
-        </div>
-      </div>
+      
 
       {/* Filter and Reset Buttons */}
       <div className="flex justify-between mt-4">

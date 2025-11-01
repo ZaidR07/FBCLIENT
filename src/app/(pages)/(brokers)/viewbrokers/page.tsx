@@ -48,7 +48,7 @@ const Page = () => {
   const [showCreditModal, setShowCreditModal] = useState(false);
   const [selectedBrokerId, setSelectedBrokerId] = useState<string>("");
   const [creditCount, setCreditCount] = useState<string>("");
-  const [validityOption, setValidityOption] = useState<string>("2m"); // 2m, 6m, 1y
+  const [validityOption, setValidityOption] = useState<string>("3m"); // 3m, 6m, 1y
 
   const fetchbrokerslist = async () => {
     const response = await axiosInstance.get('/api/getbrokers');
@@ -81,7 +81,7 @@ const Page = () => {
   const openCreditModal = (broker_id: string) => {
     setSelectedBrokerId(broker_id);
     setCreditCount("");
-    setValidityOption("2m");
+    setValidityOption("3m");
     setShowCreditModal(true);
   };
 
@@ -104,7 +104,7 @@ const Page = () => {
       }
       // Compute validity based on selection
       const validityDate = new Date();
-      if (validityOption === "2m") validityDate.setMonth(validityDate.getMonth() + 2);
+      if (validityOption === "3m") validityDate.setMonth(validityDate.getMonth() + 3);
       else if (validityOption === "6m") validityDate.setMonth(validityDate.getMonth() + 6);
       else if (validityOption === "1y") validityDate.setFullYear(validityDate.getFullYear() + 1);
 
@@ -261,12 +261,12 @@ const Page = () => {
                   value={validityOption}
                   onChange={(e) => setValidityOption(e.target.value)}
                 >
-                  <option value="2m">2 Months</option>
+                  <option value="3m">3 Months</option>
                   <option value="6m">6 Months</option>
                   <option value="1y">1 Year</option>
                 </select>
                 <p className="text-xs text-gray-500 mt-1">
-                  Expires on: {(() => { const d = new Date(); if (validityOption === "2m") d.setMonth(d.getMonth() + 2); else if (validityOption === "6m") d.setMonth(d.getMonth() + 6); else d.setFullYear(d.getFullYear() + 1); return d.toLocaleDateString(); })()}
+                  Expires on: {(() => { const d = new Date(); if (validityOption === "3m") d.setMonth(d.getMonth() + 3); else if (validityOption === "6m") d.setMonth(d.getMonth() + 6); else d.setFullYear(d.getFullYear() + 1); return d.toLocaleDateString(); })()}
                 </p>
               </div>
               <div className="flex justify-end gap-2 pt-2">

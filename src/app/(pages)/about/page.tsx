@@ -42,7 +42,6 @@ const page = () => {
           <li>Works in easy steps so you can find your dream home faster.</li>
           <li>We collect your requirements via Google Form/Link for Tenants and Owners.</li>
           <li>Our team reviews requests and gets in touch via WhatsApp or call.</li>
-          <li>We help schedule a site visit and coordinate viewing of shortlisted properties.</li>
         </ol>
 
         <div className="mt-6 p-4 rounded-lg bg-yellow-50 border border-yellow-200">

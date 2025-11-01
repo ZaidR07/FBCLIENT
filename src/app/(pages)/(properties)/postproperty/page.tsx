@@ -124,6 +124,7 @@ const Page = () => {
     bathrooms: "",
     price: "",
     postedby: "", // Will be set to broker_id, owner_id, or user_id
+    postedbytype: "", // Will be set to value of 'who' (broker/owner/user)
     type: "", // Select field for property type
     constructionstatus: "",
     furnishing: "",
@@ -141,11 +142,11 @@ const Page = () => {
   useEffect(() => {
     if (who === "broker" && broker) {
       // Set postedby to broker_id for brokers
-      setFormdata((prev) => ({ ...prev, postedby: broker.broker_id }));
+      setFormdata((prev) => ({ ...prev, postedby: broker.broker_id, postedbytype: "broker" }));
       console.log("Setting postedby to broker_id:", broker.broker_id);
     } else if (userId) {
       // Set postedby to owner_id or user_id from JWT token
-      setFormdata((prev) => ({ ...prev, postedby: userId }));
+      setFormdata((prev) => ({ ...prev, postedby: userId, postedbytype: who || "user" }));
       console.log("Setting postedby to user/owner ID:", userId);
     }
   }, [userId, broker, who]);
@@ -297,6 +298,12 @@ const Page = () => {
       return;
     }
     
+    // Require at least 2 images
+    if (!formdata.images || formdata.images.length < 2) {
+      toast.error("Please upload at least 2 images.");
+      return;
+    }
+
     setIsLoading(true); // Start loading
 
     try {
@@ -343,6 +350,7 @@ const Page = () => {
         bathrooms: "",
         price: "",
         postedby: currentPostedBy, // Keep the broker_id, owner_id, or user_id
+        postedbytype: who || "user",
         type: "",
         constructionstatus: "",
         furnishing: "",
@@ -597,11 +605,17 @@ const Page = () => {
               required
             >
               <option value="">Select</option>
+              <option value="0">0</option>
               <option value="1">1</option>
               <option value="2">2</option>
               <option value="3">3</option>
               <option value="4">4</option>
               <option value="5">5</option>
+              <option value="6">6</option>
+              <option value="7">7</option>
+              <option value="8">8</option>
+              <option value="9">9</option>
+              <option value="10">10</option>
             </select>
           </div>
 
@@ -638,7 +652,7 @@ const Page = () => {
             </div>
           )}
 
-          {forValue == "Sale" && currentpropertytype != 3 && (
+          {forValue == "Sale" && currentpropertytype != 3 && who !== "owner" && (
             <>
               {/* // Facing */}
               <div className="mb-4">

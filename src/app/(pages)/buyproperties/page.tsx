@@ -352,27 +352,29 @@ const Page = () => {
     }
 
     if (postedbyValues && postedbyValues.length > 0) {
-      newlist = newlist.filter((item) =>
-        postedbyValues.includes(item.postedby)
-      );
+      const selected = postedbyValues.map((v) => String(v).toLowerCase());
+      newlist = newlist.filter((item) => {
+        const val = (item.postedbytype || "").toString().toLowerCase();
+        return selected.includes(val);
+      });
     }
 
     if (bathroomvalues && bathroomvalues.length > 0) {
-      const maxBathrooms = Math.max(
-        ...bathroomvalues.map((val) => parseInt(val))
-      );
-      newlist = newlist.filter(
-        (item) => parseInt(item.bathrooms) <= maxBathrooms
-      );
+      const selected = bathroomvalues.map((val) => parseInt(val, 10));
+      newlist = newlist.filter((item) => {
+        const b = parseInt(item.bathrooms, 10);
+        if (isNaN(b)) return false;
+        return selected.includes(b);
+      });
     }
 
     if (balconyvalues && balconyvalues.length > 0) {
-      const maxBalconies = Math.max(
-        ...balconyvalues.map((val) => parseInt(val))
-      );
-      newlist = newlist.filter(
-        (item) => parseInt(item.balconies) <= maxBalconies
-      );
+      const selected = balconyvalues.map((val) => parseInt(val, 10));
+      newlist = newlist.filter((item) => {
+        const b = parseInt(item.balconies, 10);
+        if (isNaN(b)) return false;
+        return selected.includes(b);
+      });
     }
 
     // Filter by Amenities (ALL selected amenities must be present)
@@ -403,6 +405,16 @@ const Page = () => {
       );
     }
 
+    // Filter by Area Range
+    if (range && Array.isArray(range) && range.length === 2) {
+      const [minA, maxA] = range;
+      newlist = newlist.filter((item) => {
+        const a = Number(item.area);
+        if (isNaN(a)) return false;
+        return a >= minA && a <= maxA;
+      });
+    }
+
     // Properties with photos
     if (photosOnly) {
       newlist = newlist.filter(
@@ -412,14 +424,14 @@ const Page = () => {
 
     // Property Age (soft string comparison)
     if (propertyAge) {
-      const sel = propertyAge.toLowerCase();
+      const sel = propertyAge;
       newlist = newlist.filter((item) => {
-        const val = (item.propertyage || "").toLowerCase().replace(/\s+/g, "");
-        if (!val) return false;
-        if (sel === "0-1") return val.includes("0-1");
-        if (sel === "1-5") return val.includes("1-5");
-        if (sel === "5-10") return val.includes("5-10");
-        if (sel === "10+") return val.includes("10+") || val.startsWith("10+") || (val.startsWith("10") && val.includes("+"));
+        const age = parseInt((item.propertyage ?? "").toString(), 10);
+        if (isNaN(age)) return false;
+        if (sel === "0-1") return age >= 0 && age <= 1;
+        if (sel === "1-5") return age >= 1 && age <= 5;
+        if (sel === "5-10") return age > 5 && age <= 10;
+        if (sel === "10+") return age >= 10;
         return false;
       });
     }
@@ -482,6 +494,7 @@ const Page = () => {
     propertyValue,
     bhkValue,
     priceRange,
+    range,
     constructionstatusvalues,
     amenitiesvalues,
     furnishingstatusValues,
@@ -524,7 +537,7 @@ const Page = () => {
         <PropertiesNav />
       </div>
 
-      <div className="bg-gray-100 mt-[8vh] lg:mt-[14vh] lg:pt-[5vh] min-h-screen">
+      <div className="bg-gray-100 mt-[8vh] lg:mt-[14vh] lg:pt-[5vh] 2xl:pt-2 min-h-screen">
         <Suspense fallback={<div>Loading...</div>}>
           <QueryParamsHandler
             onParams={useCallback(({ type, view, search }) => {

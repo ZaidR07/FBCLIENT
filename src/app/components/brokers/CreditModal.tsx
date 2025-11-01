@@ -27,7 +27,7 @@ export const CreditModal = ({
 
   const getExpiryDate = () => {
     const d = new Date();
-    if (validityOption === "2m") d.setMonth(d.getMonth() + 2);
+    if (validityOption === "3m") d.setMonth(d.getMonth() + 3);
     else if (validityOption === "6m") d.setMonth(d.getMonth() + 6);
     else d.setFullYear(d.getFullYear() + 1);
     return d.toLocaleDateString();
@@ -70,7 +70,7 @@ export const CreditModal = ({
               value={validityOption}
               onChange={(e) => onValidityChange(e.target.value)}
             >
-              <option value="2m">2 Months</option>
+              <option value="3m">3 Months</option>
               <option value="6m">6 Months</option>
               <option value="1y">1 Year</option>
             </select>

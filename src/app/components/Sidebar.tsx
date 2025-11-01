@@ -423,8 +423,8 @@ const Sidebar = ({ opensidebar, setOpenSidebar }) => {
           <div className="flex gap-2 ">
             <PhoneIcon />
             <div className="flex flex-col self-start">
-              <a href="tel ">+91 6839765478</a>
-              <a href="">+91 8639765478</a>
+              <a href="tel:+919987526731">+91 9987526731</a>
+              <a href="tel:+919987048613">+91 9987048613</a>
             </div>
           </div>
         </div>

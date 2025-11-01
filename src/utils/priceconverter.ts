@@ -1,6 +1,9 @@
-
-
 export const priceconverter = (n) => {
+    // Handle null, undefined, or non-numeric values
+    if (n === null || n === undefined || isNaN(n)) {
+        return "N/A";
+    }
+
     let absN = Math.abs(n);
 
     if (absN >= 1e7) {

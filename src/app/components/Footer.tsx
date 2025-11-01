@@ -96,9 +96,14 @@ const Footer = () => {
               <span className="hidden ml-2">Whatsapp</span>
             </li>
             <li className="flex items-center justify-center">
-              <div className="p-3 md:p-2 rounded-full bg-white/10">
+              <a
+                href="https://www.instagram.com/listy4u?igsh=ZzJwNnR1ZGdkYWdt"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="p-3 md:p-2 rounded-full bg-white/10 inline-flex"
+              >
                 <InstagramIcon />
-              </div>
+              </a>
               <span className="hidden ml-2">Instagram</span>
             </li>
             <li className="flex items-center justify-center">
@@ -135,7 +140,7 @@ const Footer = () => {
       </section>
       <section className="mt-6 md:mt-8 lg:mt-10">
         <a
-          href="http://trexinfotech.in"
+          href="http://t-rexinfotech.in"
           className="text-center cursor-pointer lg:text-xl"
           target="_blank"
         >

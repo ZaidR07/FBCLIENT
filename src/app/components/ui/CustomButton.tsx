@@ -11,13 +11,11 @@ export const CustomButton = ({
   ...props
 }: CustomButtonProps) => {
   return (
-    <a className="w-[100%]" href="/joinus" target="_blank" >
-      <button
-        className={`inline-flex items-center justify-center whitespace-nowrap rounded-md px-4 py-2 text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus:ring-[#FF5D00] bg-[#FF5D00] text-white hover:bg-[#FF5D00]/90 ${className}`}
-        {...props}
-      >
-        {children}
-      </button>
-    </a>
+    <button
+      className={`inline-flex items-center justify-center whitespace-nowrap rounded-md px-4 py-2 text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus:ring-[#FF5D00] bg-[#FF5D00] text-white hover:bg-[#FF5D00]/90 ${className}`}
+      {...props}
+    >
+      {children}
+    </button>
   );
 };

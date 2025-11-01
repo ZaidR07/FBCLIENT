@@ -1,7 +1,9 @@
+"use client";
 
 import { CustomButton } from "./ui/CustomButton";
 import { CustomCard , CustomCardHeader , CustomCardContent , CustomCardFooter } from "./ui/CustomCard";
 import { Package, CreditCard, FileCheck, Star } from "lucide-react";
+import { useRouter } from "next/navigation";
 
 interface PriceCardProps {
   title: string;
@@ -10,9 +12,28 @@ interface PriceCardProps {
   credits: number;
   tier: string;
   type: "builder" | "dealer";
+  months?: number;
 }
 
-export function PriceCard({ title, price, features, credits, tier, type }: PriceCardProps) {
+export function PriceCard({ title, price, features, credits, tier, type, months }: PriceCardProps) {
+  const router = useRouter();
+
+  const handlePurchase = () => {
+    const planData = {
+      title,
+      price,
+      credits,
+      tier,
+      type,
+      months,
+      features
+    };
+    
+    // Store plan data in sessionStorage and navigate to checkout
+    sessionStorage.setItem('selectedPlan', JSON.stringify(planData));
+    router.push('/checkout');
+  };
+
   return (
     <CustomCard className={`w-full max-w-sm transition-all duration-300 hover:shadow-lg ${
       type === "dealer" ? "border-[#FF5D00]" : ""
@@ -48,8 +69,8 @@ export function PriceCard({ title, price, features, credits, tier, type }: Price
         </div>
       </CustomCardContent>
       <CustomCardFooter>
-        <CustomButton className="w-full">
-          Inquire Now
+        <CustomButton className="w-full" onClick={handlePurchase}>
+          Purchase Plan
         </CustomButton>
       </CustomCardFooter>
     </CustomCard>

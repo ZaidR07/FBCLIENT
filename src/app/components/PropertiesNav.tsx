@@ -284,13 +284,13 @@ const PropertiesNav = () => {
       <Register registeropen={registeropen} setRegisterOpen={setRegisterOpen} />
       <Image
         src="/logo.jpg"
-        width={90}
-        height={90}
+        width={80}
+        height={80}
         alt="logo"
         className="cursor-pointer hover:opacity-80 transition-opacity"
         onClick={() => router.push("/")}
       />
-      <Searchsection />
+      {/* <Searchsection /> */}
       
       <div>
         <HamIcon opensidebar={opensidebar} setOpenSidebar={setOpenSidebar} />

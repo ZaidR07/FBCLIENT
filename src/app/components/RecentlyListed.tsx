@@ -35,58 +35,66 @@ const RecentlyListed = () => {
       <h1 className="text-[#FF5D00] text-center">Recently Listed</h1>
 
       {/* 🔹 For Sale Section */}
-      <h2 className="text-lg lg:text-2xl mt-6 ml-2">For Sale</h2>
-      <div className="relative mt-2">
-        <button
-          onClick={() => scrollLeft(saleRef)}
-          className="hidden lg:block absolute left-0 top-1/2 transform -translate-y-1/2 z-10 bg-gray-200 p-2 rounded-full shadow-md"
-        >
-          <AngleLeft className="w-6 h-6 text-gray-600" />
-        </button>
-        <div
-          ref={saleRef}
-          className="overflow-x-auto whitespace-nowrap flex gap-3 lg:gap-8 pb-2 scrollbar-hide"
-        >
-          {propertieslist
-            .filter((property) => property.for === "Sale")
-            .map((property, index) => (
-              <PropertyCard key={index} property={property} router={router} />
-            ))}
-        </div>
-        <button
-          onClick={() => scrollRight(saleRef)}
-          className="hidden lg:block absolute right-0 top-1/2 transform -translate-y-1/2 z-10 bg-gray-200 p-2 rounded-full shadow-md"
-        >
-          <AngleRight className="w-6 h-6 text-gray-600" />
-        </button>
-      </div>
+      {propertieslist.some((property) => property.for === "Sale") && (
+        <>
+          <h2 className="text-lg lg:text-2xl mt-6 ml-2">For Sale</h2>
+          <div className="relative mt-2">
+            <button
+              onClick={() => scrollLeft(saleRef)}
+              className="hidden lg:block absolute left-0 top-1/2 transform -translate-y-1/2 z-10 bg-gray-200 p-2 rounded-full shadow-md"
+            >
+              <AngleLeft className="w-6 h-6 text-gray-600" />
+            </button>
+            <div
+              ref={saleRef}
+              className="overflow-x-auto whitespace-nowrap flex gap-3 lg:gap-8 pb-2 scrollbar-hide"
+            >
+              {propertieslist
+                .filter((property) => property.for === "Sale")
+                .map((property, index) => (
+                  <PropertyCard key={index} property={property} router={router} />
+                ))}
+            </div>
+            <button
+              onClick={() => scrollRight(saleRef)}
+              className="hidden lg:block absolute right-0 top-1/2 transform -translate-y-1/2 z-10 bg-gray-200 p-2 rounded-full shadow-md"
+            >
+              <AngleRight className="w-6 h-6 text-gray-600" />
+            </button>
+          </div>
+        </>
+      )}
 
       {/* 🔹 For Rent Section */}
-      <h2 className="text-lg lg:text-2xl mt-6 ml-2">For Rent</h2>
-      <div className="relativchate mt-2">
-        <button
-          onClick={() => scrollLeft(rentRef)}
-          className="hidden lg:block absolute left-0 top-1/2 transform -translate-y-1/2 z-10 bg-gray-200 p-2 rounded-full shadow-md"
-        >
-          <AngleLeft className="w-6 h-6 text-gray-600" />
-        </button>
-        <div
-          ref={rentRef}
-          className="overflow-x-auto whitespace-nowrap flex gap-3 lg:gap-8 pb-2 scrollbar-hide"
-        >
-          {propertieslist
-            .filter((property) => property.for === "Rent")
-            .map((property, index) => (
-              <PropertyCard key={index} property={property} router={router} />
-            ))}
-        </div>
-        <button
-          onClick={() => scrollRight(rentRef)}
-          className="hidden lg:block absolute right-0 top-1/2 transform -translate-y-1/2 z-10 bg-gray-200 p-2 rounded-full shadow-md"
-        >
-          <AngleRight className="w-6 h-6 text-gray-600" />
-        </button>
-      </div>
+      {propertieslist.some((property) => property.for === "Rent") && (
+        <>
+          <h2 className="text-lg lg:text-2xl mt-6 ml-2">For Rent</h2>
+          <div className="relative mt-2">
+            <button
+              onClick={() => scrollLeft(rentRef)}
+              className="hidden lg:block absolute left-0 top-1/2 transform -translate-y-1/2 z-10 bg-gray-200 p-2 rounded-full shadow-md"
+            >
+              <AngleLeft className="w-6 h-6 text-gray-600" />
+            </button>
+            <div
+              ref={rentRef}
+              className="overflow-x-auto whitespace-nowrap flex gap-3 lg:gap-8 pb-2 scrollbar-hide"
+            >
+              {propertieslist
+                .filter((property) => property.for === "Rent")
+                .map((property, index) => (
+                  <PropertyCard key={index} property={property} router={router} />
+                ))}
+            </div>
+            <button
+              onClick={() => scrollRight(rentRef)}
+              className="hidden lg:block absolute right-0 top-1/2 transform -translate-y-1/2 z-10 bg-gray-200 p-2 rounded-full shadow-md"
+            >
+              <AngleRight className="w-6 h-6 text-gray-600" />
+            </button>
+          </div>
+        </>
+      )}
 
       {propertieslist.some((property) => property.for === "PG") && (
         <>

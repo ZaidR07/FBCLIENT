@@ -44,7 +44,7 @@ const Page = () => {
   const [showCreditModal, setShowCreditModal] = useState(false);
   const [selectedBrokerId, setSelectedBrokerId] = useState<string>("");
   const [creditCount, setCreditCount] = useState<string>("");
-  const [validityOption, setValidityOption] = useState<string>("2m"); // 2m, 6m, 1y
+  const [validityOption, setValidityOption] = useState<string>("3m"); // 3m, 6m, 1y
 
   const [formdata, setFormdata] = useState({
     broker_id: "",
@@ -73,7 +73,7 @@ const Page = () => {
   const openCreditModal = (broker_id: string) => {
     setSelectedBrokerId(broker_id);
     setCreditCount("");
-    setValidityOption("2m");
+    setValidityOption("3m");
     setShowCreditModal(true);
   };
 
@@ -97,7 +97,7 @@ const Page = () => {
 
       // Compute validity based on selection
       const validityDate = new Date();
-      if (validityOption === "2m") validityDate.setMonth(validityDate.getMonth() + 2);
+      if (validityOption === "3m") validityDate.setMonth(validityDate.getMonth() + 3);
       else if (validityOption === "6m") validityDate.setMonth(validityDate.getMonth() + 6);
       else if (validityOption === "1y") validityDate.setFullYear(validityDate.getFullYear() + 1);
 

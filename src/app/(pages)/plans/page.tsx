@@ -118,6 +118,7 @@ const Page = () => {
                   credits={data.credits}
                   tier={currentTier}
                   type={isBroker ? "dealer" : "builder"}
+                  months={parseInt(months)}
                 />
               )
             )}

@@ -9,8 +9,8 @@ interface PriceDropdownProps {
 
 export const PriceDropdown = ({ onApply }: PriceDropdownProps) => {
   const [isOpen, setIsOpen] = useState(false);
-  const [minPrice, setMinPrice] = useState(0);
-  const [maxPrice, setMaxPrice] = useState(1000000000);
+  const [minPrice, setMinPrice] = useState<string>("");
+  const [maxPrice, setMaxPrice] = useState<string>("");
 
   return (
     <div className="relative">
@@ -38,7 +38,10 @@ export const PriceDropdown = ({ onApply }: PriceDropdownProps) => {
                   type="number"
                   id="minPrice"
                   value={minPrice}
-                  onChange={(e) => setMinPrice(Number(e.target.value))}
+                  onChange={(e) => {
+                    const v = e.target.value;
+                    setMinPrice(v.replace(/^0+(?=\d)/, ""));
+                  }}
                   className="border p-2 rounded-lg"
                   placeholder="Min Price"
                 />
@@ -52,7 +55,10 @@ export const PriceDropdown = ({ onApply }: PriceDropdownProps) => {
                   type="number"
                   id="maxPrice"
                   value={maxPrice}
-                  onChange={(e) => setMaxPrice(Number(e.target.value))}
+                  onChange={(e) => {
+                    const v = e.target.value;
+                    setMaxPrice(v.replace(/^0+(?=\d)/, ""));
+                  }}
                   className="border p-2 rounded-lg"
                   placeholder="Max Price"
                 />
@@ -60,7 +66,9 @@ export const PriceDropdown = ({ onApply }: PriceDropdownProps) => {
 
               <button
                 onClick={() => {
-                  onApply([minPrice, maxPrice]);
+                  const min = minPrice === "" ? 0 : Number(minPrice);
+                  const max = maxPrice === "" ? 1000000000 : Number(maxPrice);
+                  onApply([min, max]);
                   setIsOpen(false);
                 }}
                 className="bg-[#f3701f] text-white py-2 px-4 rounded-lg"
